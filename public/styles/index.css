@@ -27,7 +27,9 @@
   box-shadow: 0 4px 20px rgba(111, 66, 193, 0.15);
   width: 100%;
 }
-
+.tg-booking-form-search-btn{
+  margin-right: -8px;
+}
 :root {
   --tg-booking-sticky-top: 10px;
 }

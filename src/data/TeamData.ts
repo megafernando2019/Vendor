@@ -1,12 +1,5 @@
 import { StaticImageData } from "next/image";
 
-import team_1 from "@/assets/img/team/member.png"
-import team_2 from "@/assets/img/team/member-2.png"
-import team_3 from "@/assets/img/team/member-3.png"
-import team_4 from "@/assets/img/team/member-4.png"
-import team_5 from "@/assets/img/team/member-5.png"
-import team_6 from "@/assets/img/team/member-6.png"
-import team_7 from "@/assets/img/team/member-7.png"
 
 interface DataType {
    id: number;
@@ -18,31 +11,31 @@ interface DataType {
 const team_data: DataType[] = [
    {
       id: 1,
-      thum: team_1,
+      thum: "@/assets/img/galeria/nuevos.jpg",
       title: "Esther Howard",
       designation: "Consulting"
    },
    {
       id: 2,
-      thum: team_2,
+      thum: "@/assets/img/galeria/comisiones.jpg",
       title: "Jane Cooper",
       designation: "Consulting"
    },
    {
       id: 3,
-      thum: team_3,
+      thum: "@/assets/img/galeria/landing.png",
       title: "Kristin Watson",
       designation: "Consulting"
    },
    {
       id: 4,
-      thum: team_4,
+      thum:  "@/assets/img/galeria/megasale.jpg",
       title: "Darrell Steward",
       designation: "Consulting"
    },
    {
       id: 5,
-      thum: team_5,
+      thum:  "@/assets/img/galeria/asistencias.jpg",
       title: "Devon Lane",
       designation: "Consulting"
    },

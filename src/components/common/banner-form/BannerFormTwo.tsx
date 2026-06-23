@@ -414,9 +414,9 @@ const BannerFormTwo = () => {
             </div>
           </div>
         </div>
-        <div className="tg-booking-form-search-btn mb-10">
-          <button className="btn btn-purple rounded-circle p-2" type="submit">
-            <span className="ml-5">
+        <div className="tg-booking-form-search-btn">
+          <button className="btn btn-dark rounded-circle p-3" type="submit">
+            <span>
               <svg
                 width="14"
                 height="14"
