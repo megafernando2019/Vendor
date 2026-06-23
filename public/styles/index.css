@@ -1,0 +1,63 @@
+@import "react-toastify/dist/ReactToastify.css";
+@import "swiper/css/bundle";
+
+@import "../../public/assets/css/animate.min.css";
+@import "../../public/assets/css/bootstrap.min.css";
+@import "../../public/assets/css/default.css";
+@import "../../public/assets/css/flatpicker.css";
+@import "../../public/assets/css/fontawesome-all.min.css";
+
+.bg-morado-custom, .btn-purple {
+    background-color: #6f42c1 !important; /* Morado estándar de Bootstrap */
+    color: white;
+}
+.text-morado-custom {
+    color: #6f42c1 !important; /* Morado estándar de Bootstrap */
+}
+
+.rounded-circale,
+.rounded-circle {
+    border-radius: 50% !important;
+    overflow: hidden;
+}
+.tg-booking-form-wrap {
+  border-radius: 50px !important;
+  margin-top: 25px !important;
+  padding: 10px 20px 12px 20px !important;
+  box-shadow: 0 4px 20px rgba(111, 66, 193, 0.15);
+  width: 100%;
+}
+
+:root {
+  --tg-booking-sticky-top: 10px;
+}
+
+@media (max-width: 575px) {
+  :root {
+    --tg-booking-sticky-top: 8px;
+  }
+}
+
+.tg-booking-sticky-scope {
+  position: relative;
+}
+
+.tg-booking-form-sticky-bar {
+  position: sticky !important;
+  top: var(--tg-booking-sticky-top);
+  z-index: 98;
+  width: 100%;
+  margin-top: -60px;
+}
+
+.tg-booking-form-sticky-bar.is-pinned {
+  margin-top: 0;
+}
+.tg-booking-add-input-field, .flatpickr-input {
+  background: #fff !important;
+  width: 140px!important;
+}
+.container-780 {
+   width: 100%;
+    max-width: 820px!important;
+  }

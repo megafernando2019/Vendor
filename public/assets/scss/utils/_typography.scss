@@ -1,0 +1,52 @@
+
+
+// Poppins se carga con next/font en src/lib/fonts.ts
+
+@font-face {
+    font-family: 'segoepr';
+    src: url('../../fonts/Segoe-Print-Font.ttf') format('trueType');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'chillax';
+    src: url('../../fonts/Chillax-Semibold.ttf') format('trueType');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'quentin';
+    src: url('../../fonts/Quentin.otf') format('trueType');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'rage';
+    src: url('../../fonts/RAGE_1.TTF') format('trueType');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Hortencia';
+    src: url('../../fonts/Hortensia.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+// font family
+$font-family: (
+    'ff': (
+        'body': 'var(--font-poppins), "Poppins", sans-serif',
+        'outfit': 'var(--font-poppins), "Poppins", sans-serif',
+        'hortencia': '"Hortencia", cursive',
+        'segoepr': "'segoepr', sans-serif",
+        'chillax': "'chillax', sans-serif",
+        'quentin': "'quentin', sans-serif",
+        'rage': "'rage', sans-serif",
+        'fontawesome': '"Font Awesome 6 Pro"',
+    )
+);

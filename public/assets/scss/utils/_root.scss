@@ -1,0 +1,23 @@
+@use 'colors' as *;
+@use 'typography' as *;
+
+:root {
+
+    //@Font Family Declaration
+    @each $ff, $shades in $font-family {
+        @each $shade, $value in $shades {
+            --tg-#{$ff}-#{$shade}: #{$value};
+        }
+    }
+
+    --tg-heading-font-family: var(--font-poppins), "Poppins", sans-serif;
+
+    //@Color Declaration
+    @each $color, $shades in $colors {
+        @each $shade, $value in $shades {
+            --tg-#{$color}-#{$shade}: #{$value};
+        }
+    }
+
+}
+
