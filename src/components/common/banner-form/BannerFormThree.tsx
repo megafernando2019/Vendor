@@ -1,16 +1,6 @@
 "use client";
-import { JSX, useEffect, useRef, useState } from "react";
+import { JSX, useState } from "react";
 import BannerFormTwo from "./BannerFormTwo";
-
-const getStickyTopOffset = () => {
-   if (typeof window === "undefined") return 10;
-
-   const value = getComputedStyle(document.documentElement)
-      .getPropertyValue("--tg-booking-sticky-top")
-      .trim();
-
-   return Number.parseInt(value, 10) || 10;
-};
 
 interface TabData {
    title: string;
@@ -59,74 +49,11 @@ const tab_title: TabData[] = [
 const form_data: number[] = [1, 2, 3, 4, 5, 6];
 
 const BannerFormThree = () => {
-   const barRef = useRef<HTMLDivElement>(null);
-   const [isPinned, setIsPinned] = useState(false);
-   const [barHeight, setBarHeight] = useState(0);
-   const [topOffset, setTopOffset] = useState(10);
-   const [pinnedStyle, setPinnedStyle] = useState<{ width: number; left: number }>({
-      width: 0,
-      left: 0,
-   });
-
    const [activeTab, setActiveTab] = useState(0);
-
-   useEffect(() => {
-      const bar = barRef.current;
-      if (!bar) return;
-
-      const scope = bar.closest(".tg-booking-sticky-scope");
-      if (!scope) return;
-
-      const updatePinnedState = () => {
-         const nextTopOffset = getStickyTopOffset();
-         setTopOffset(nextTopOffset);
-
-         const scopeRect = scope.getBoundingClientRect();
-         const barRect = bar.getBoundingClientRect();
-         const height = bar.offsetHeight;
-
-         const shouldPin =
-            barRect.top <= nextTopOffset &&
-            scopeRect.bottom > nextTopOffset + height + 16;
-
-         setBarHeight(height);
-
-         if (shouldPin) {
-            setPinnedStyle({ width: barRect.width, left: barRect.left });
-            setIsPinned(true);
-         } else {
-            setIsPinned(false);
-         }
-      };
-
-      updatePinnedState();
-      window.addEventListener("scroll", updatePinnedState, { passive: true });
-      window.addEventListener("resize", updatePinnedState);
-
-      return () => {
-         window.removeEventListener("scroll", updatePinnedState);
-         window.removeEventListener("resize", updatePinnedState);
-      };
-   }, []);
 
    return (
       <>
-         {isPinned && <div style={{ height: barHeight }} aria-hidden="true" />}
-         <div
-            ref={barRef}
-            className={`tg-booking-form-sticky-bar pb-4${isPinned ? " is-pinned" : ""}`}
-            style={
-               isPinned
-                  ? {
-                     position: "fixed",
-                     top: topOffset,
-                     left: pinnedStyle.left,
-                     width: pinnedStyle.width,
-                     zIndex: 98,
-                  }
-                  : undefined
-            }
-         >
+         <div className="tg-booking-form-sticky-bar pb-4">
             <div className="container">
                <div className="row justify-content-center">
                   <div className="col-lg-8">
