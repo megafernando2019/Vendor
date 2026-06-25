@@ -2,6 +2,7 @@
 import { useState } from "react";
 import NabvarFormItems from "./NabvarFormItems";
 import SearchFormItems from "./SearchFormItems";
+import { useDelayedPanelItems } from "@/hooks/useDelayedPanelItems";
 
 const COLLAPSED_SIZE = "56px";
 const EXPANDED_WIDTH = `calc(100% - ${COLLAPSED_SIZE} - 16px)`;
@@ -9,6 +10,8 @@ const EXPANDED_WIDTH = `calc(100% - ${COLLAPSED_SIZE} - 16px)`;
 const BookingFormsSticky = () => {
   const [navbarOpen, setNavbarOpen] = useState(true);
   const [searchOpen, setSearchOpen] = useState(false);
+  const navbarShowItems = useDelayedPanelItems(navbarOpen);
+  const searchShowItems = useDelayedPanelItems(searchOpen);
 
   const toggleNavbar = () => {
     setNavbarOpen((prev) => {
@@ -27,7 +30,6 @@ const BookingFormsSticky = () => {
   };
 
   return (
-    <>
       <div className="tg-booking-form-sticky-bar pb-4">
         <div className="container">
           <div className="row justify-content-center">
@@ -43,6 +45,7 @@ const BookingFormsSticky = () => {
                     <div className="tg-booking-form-item">
                       <NabvarFormItems
                         searchOpen={navbarOpen}
+                        showItems={navbarShowItems}
                         onToggle={toggleNavbar}
                       />
                     </div>
@@ -59,6 +62,7 @@ const BookingFormsSticky = () => {
                     <div className="tg-booking-form-item">
                       <SearchFormItems
                         searchOpen={searchOpen}
+                        showItems={searchShowItems}
                         onToggle={toggleSearch}
                       />
                     </div>
@@ -69,10 +73,6 @@ const BookingFormsSticky = () => {
           </div>
         </div>
       </div>
-      <h2 className="text-secondary mt-20 text-center pb-105">
-        Hazlo fácil. Hazlo rápido. Hazlo a tu manera
-      </h2>
-    </>
   );
 };
 

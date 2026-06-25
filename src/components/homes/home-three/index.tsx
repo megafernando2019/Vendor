@@ -8,7 +8,6 @@ import CtaTwo from "./CtaTwo";
 import Location from "./Location";
 import Testimonial from "./Testimonial";
 import dynamic from "next/dynamic";
-import HeaderThree from "@/layouts/headers/HeaderThree";
 import FooterThree from "@/layouts/footers/FooterThree";
 import Cta from "../home-one/Cta";
 const ListingNuevo = dynamic(() => import("./ListingNuevo"), { ssr: false });
@@ -25,6 +24,13 @@ const HomeThree = () => {
         <Banner />
         <div className="tg-booking-sticky-scope">
           <BookingFormsSticky />
+          <div className="tg-listing-area pt-100 pb-20 tg-grey-bg">
+            <div className="container">
+              <h2 className="text-secondary text-center d-flex align-items-center justify-content-center p-10">
+                Hazlo fácil. Hazlo rápido. Hazlo a tu manera
+              </h2>
+            </div>
+          </div>
           <Top10Carrousel />
           <CrucerosCarrousel />
           <ListingNuevo />

@@ -4,6 +4,7 @@ import menu_data from "@/data/MenuData";
 
 interface FormItemsProps {
   searchOpen: boolean;
+  showItems?: boolean;
   onToggle: () => void;
 }
 
@@ -12,7 +13,11 @@ const navLinks = menu_data.map((item) => ({
   href: item.link !== "#" ? item.link : (item.sub_menus?.[0]?.link ?? "#"),
 }));
 
-const NabvarFormItems = ({ searchOpen, onToggle }: FormItemsProps) => {
+const NabvarFormItems = ({
+  searchOpen,
+  showItems = searchOpen,
+  onToggle,
+}: FormItemsProps) => {
   const handleToggleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     onToggle();
@@ -37,7 +42,7 @@ const NabvarFormItems = ({ searchOpen, onToggle }: FormItemsProps) => {
             <span>
               <svg
                 className="w-6 h-6 text-gray-800 dark:text-white"
-                ariaHidden="true"
+                aria-hidden="true"
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
                 height="24"
@@ -47,7 +52,7 @@ const NabvarFormItems = ({ searchOpen, onToggle }: FormItemsProps) => {
                 <path
                   stroke="currentColor"
                   strokeLinecap="round"
-                  stroke-linejoin="round"
+                  strokeLinejoin="round"
                   strokeWidth="2"
                   d="m4 12 8-8 8 8M6 10.5V19a1 1 0 0 0 1 1h3v-3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3h3a1 1 0 0 0 1-1v-8.5"
                 />
@@ -58,7 +63,8 @@ const NabvarFormItems = ({ searchOpen, onToggle }: FormItemsProps) => {
 
         <ul
           className="banner-form-two-navbar-menu banner-form-two-expandable list-unstyled mb-0"
-          aria-hidden={!searchOpen}
+          style={{ display: showItems && searchOpen ? "flex" : "none" }}
+          aria-hidden={!searchOpen || !showItems}
         >
           {navLinks.map((item) => (
             <li key={item.label}>

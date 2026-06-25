@@ -1,7 +1,7 @@
 "use client"
-import { useRef } from "react"
+import { useCallback, useRef } from "react"
 import { Swiper, SwiperSlide } from "swiper/react"
-import { Navigation, EffectFade, Autoplay } from "swiper/modules"
+import { EffectFade, Autoplay } from "swiper/modules"
 import type { Swiper as SwiperType } from "swiper"
 import Button from "@/components/common/Button"
 import Link from "next/link"
@@ -16,51 +16,75 @@ const banner_thumb: string[] = [
 ]
 
 const Banner = () => {
-   const prevRef = useRef<HTMLButtonElement>(null)
-   const nextRef = useRef<HTMLButtonElement>(null)
+   const swiperRef = useRef<SwiperType | null>(null)
+
+   const handlePrev = useCallback(() => {
+      swiperRef.current?.slidePrev()
+   }, [])
+
+   const handleNext = useCallback(() => {
+      swiperRef.current?.slideNext()
+   }, [])
 
    return (
       <div className="tg-hero-area fix p-relative">
          <div className="tg-hero-top-shadow"></div>
-         <div className="shop-slider-wrapper">
+         <div className="shop-slider-wrapper tg-hero-home-three-slider-wrap">
             <Swiper
-               modules={[Navigation, EffectFade, Autoplay]}
-               className="swiper-container tg-hero-slider-active"
+               modules={[EffectFade, Autoplay]}
+               className="swiper-container tg-hero-slider-active tg-hero-home-three-slider"
                slidesPerView={1}
-               loop
+               loop={false}
+               rewind
                spaceBetween={0}
                speed={2000}
                effect="fade"
                fadeEffect={{ crossFade: true }}
+               watchOverflow
                autoplay={{
                   delay: 3500,
                   disableOnInteraction: false,
                }}
-               onBeforeInit={(swiper: SwiperType) => {
-                  if (
-                     swiper.params.navigation &&
-                     typeof swiper.params.navigation !== "boolean"
-                  ) {
-                     swiper.params.navigation.prevEl = prevRef.current
-                     swiper.params.navigation.nextEl = nextRef.current
-                  }
-               }}
-               onInit={(swiper: SwiperType) => {
-                  swiper.navigation.init()
-                  swiper.navigation.update()
+               onSwiper={(swiper) => {
+                  swiperRef.current = swiper
                }}
             >
-               {banner_thumb.map((thumb, i) => (
-                  <SwiperSlide key={i} className="swiper-slide">
+               {banner_thumb.map((src) => (
+                  <SwiperSlide key={src} className="swiper-slide">
                      <div className="tg-hero-bg">
                         <div
                            className="tg-hero-thumb"
-                           style={{ backgroundImage: `url(${thumb})` }}
-                        ></div>
+                           style={{ backgroundImage: `url("${src}")` }}
+                           role="img"
+                           aria-label=""
+                        />
                      </div>
                   </SwiperSlide>
                ))}
             </Swiper>
+
+            <div className="tg-hero-arrow-box d-none d-sm-block">
+               <button
+                  type="button"
+                  className="tg-hero-next"
+                  aria-label="Siguiente slide"
+                  onClick={handleNext}
+               >
+                  <svg width="19" height="15" viewBox="0 0 19 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                     <path d="M18.0274 7.5H0.972625M0.972625 7.5L7.25 1.22263M0.972625 7.5L7.25 13.7774" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+               </button>
+               <button
+                  type="button"
+                  className="tg-hero-prev"
+                  aria-label="Slide anterior"
+                  onClick={handlePrev}
+               >
+                  <svg width="20" height="15" viewBox="0 0 20 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                     <path d="M1.47263 7.5H18.5274M18.5274 7.5L12.25 1.22263M18.5274 7.5L12.25 13.7774" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+               </button>
+            </div>
          </div>
 
          <div className="tg-hero-content-area">
@@ -70,7 +94,7 @@ const Banner = () => {
                      <div className="col-xl-10">
                         <div className="tg-hero-content text-center">
                            <div className="tg-hero-title-box mb-10">
-                              <h5 className="tg-hero-subtitle mb-5 wow fadeInUp" data-wow-delay=".3s" data-wow-duration=".7s">* This offer valid till 22 August</h5>
+                              <h5 className="tg-hero-subtitle mb-5 wow fadeInUp" data-wow-delay=".3s" data-wow-duration=".7s">Vendor 27</h5>
                               <h2 className="tg-hero-title wow fadeInUp" data-wow-delay=".4s" data-wow-duration=".9s">Maldives island</h2>
                               <p className="tg-hero-para mb-0  wow fadeInUp" data-wow-delay=".6s" data-wow-duration="1.1s">when an unknown printer took ar galley offer type area <br /> year anddey make specimen book</p>
                            </div>
@@ -89,18 +113,6 @@ const Banner = () => {
                            </div>
                         </div>
                      </div>
-                  </div>
-                  <div className="tg-hero-arrow-box d-none d-sm-block">
-                     <button ref={nextRef} type="button" className="tg-hero-next" aria-label="Siguiente slide">
-                        <svg width="19" height="15" viewBox="0 0 19 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-                           <path d="M18.0274 7.5H0.972625M0.972625 7.5L7.25 1.22263M0.972625 7.5L7.25 13.7774" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-                        </svg>
-                     </button>
-                     <button ref={prevRef} type="button" className="tg-hero-prev" aria-label="Slide anterior">
-                        <svg width="20" height="15" viewBox="0 0 20 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-                           <path d="M1.47263 7.5H18.5274M18.5274 7.5L12.25 1.22263M18.5274 7.5L12.25 13.7774" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-                        </svg>
-                     </button>
                   </div>
                </div>
             </div>

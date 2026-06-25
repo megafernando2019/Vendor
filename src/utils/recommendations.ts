@@ -16,6 +16,7 @@ export type RecommendationCard = {
   thumb?: string;
   title: string;
   tag?: string;
+  offer?: string;
   location: string;
   time: string;
   deletePrice?: number;
@@ -161,6 +162,15 @@ function resolveRecommendationCurrency(item: RecommendationItem): string {
   return "MXN";
 }
 
+function buildDiscountOffer(
+  totalFrom: number,
+  totalUpto: number,
+): string | undefined {
+  if (totalUpto <= totalFrom || totalUpto <= 0) return undefined;
+  const percent = Math.round(((totalUpto - totalFrom) / totalUpto) * 100);
+  return percent > 0 ? `${percent}% Off` : undefined;
+}
+
 export function mapRecommendationToCard(
   item: RecommendationItem,
   index = 0
@@ -175,6 +185,8 @@ export function mapRecommendationToCard(
     clv: item.clv,
     thumb: item.multimedias?.[0],
     title: item.name,
+    tag: primaryCountry,
+    offer: buildDiscountOffer(item.total_from, item.total_upto),
     location: item.destination_name || countries.join(" - ") || "Destino",
     time: `${item.days} Días / ${item.nights} Noches`,
     deletePrice: hasDiscount ? item.total_upto : undefined,

@@ -174,7 +174,6 @@ const CrucerosCarrousel = () => {
                       <div className="tg-listing-card-thumb tg-listing-2-card-thumb mb-15 fix p-relative">
                         <Link href={`/tour-details?mt=${item.clv}`}>
                           {item.thumb ? (
-                            // eslint-disable-next-line @next/next/no-img-element
                             <img
                               className="tg-card-border w-100"
                               src={item.thumb}
@@ -242,14 +241,13 @@ const CrucerosCarrousel = () => {
                         </div>
                       </div>
                       <div className="tg-listing-card-content p-relative">
-                        <h4 className="tg-listing-card-title mb-5 text-truncate d-block">
+                        <h6 className="tg-listing-card-title mb-5 text-truncate d-block">
                           <span className="badge rounded bg-morado-custom">
                             MT{item.clv}
                           </span>
-                          <Link href={`/tour-details?mt=${item.clv}`}>
                             {item.title}
-                          </Link>
-                        </h4>
+
+                        </h6>
                         <span className="tg-listing-card-duration-map d-inline-block mb-10">
                           <svg
                             width="13"
@@ -281,7 +279,7 @@ const CrucerosCarrousel = () => {
 
                         <div className="tg-listing-card-review mb-5">
                           <span className="tg-listing-rating-percent ms-2">
-                            <i className="fa-regular fa-sun"></i> item.time
+                            <i className="fa-regular fa-sun"></i> {item.time}
                           </span>
                         </div>
 
@@ -299,6 +297,7 @@ const CrucerosCarrousel = () => {
                           </div>
                         </div>
                       </div>
+
                     </div>
                   </SwiperSlide>
                 ))}

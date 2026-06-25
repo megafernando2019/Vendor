@@ -21,10 +21,10 @@ const passengerOptions = Array.from({ length: 8 }, (_, i) => ({
 }));
 
 interface BannerFormTwoProps {
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setOpen?: () => void;
 }
 
-const BannerFormTwo = ({ setOpen }: BannerFormTwoProps) => {
+const BannerFormTwo = ({ setOpen = () => {} }: BannerFormTwoProps) => {
   const [location, setLocation] = useState(false);
   const [passengers, setPassengers] = useState(false);
   const [selectedDestination, setSelectedDestination] = useState<string | null>(
@@ -45,12 +45,7 @@ const BannerFormTwo = ({ setOpen }: BannerFormTwoProps) => {
 
   const searchOrChange = () => {
     setSearchOpen((prev) => {
-      if (prev) {
-        setOpen();
-      }else{
-        setOpen();
-
-      }
+      setOpen();
       return !prev;
     });
   };
@@ -288,6 +283,7 @@ const BannerFormTwo = ({ setOpen }: BannerFormTwoProps) => {
             <span className="location">
               <Image
                 src="/assets/img/icons/Buscar.png"
+                alt="Buscar"
                 width={30}
                 height={30}
               />

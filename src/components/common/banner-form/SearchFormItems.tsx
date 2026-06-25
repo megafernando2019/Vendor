@@ -95,10 +95,15 @@ const buildBusquedaPayload = (
 
 interface FormItemsProps {
   searchOpen: boolean;
+  showItems?: boolean;
   onToggle: () => void;
 }
 
-const SearchFormItems = ({ searchOpen, onToggle }: FormItemsProps) => {
+const SearchFormItems = ({
+  searchOpen,
+  showItems = searchOpen,
+  onToggle,
+}: FormItemsProps) => {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const [location, setLocation] = useState(false);
@@ -245,7 +250,8 @@ const SearchFormItems = ({ searchOpen, onToggle }: FormItemsProps) => {
       >
         <div
           className="banner-form-two-expandable d-flex align-items-center justify-content-between flex-grow-1 min-w-0"
-          aria-hidden={!searchOpen}
+          style={{ display: showItems && searchOpen ? "flex" : "none" }}
+          aria-hidden={!searchOpen || !showItems}
         >
         <div
           ref={locationRef}
