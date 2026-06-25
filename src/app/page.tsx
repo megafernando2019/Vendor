@@ -2,7 +2,7 @@ import HomeThree from "../components/homes/home-three";
 import Wrapper from "@/layouts/Wrapper";
 
 export const metadata = {
-  title: "Tourex - Tour & Travel Booking React Next js Template",
+  title: "Vendor 27",
 };
 const page = () => {
   return (

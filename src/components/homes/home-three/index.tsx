@@ -1,5 +1,5 @@
 "use client";
-import BannerFormThree from "@/components/common/banner-form/BannerFormThree";
+import BookingFormsSticky from "../../common/banner-form/BookingFormsSticky";
 import Banner from "./Banner";
 import Blog from "./Blog";
 import Choose from "./Choose";
@@ -24,7 +24,7 @@ const HomeThree = () => {
       <main>
         <Banner />
         <div className="tg-booking-sticky-scope">
-          <BannerFormThree />
+          <BookingFormsSticky />
           <Top10Carrousel />
           <CrucerosCarrousel />
           <ListingNuevo />

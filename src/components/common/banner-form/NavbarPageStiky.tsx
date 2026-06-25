@@ -1,19 +1,14 @@
 "use client";
 import { JSX, useState } from "react";
-import BannerFormTwo from "./BannerFormTwo";
+import NabvarFormItems from "./NabvarFormItems";
 
 const form_data: number[] = [1, 2, 3, 4, 5, 6];
 
-const BannerFormThree = () => {
+const NavbarPageStiky = () => {
   const [activeTab, setActiveTab] = useState(0);
   const [searchOpen, setSearchOpen] = useState(true);
-  const setOpen = () => {
-    if (searchOpen) {
-      setSearchOpen(false);
-    } else {
-      setSearchOpen(true);
-    }
-  };
+  const toggleSearchOpen = () => setSearchOpen((prev) => !prev);
+
   return (
     <>
       <div className="tg-booking-form-sticky-bar pb-4">
@@ -35,7 +30,10 @@ const BannerFormThree = () => {
                       id="nav-platform"
                     >
                       <div className="tg-booking-form-item">
-                        <BannerFormTwo setOpen={setOpen} />
+                        <NabvarFormItems
+                          searchOpen={searchOpen}
+                          onToggle={toggleSearchOpen}
+                        />
                       </div>
                     </div>
                   ))}
@@ -52,4 +50,4 @@ const BannerFormThree = () => {
   );
 };
 
-export default BannerFormThree;
+export default NavbarPageStiky;

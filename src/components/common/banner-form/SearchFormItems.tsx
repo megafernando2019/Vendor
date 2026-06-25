@@ -2,63 +2,177 @@
 import { useEffect, useRef, useState } from "react";
 import Flatpickr from "react-flatpickr";
 import Image from "next/image";
+import { format } from "date-fns";
+import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
+import { useAppDispatch } from "@/redux/hooks";
+import {
+  fetchBusqueda,
+  setItemSearch,
+  type ItemSearch,
+} from "@/redux/slices/searchSlice";
+import { resetView } from "@/redux/slices/viewSlice";
 
-const destinations = [
-  { label: "Europa", icon: "/assets/img/icons/Europa.png" },
-  { label: "Medio Oriente", icon: "/assets/img/icons/MedioOriente.png" },
-  { label: "Asia", icon: "/assets/img/icons/Asia.png" },
-  { label: "Canadá", icon: "/assets/img/icons/Canada.png" },
-  { label: "Estados Unidos", icon: "/assets/img/icons/EstadoUnidos.png" },
-  { label: "México", icon: "/assets/img/icons/Mexico.png" },
-  { label: "Centro América", icon: "/assets/img/icons/Centroamerica.png" },
-  { label: "Sudamérica", icon: "/assets/img/icons/Sudamerica.png" },
-  { label: "Caribe", icon: "/assets/img/icons/caribe.png" },
+const destinoOptions = [
+  { value: "3", label: "Europa", icon: "/assets/img/icons/Europa.png" },
+  { value: "7", label: "Medio Oriente", icon: "/assets/img/icons/MedioOriente.png" },
+  { value: "11", label: "Asia", icon: "/assets/img/icons/Asia.png" },
+  { value: "5", label: "Canada", icon: "/assets/img/icons/Canada.png" },
+  { value: "6", label: "Estados Unidos", icon: "/assets/img/icons/EstadoUnidos.png" },
+  { value: "8", label: "México", icon: "/assets/img/icons/Mexico.png" },
+  { value: "10", label: "Centro América", icon: "/assets/img/icons/Centroamerica.png" },
+  { value: "9", label: "Sudamerica", icon: "/assets/img/icons/Sudamerica.png" },
+  { value: "12", label: "Caribe", icon: "/assets/img/icons/caribe.png" },
 ];
 
-const passengerOptions = Array.from({ length: 8 }, (_, i) => ({
-  label: i === 0 ? "1 pasajero" : `${i + 1} pasajeros`,
-  icon: "/assets/img/icons/Pasajeros.png",
-}));
+const pasajerosOptions = [
+  { value: "1", label: "1 Pasajero", icon: "/assets/img/icons/Pasajeros.png" },
+  { value: "2", label: "2 Pasajeros", icon: "/assets/img/icons/Pasajeros.png" },
+  { value: "3", label: "3 Pasajeros", icon: "/assets/img/icons/Pasajeros.png" },
+  { value: "4", label: "4 Pasajeros", icon: "/assets/img/icons/Pasajeros.png" },
+  { value: "5", label: "5 Pasajeros", icon: "/assets/img/icons/Pasajeros.png" },
+  { value: "6", label: "6 Pasajeros", icon: "/assets/img/icons/Pasajeros.png" },
+  { value: "7", label: "7 Pasajeros", icon: "/assets/img/icons/Pasajeros.png" },
+  { value: "8", label: "8 Pasajeros", icon: "/assets/img/icons/Pasajeros.png" },
+];
 
-interface BannerFormTwoProps {
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+const DEFAULT_DESTINO_ID = "3";
+const DEFAULT_PASAJEROS_ID = "2";
+const SEARCH_PAGE = 1;
+const SEARCH_LIMIT = 20;
+const API_DATE_FORMAT = "yyyy-MM-dd";
+
+export type SearchFormData = {
+  destinoId: string;
+  pasajerosId: string;
+  fechaInicio: string;
+  fechaFin: string;
+  keyword: string;
+};
+
+const getDefaultDateRange = (): Date[] => {
+  const start = new Date();
+  start.setHours(0, 0, 0, 0);
+  const end = new Date(start);
+  end.setFullYear(end.getFullYear() + 1);
+  return [start, end];
+};
+
+const formatFormDate = (date: Date): string => {
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const year = date.getFullYear();
+  return `${day}/${month}/${year}`;
+};
+
+const buildSearchFormData = (
+  destinoId: string,
+  pasajerosId: string,
+  dates: Date[],
+  keyword: string,
+): SearchFormData => ({
+  destinoId,
+  pasajerosId,
+  fechaInicio: dates[0] ? formatFormDate(dates[0]) : "",
+  fechaFin: dates[1] ? formatFormDate(dates[1]) : "",
+  keyword,
+});
+
+const buildBusquedaPayload = (
+  destinoId: string,
+  pasajerosId: string,
+  dates: Date[],
+  keyword: string,
+): ItemSearch => ({
+  destination: Number(destinoId),
+  passengers: Number(pasajerosId),
+  startRange: dates[0] ? format(dates[0], API_DATE_FORMAT) : "",
+  endRange: dates[1] ? format(dates[1], API_DATE_FORMAT) : "",
+  search: keyword.trim(),
+  page: SEARCH_PAGE,
+  limit: SEARCH_LIMIT,
+});
+
+interface FormItemsProps {
+  searchOpen: boolean;
+  onToggle: () => void;
 }
 
-const BannerFormTwo = ({ setOpen }: BannerFormTwoProps) => {
+const SearchFormItems = ({ searchOpen, onToggle }: FormItemsProps) => {
+  const dispatch = useAppDispatch();
+  const router = useRouter();
   const [location, setLocation] = useState(false);
   const [passengers, setPassengers] = useState(false);
-  const [selectedDestination, setSelectedDestination] = useState<string | null>(
-    null,
-  );
-  const [selectedPassengers, setSelectedPassengers] = useState<string | null>(
-    null,
-  );
-  const [dateRange, setDateRange] = useState<Date[]>([]);
+  const [selectedDestinoId, setSelectedDestinoId] = useState(DEFAULT_DESTINO_ID);
+  const [selectedPasajerosId, setSelectedPasajerosId] =
+    useState(DEFAULT_PASAJEROS_ID);
+  const [dateRange, setDateRange] = useState<Date[]>(getDefaultDateRange);
   const [keyword, setKeyword] = useState("");
   const [keywordEditing, setKeywordEditing] = useState(false);
-  const [searchOpen, setSearchOpen] = useState(true);
+  const [formData, setFormData] = useState<SearchFormData>(() =>
+    buildSearchFormData(
+      DEFAULT_DESTINO_ID,
+      DEFAULT_PASAJEROS_ID,
+      getDefaultDateRange(),
+      "",
+    ),
+  );
 
   const locationRef = useRef<HTMLDivElement>(null);
   const passengersRef = useRef<HTMLDivElement>(null);
   const keywordInputRef = useRef<HTMLInputElement>(null);
   const flatpickrRef = useRef<any>(null);
 
-  const searchOrChange = () => {
-    setSearchOpen((prev) => {
-      if (prev) {
-        setOpen();
-      }else{
-        setOpen();
+  const submitSearch = async (keywordOverride?: string) => {
+    setLocation(false);
+    setPassengers(false);
 
-      }
-      return !prev;
-    });
+    const currentKeyword =
+      keywordOverride ??
+      (keywordEditing && keywordInputRef.current
+        ? keywordInputRef.current.value.trim()
+        : keyword);
+
+    setKeyword(currentKeyword);
+    setKeywordEditing(false);
+
+    if (dateRange.length < 2) {
+      toast.warn("Selecciona un rango de fechas completo", {
+        position: "top-center",
+      });
+      return;
+    }
+
+    const payload = buildBusquedaPayload(
+      selectedDestinoId,
+      selectedPasajerosId,
+      dateRange,
+      currentKeyword,
+    );
+
+    try {
+      dispatch(setItemSearch(payload));
+      await dispatch(fetchBusqueda(payload)).unwrap();
+      dispatch(resetView());
+      router.push("/disponibilidad");
+    } catch (error) {
+      const message =
+        typeof error === "string" && error.length > 0
+          ? error
+          : "No se pudo completar la búsqueda";
+      toast.error(message, { position: "top-center" });
+    }
   };
 
   const handleSearchButtonClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    searchOrChange();
 
+    if (!searchOpen) {
+      onToggle();
+      return;
+    }
+
+    submitSearch();
   };
 
   useEffect(() => {
@@ -80,8 +194,8 @@ const BannerFormTwo = ({ setOpen }: BannerFormTwoProps) => {
       }
     };
 
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
   }, []);
 
   useEffect(() => {
@@ -90,23 +204,38 @@ const BannerFormTwo = ({ setOpen }: BannerFormTwoProps) => {
     }
   }, [keywordEditing]);
 
+  useEffect(() => {
+    setFormData(
+      buildSearchFormData(
+        selectedDestinoId,
+        selectedPasajerosId,
+        dateRange,
+        keyword,
+      ),
+    );
+  }, [selectedDestinoId, selectedPasajerosId, dateRange, keyword]);
+
   const handleKeywordBlur = (value: string) => {
     setKeyword(value.trim());
     setKeywordEditing(false);
   };
 
-  const handleSelectDestination = (label: string) => {
-    setSelectedDestination(label);
+  const handleSelectDestination = (destinoId: string) => {
+    setSelectedDestinoId(destinoId);
     setLocation(false);
   };
 
-  const handleSelectPassengers = (label: string) => {
-    setSelectedPassengers(label);
+  const handleSelectPassengers = (pasajerosId: string) => {
+    setSelectedPasajerosId(pasajerosId);
     setPassengers(false);
   };
 
-  const selectedDestinationData = destinations.find(
-    (dest) => dest.label === selectedDestination,
+  const selectedDestinationData = destinoOptions.find(
+    (dest) => dest.value === selectedDestinoId,
+  );
+
+  const selectedPasajerosData = pasajerosOptions.find(
+    (option) => option.value === selectedPasajerosId,
   );
 
   return (
@@ -114,8 +243,10 @@ const BannerFormTwo = ({ setOpen }: BannerFormTwoProps) => {
       <div
         className={`tg-booking-form-input-group d-flex align-items-center justify-content-between${searchOpen ? "" : " banner-form-two-collapsed"}`}
       >
-        {searchOpen && (
-          <>
+        <div
+          className="banner-form-two-expandable d-flex align-items-center justify-content-between flex-grow-1 min-w-0"
+          aria-hidden={!searchOpen}
+        >
         <div
           ref={locationRef}
           className="tg-booking-form-parent-inner tg-hero-quantity p-relative"
@@ -161,20 +292,20 @@ const BannerFormTwo = ({ setOpen }: BannerFormTwoProps) => {
               )}
             </span>
             <span className="tg-booking-title-value">
-              {selectedDestination || "Destino"}
+              {selectedDestinationData?.label ?? "Destino"}
             </span>
           </div>
           <div
             className={`tg-booking-form-location-list tg-booking-form-destino-list tg-booking-quantity-active ${location ? "tg-list-open" : ""}`}
           >
             <ul className="scrool-bar scrool-height pr-5">
-              {destinations.map((dest) => (
+              {destinoOptions.map((dest) => (
                 <li
-                  key={dest.label}
+                  key={dest.value}
                   className={
-                    selectedDestination === dest.label ? "selected" : ""
+                    selectedDestinoId === dest.value ? "selected" : ""
                   }
-                  onClick={() => handleSelectDestination(dest.label)}
+                  onClick={() => handleSelectDestination(dest.value)}
                 >
                   <Image
                     src={dest.icon}
@@ -209,20 +340,20 @@ const BannerFormTwo = ({ setOpen }: BannerFormTwoProps) => {
               />
             </span>
             <span className="tg-booking-title-value">
-              {selectedPassengers || "Pasajeros"}
+              {selectedPasajerosData?.label ?? "Pasajeros"}
             </span>
           </div>
           <div
             className={`tg-booking-form-location-list tg-booking-form-pasajeros-list tg-booking-quantity-active ${passengers ? "tg-list-open" : ""}`}
           >
             <ul className="scrool-bar scrool-height pr-5">
-              {passengerOptions.map((option) => (
+              {pasajerosOptions.map((option) => (
                 <li
-                  key={option.label}
+                  key={option.value}
                   className={
-                    selectedPassengers === option.label ? "selected" : ""
+                    selectedPasajerosId === option.value ? "selected" : ""
                   }
-                  onClick={() => handleSelectPassengers(option.label)}
+                  onClick={() => handleSelectPassengers(option.value)}
                 >
                   <Image
                     src={option.icon}
@@ -290,6 +421,7 @@ const BannerFormTwo = ({ setOpen }: BannerFormTwoProps) => {
                 src="/assets/img/icons/Buscar.png"
                 width={30}
                 height={30}
+                alt="Buscar"
               />
             </span>
   
@@ -303,7 +435,8 @@ const BannerFormTwo = ({ setOpen }: BannerFormTwoProps) => {
                 onBlur={(e) => handleKeywordBlur(e.target.value)}
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
-                    e.currentTarget.blur();
+                    e.preventDefault();
+                    submitSearch(e.currentTarget.value.trim());
                   }
                 }}
               />
@@ -314,15 +447,14 @@ const BannerFormTwo = ({ setOpen }: BannerFormTwoProps) => {
             )}
           </div>
         </div>
-          </>
-        )}
+        </div>
 
-        <div className="tg-booking-form-search-btn">
+        <div className="tg-booking-form-search-btn flex-shrink-0">
           <button
-            className="btn btn-dark rounded-circle p-3"
+            className="btn btn-dark rounded-circle p-2"
             type="button"
             onClick={handleSearchButtonClick}
-            aria-label={searchOpen ? "Ocultar buscador" : "Mostrar buscador"}
+            aria-label={searchOpen ? "Buscar" : "Mostrar buscador"}
           >
             <span>
               <svg
@@ -355,4 +487,4 @@ const BannerFormTwo = ({ setOpen }: BannerFormTwoProps) => {
   );
 };
 
-export default BannerFormTwo;
+export default SearchFormItems;
