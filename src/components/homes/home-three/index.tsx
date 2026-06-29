@@ -14,6 +14,9 @@ const ListingNuevo = dynamic(() => import("./ListingNuevo"), { ssr: false });
 const Top10Carrousel = dynamic(() => import("./Top10Carrousel"), {
   ssr: false,
 });
+const OfertasCarrousel = dynamic(() => import("./OfertasCarrousel"), {
+  ssr: false,
+});
 const CrucerosCarrousel = dynamic(() => import("./CrucerosCarrousel"), {
   ssr: false,
 });
@@ -33,14 +36,9 @@ const HomeThree = () => {
           </div>
           <Top10Carrousel />
           <CrucerosCarrousel />
-          <ListingNuevo />
           <Choose />
-          <CtaThree />
-          <Location />
-          <CtaTwo />
+          <OfertasCarrousel/>
           <Testimonial />
-          <Blog />
-          <Cta />
         </div>
       </main>
       <FooterThree />

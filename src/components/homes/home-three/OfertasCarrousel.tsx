@@ -51,7 +51,7 @@ const formatPrice = (amount: number, currency: string) => {
   return `${symbol}${amount.toLocaleString("es-MX")}`;
 };
 
-const Top10Carrousel = () => {
+const ofertasCarrousel = () => {
   const dispatch = useDispatch();
   const [cards, setCards] = useState<RecommendationCard[]>([]);
   const [loading, setLoading] = useState(true);
@@ -72,10 +72,9 @@ const Top10Carrousel = () => {
           return;
         }
 
-        const top10 = (json.data?.top_10 ?? []) as RecommendationItem[];
-        const { cards: mappedCards } = mapTop10Recommendations(top10);
+        const ofertas = (json.data?.ofertas ?? []) as RecommendationItem[];
+        const { cards: mappedCards } = mapTop10Recommendations(ofertas);
         setCards(mappedCards);
-        console.log(mappedCards)
       } catch {
         if (!cancelled) {
           setError("Error al consultar recomendaciones");
@@ -99,7 +98,7 @@ const Top10Carrousel = () => {
   };
 
   return (
-    <div className="tg-listing-area pt-20tg-grey-bg">
+    <div className="tg-listing-area pb-100 tg-grey-bg">
       <div className="container">
         <div className="row align-items-end">
           <div className="col-lg-12">
@@ -109,14 +108,14 @@ const Top10Carrousel = () => {
                 data-wow-delay=".5s"
                 data-wow-duration=".9s"
               >
-                Top 10
+                ofertas
               </h2>
               <h5
                 className="mb-15 wow fadeInUp text-hortencia text-center text-secondary"
                 data-wow-delay=".4s"
                 data-wow-duration=".9s"
               >
-                Los tours más populares y mejor valorados
+                Viajes con crucero incluido
               </h5>
             </div>
           </div>
@@ -169,14 +168,12 @@ const Top10Carrousel = () => {
                 modules={[Autoplay, Navigation]}
                 className="swiper-container tg-listing-slider-2 p-relative fix"
               >
-          
                 {cards.map((item) => (
                   <SwiperSlide key={item.id} className="swiper-slide">
                     <div className="tg-listing-card-item tg-listing-5-card-item mb-25">
                       <div className="tg-listing-card-thumb tg-listing-2-card-thumb mb-15 fix p-relative">
                         <Link href={`/tour-details?mt=${item.clv}`}>
                           {item.thumb ? (
-                            // eslint-disable-next-line @next/next/no-img-element
                             <img
                               className="tg-card-border w-100"
                               src={item.thumb}
@@ -193,9 +190,9 @@ const Top10Carrousel = () => {
                               alt={item.title}
                             />
                           )}
-                          {(item.offer || item.tag) && (
-                            <span className="tg-listing-item-price-discount offer-btm shape-2">
-                              {item.offer ?? item.tag}
+                          {item.tag && (
+                            <span className="tg-listing-item-price-discount shape">
+                              {item.tag}
                             </span>
                           )}
                         </Link>
@@ -220,6 +217,27 @@ const Top10Carrousel = () => {
                               />
                             </svg>
                           </a>
+                        </div>
+                        <div className="tg-listing-2-price">
+                          <span>
+                            <svg
+                              width="16"
+                              height="14"
+                              viewBox="0 0 16 14"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M13.9144 9.57143C14.3877 9.57143 14.7715 9.18764 14.7715 8.71429C14.7715 8.24093 14.3877 7.85714 13.9144 7.85714M13.9144 9.57143H13.0287C12.0818 9.57143 12.2611 10.4286 11.3144 10.4286C10.3675 10.4286 10.5469 9.57143 9.60014 9.57143C8.65321 9.57143 8.83257 10.4286 7.88586 10.4286C6.93893 10.4286 7.11829 9.57143 6.17157 9.57143C5.22464 9.57143 5.404 10.4286 4.45729 10.4286C3.51036 10.4286 3.66121 9.57143 2.71429 9.57143H1.85714M13.9144 9.57143C13.9144 11.4651 12.3507 13 10.4573 13H5.31443C4.28221 13 3.34814 12.544 2.71171 11.8223C2.18071 11.2199 1.85714 10.4329 1.85714 9.57143M1.85714 9.57143C1.38379 9.57143 1 9.18764 1 8.71429C1 8.24093 1.38379 7.85714 1.85714 7.85714M1.85714 7.85714H13.9144M1.85714 7.85714C1.38379 7.85714 1 7.47336 1 7C1 6.52664 1.38379 6.14286 1.85714 6.14286M13.9144 7.85714C14.3877 7.85714 14.7715 7.47336 14.7715 7C14.7715 6.52664 14.3877 6.14286 13.9144 6.14286M1.85714 6.14286H13.9144M1.85714 6.14286C1.85714 4.85843 2.16936 3.85364 2.71171 3.0865C3.76793 1.59207 5.69607 1 7.88586 1C11.1994 1 13.9144 2.35579 13.9144 6.14286"
+                                stroke="#560CE3"
+                                strokeWidth="0.8"
+                                strokeMiterlimit="13.3333"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
+                            </svg>
+                          </span>
+                          <span className="text">{item.location}</span>
                         </div>
                       </div>
                       <div className="tg-listing-card-content p-relative">
@@ -280,7 +298,6 @@ const Top10Carrousel = () => {
                         </div>
                       </div>
 
-
                     </div>
                   </SwiperSlide>
                 ))}
@@ -293,4 +310,4 @@ const Top10Carrousel = () => {
   );
 };
 
-export default Top10Carrousel;
+export default ofertasCarrousel;

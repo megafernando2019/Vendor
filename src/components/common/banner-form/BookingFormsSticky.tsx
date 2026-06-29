@@ -36,7 +36,7 @@ const BookingFormsSticky = () => {
         <div className="row justify-content-center">
           <div className="col-12 col-lg-10">
             <div
-              className={`booking-forms-sticky-row${
+              className={`booking-forms-sticky-row d-flex justify-content-between${
                 searchOpen ? " is-search-active" : ""
               }${navbarOpen ? " is-navbar-active" : ""}`}
             >

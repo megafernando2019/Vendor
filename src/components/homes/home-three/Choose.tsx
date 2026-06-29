@@ -7,6 +7,9 @@ import choose_shape from "@/assets/img/chose/chose-shape-2.png"
 import choose_shape2 from "@/assets/img/chose/chose-shape.png"
 import choose_thumb from "@/assets/img/chose/chose.png"
 import choose_thumb2 from "@/assets/img/chose/chose-2.jpg"
+import iconAsesores from "@/assets/img/centro-aprendizaje/Asesores.png"
+import iconPlataforma from "@/assets/img/centro-aprendizaje/Plataforma.png"
+import iconProgramas from "@/assets/img/centro-aprendizaje/Programas.png"
 import Link from "next/link"
 
 
@@ -19,36 +22,39 @@ const Choose = () => {
                <div className="col-lg-5">
                   <div className="tg-chose-content mb-25">
                      <div className="tg-chose-section-title mb-30">
-                        <h5 className="tg-section-subtitle mb-15 wow fadeInUp" data-wow-delay=".3s" data-wow-duration=".1s">Dream Your Next Trip</h5>
-                        <h2 className="mb-15 text-capitalize wow fadeInUp" data-wow-delay=".4s" data-wow-duration=".9s">discover when even<br /> you want to go</h2>
-                        <p className="text-capitalize wow fadeInUp" data-wow-delay=".5s" data-wow-duration=".9s">Are you tired of the typical tourist destinations and looking
-                           to step out of your comfort zone? Adventure travel may be
-                           the perfect solution for you! Here are four.</p>
+
+                        <h2 className="mb-15 text-capitalize wow fadeInUp text-purple text-morado-custom" data-wow-delay=".4s" data-wow-duration=".9s">Centro de Aprendizaje</h2>
+                        <h5 className="mb-15 wow fadeInUp text-hortencia" data-wow-delay=".3s" data-wow-duration=".1s">Encuentra todo lo que quieras saber sobre Vendor</h5>                       
+ <p className="text-capitalize wow fadeInUp" data-wow-delay=".5s" data-wow-duration=".9s">Accede a recursos especializados para dominar la plataforma, resolver dudas rápidamente y potenciar las ventas de tu agencia.</p>
                      </div>
                      <div className="tg-chose-list-wrap">
-                        <div className="tg-chose-list d-flex mb-15 wow fadeInUp" data-wow-delay=".6s" data-wow-duration=".9s">
-                           <span className="tg-chose-list-icon mr-20">
-                              <Choose4 />
+                        <div className="tg-chose-list d-flex mb-15 wow fadeInUp" data-wow-delay=".6s" data-wow-duration=".9s"  style={{ alignItems: 'center' }}>
+                           <span className="tg-chose-list-icon mr-20"> 
+                               <Image src={iconAsesores} width={80} height={80} alt="asesores"/>
                            </span>
                            <div className="tg-chose-list-content">
-                              <h4 className="tg-chose-list-title mb-5">Best Travel Agency</h4>
-                              <p>Are you tired of the typical tourist destinatio
-                                 and looking  step out of your comfort.</p>
+                              <h4 className="tg-chose-list-title mb-5">Asesores</h4>
                            </div>
                         </div>
-                        <div className="tg-chose-list d-flex mb-40 wow fadeInUp" data-wow-delay=".7s" data-wow-duration=".9s">
-                           <span className="tg-chose-list-icon mr-20">
-                              <Choose5 />
+                        <div className="tg-chose-list d-flex mb-25 wow fadeInUp" data-wow-delay=".7s" data-wow-duration=".9s"  style={{ alignItems: 'center' }}>
+                           <span className="tg-chose-list-icon mr-20">                                                                                
+                               <Image src={iconPlataforma} width={80} height={80} alt="asesores"/>
                            </span>
                            <div className="tg-chose-list-content">
-                              <h4 className="tg-chose-list-title mb-5">Secure Journey With Us</h4>
-                              <p>Are you tired of the typical tourist destinatio
-                                 and looking  step out of your comfort.</p>
+                              <h4 className="tg-chose-list-title mb-5">Plataforma</h4>
+                           </div>
+                        </div>
+                       <div className="tg-chose-list d-flex mb-25 wow fadeInUp" data-wow-delay=".7s" data-wow-duration=".9s"  style={{ alignItems: 'center' }}>
+                           <span className="tg-chose-list-icon mr-20">
+                               <Image src={iconProgramas} width={80} height={80} alt="asesores"/>
+                           </span>
+                           <div className="tg-chose-list-content">
+                              <h4 className="tg-chose-list-title mb-5">Programas</h4>
                            </div>
                         </div>
                         <div className="tg-chose-btn wow fadeInUp" data-wow-delay=".8s" data-wow-duration=".9s">
-                           <Link href="/contact" className="tg-btn tg-btn-switch-animation">
-                              <Button text="Book Your Trip" />
+                           <Link href="/faqs" className="tg-btn tg-btn-switch-animation">
+                              <Button text="Comienza" />
                            </Link>
                         </div>
                      </div>
@@ -70,7 +76,7 @@ const Choose = () => {
                                  <Image className="w-100 tg-round-15" src={choose_thumb2} alt="chose" />
                               </div>
                               <div className="tg-chose-big-text d-none d-xl-block">
-                                 <h2 data-text="TRAVEL">TRAVEL</h2>
+                                 <h2 data-text="CONOCE">CONOCE</h2>
                               </div>
                            </div>
                         </div>

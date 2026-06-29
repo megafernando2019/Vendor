@@ -7,13 +7,16 @@
 @import "../../public/assets/css/flatpicker.css";
 @import "../../public/assets/css/fontawesome-all.min.css";
 
+.bg-purple {
+  background-color: #2d0f4e !important;
+}
 .bg-morado-custom,
 .btn-purple {
-  background-color: #6f42c1 !important; /* Morado estándar de Bootstrap */
+  background-color: #6f42c1 !important;
   color: white;
 }
 .text-morado-custom {
-  color: #6f42c1 !important; /* Morado estándar de Bootstrap */
+  color: #6f42c1 !important; 
 }
 
 .rounded-circale,
@@ -50,7 +53,7 @@
   top: var(--tg-booking-sticky-top);
   z-index: 98;
   width: 100%;
-  margin-top: -60px;
+  margin-top: -28px;
 }
 
 .tg-hero-home-three-slider-wrap {
@@ -149,6 +152,7 @@
 .booking-forms-sticky-panel.is-expanded .tg-booking-form-wrap {
   border-radius: 50px !important;
   padding: 3px;
+  justify-content: end;
   overflow: visible;
 }
 
@@ -1342,7 +1346,6 @@ ul.scrool-bar.scrool-height > li > span {
       100% - var(--sticky-collapsed-size) - var(--sticky-panel-gap)
     );
     flex-wrap: nowrap;
-    justify-content: flex-start;
     align-items: center;
     width: 100%;
     gap: var(--sticky-panel-gap);

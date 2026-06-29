@@ -2,7 +2,7 @@
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Pagination } from 'swiper/modules';
 import Image from "next/image";
-import testi_data from '@/data/TestimonialData';
+import { testi_data } from '@/data/TestimonialData';
 
 import shape_1 from "@/assets/img/testimonial/tower.png"
 import shape_2 from "@/assets/img/testimonial/shape.png"

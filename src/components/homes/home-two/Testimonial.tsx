@@ -2,7 +2,7 @@
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay } from 'swiper/modules';
 import Image from "next/image";
-import testi_data from '@/data/TestimonialData';
+import { testi_data } from '@/data/TestimonialData';
 
 const setting = {
    spaceBetween: 25,

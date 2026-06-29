@@ -1,116 +1,125 @@
-"use client"
-import Image from "next/image"
-import Link from "next/link"
+"use client";
 
-import logo from "@/assets/img/logo/logo-white.png"
+const socialLinks = [
+  {
+    label: "Facebook",
+    href: "#",
+    icon: (
+      <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M9.101 23.691v-9.05h-3.127v-3.667h3.127V7.848c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.667h-3.12v9.05H9.101z" />
+      </svg>
+    ),
+  },
+  {
+    label: "LinkedIn",
+    href: "#",
+    icon: (
+      <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+      </svg>
+    ),
+  },
+  {
+    label: "X",
+    href: "#",
+    icon: (
+      <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+      </svg>
+    ),
+  },
+  {
+    label: "Instagram",
+    href: "#",
+    icon: (
+      <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z" />
+      </svg>
+    ),
+  },
+  {
+    label: "TikTok",
+    href: "#",
+    icon: (
+      <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 3.36.01 6.73-.02 10.09-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z" />
+      </svg>
+    ),
+  },
+  {
+    label: "YouTube",
+    href: "#",
+    icon: (
+      <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+      </svg>
+    ),
+  },
+];
 
 const FooterThree = () => {
+  return (
+    <footer className="mt-auto w-100 text-white pt-4 pb-5 px-4 d-flex flex-column align-items-center gap-4 bg-purple">
+      <div className="d-flex align-items-start justify-content-center flex-wrap gap-3">
+        <div
+          className="position-relative"
+          style={{ height: "50px", width: "200px" }}
+        >
+          <img
+            src="/assets/logos/logo-vendor-white.png"
+            alt="Logo Vendor"
+            className="img-fluid"
+          />
+        </div>
+        <div
+          className="d-none d-sm-block border-start"
+          style={{ height: "80px", opacity: 0.4 }}
+        ></div>
+        <div
+          className="position-relative px-5"
+          style={{ height: "50px", width: "260px" }}
+        >
+          <img
+            src="/assets/logos/logo-mega-travel-white.png"
+            alt="Logo Mega Travel"
+            className="img-fluid object-fit-contain"
+          />
+        </div>
+      </div>
 
-   return (
-      <>
-         <footer>
-            <div className="tg-footer-area tg-footer-space include-bg" style={{ backgroundImage: `url(/assets/img/footer/footer.jpg)` }}>
-               <div className="container">
-                  <div className="tg-footer-top mb-40">
-                     <div className="row">
-                        <div className="col-xl-3 col-lg-3 col-md-6 col-sm-6">
-                           <div className="tg-footer-widget mb-40">
-                              <div className="tg-footer-logo mb-20">
-                                 <Link href="/"><Image src={logo} alt="" /></Link>
-                              </div>
-                              <p className="mb-20">Pharetra maecenas felis vestibulum convallis mollis nullam congue sit.d rivers of Finland Quebec.</p>
-                              <div className="tg-footer-form mb-30">
-                                 <form onSubmit={(e) => e.preventDefault()}>
-                                    <input type="email" placeholder="Enter your mail" />
-                                    <button className="tg-footer-form-btn" type="submit">
-                                       <svg width="22" height="17" viewBox="0 0 22 17" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                          <path d="M1.52514 8.47486H20.4749M20.4749 8.47486L13.5 1.5M20.4749 8.47486L13.5 15.4497" stroke="white" strokeWidth="1.77778" strokeLinecap="round" strokeLinejoin="round" />
-                                       </svg>
-                                    </button>
-                                 </form>
-                              </div>
-                              <div className="tg-footer-social">
-                                 <Link href="#"><i className="fa-brands fa-facebook-f"></i></Link>
-                                 <Link href="#"><i className="fa-brands fa-twitter"></i></Link>
-                                 <Link href="#"><i className="fa-brands fa-instagram"></i></Link>
-                                 <Link href="#"><i className="fa-brands fa-pinterest-p"></i></Link>
-                                 <Link href="#"><i className="fa-brands fa-youtube"></i></Link>
-                              </div>
-                           </div>
-                        </div>
-                        <div className="col-xl-3 col-lg-3 col-md-6 col-sm-6">
-                           <div className="tg-footer-widget tg-footer-link ml-80 mb-40">
-                              <h3 className="tg-footer-widget-title mb-25">Quick Links</h3>
-                              <ul>
-                                 <li><Link href="/">Home</Link></li>
-                                 <li><Link href="/about">About Us</Link></li>
-                                 <li><Link href="#">Services</Link></li>
-                                 <li><Link href="#">Tour Guide</Link></li>
-                                 <li><Link href="/contact"> Contact Us</Link></li>
-                              </ul>
-                           </div>
-                        </div>
-                        <div className="col-xl-3 col-lg-3 col-md-6 col-sm-6">
-                           <div className="tg-footer-widget tg-footer-info mb-40">
-                              <h3 className="tg-footer-widget-title mb-25">Information</h3>
-                              <ul>
-                                 <li>
-                                    <Link className="d-flex" href="https://www.google.com/maps/@41.6758525,-86.2531698,18.17z">
-                                       <span className="mr-15">
-                                          <svg width="20" height="24" viewBox="0 0 20 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                             <path d="M19.0013 10.0608C19.0013 16.8486 10.3346 22.6668 10.3346 22.6668C10.3346 22.6668 1.66797 16.8486 1.66797 10.0608C1.66797 7.74615 2.58106 5.52634 4.20638 3.88965C5.83169 2.25297 8.03609 1.3335 10.3346 1.3335C12.6332 1.3335 14.8376 2.25297 16.4629 3.88965C18.0882 5.52634 19.0013 7.74615 19.0013 10.0608Z" stroke="white" strokeWidth="1.73333" strokeLinecap="round" strokeLinejoin="round" />
-                                             <path d="M10.3346 12.9699C11.9301 12.9699 13.2235 11.6674 13.2235 10.0608C13.2235 8.45412 11.9301 7.15168 10.3346 7.15168C8.73915 7.15168 7.44575 8.45412 7.44575 10.0608C7.44575 11.6674 8.73915 12.9699 10.3346 12.9699Z" stroke="white" strokeWidth="1.73333" strokeLinecap="round" strokeLinejoin="round" />
-                                          </svg>
-                                       </span>
-                                       58 Street Commercial Road<br /> Fratton, Australia
-                                    </Link>
-                                 </li>
-                                 <li>
-                                    <Link className="d-flex" href="tel:+1238889999">
-                                       <span className="mr-15">
-                                          <i className="fa-sharp text-white fa-solid fa-phone"></i>
-                                       </span>
-                                       +123 888 9999
-                                    </Link>
-                                 </li>
-                                 <li className="d-flex">
-                                    <span className="mr-15">
-                                       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                          <path d="M11.9987 5.60006V12.0001L16.2654 14.1334M22.6654 12.0002C22.6654 17.8912 17.8897 22.6668 11.9987 22.6668C6.10766 22.6668 1.33203 17.8912 1.33203 12.0002C1.33203 6.10912 6.10766 1.3335 11.9987 1.3335C17.8897 1.3335 22.6654 6.10912 22.6654 12.0002Z" stroke="white" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-                                       </svg>
-                                    </span>
-                                    <p className="mb-0">
-                                       Mon – Sat: 8 am – 5 pm,<br />
-                                       Sunday: <span className="text-white d-inline-block">CLOSED</span>
-                                    </p>
-                                 </li>
-                              </ul>
-                           </div>
-                        </div>
-                        <div className="col-xl-3 col-lg-3 col-md-6 col-sm-6">
-                           <div className="tg-footer-widget tg-footer-link mb-40">
-                              <h3 className="tg-footer-widget-title mb-25">Utility Pages</h3>
-                              <ul>
-                                 <li><Link href="#">Style Guide</Link></li>
-                                 <li><Link href="#">Password Protected</Link></li>
-                                 <li><Link href="#">404 Error</Link></li>
-                                 <li><Link href="#">Changelog</Link></li>
-                                 <li><Link href="#">License</Link></li>
-                              </ul>
-                           </div>
-                        </div>
-                     </div>
-                  </div>
-               </div>
-               <div className="tg-footer-copyright text-center">
-                  <span>
-                     Copyright <Link href="#">©Tourex</Link> |  All Right Reserved
-                  </span>
-               </div>
-            </div>
-         </footer>
-      </>
-   )
-}
+      <div className="d-flex align-items-center flex-wrap justify-content-center gap-3 small">
+        <a
+          href="mailto:vendor@megatravel.com.mx"
+          className="d-flex align-items-center gap-1 text-white-50 text-decoration-underline"
+        >
+          vendor@megatravel.com.mx
+          <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M2.038 5.61A2.01 2.01 0 0 0 2 6v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6c0-.12-.01-.238-.03-.352l-.866.65-7.89 6.032a2 2 0 0 1-2.429 0L2.884 6.288l-.846-.677Z" />
+            <path d="M20.677 4.117A1.996 1.996 0 0 0 20 4H4c-.225 0-.44.037-.642.105l.758.607L12 10.742 19.9 4.7l.777-.583Z" />
+          </svg>
+        </a>
 
-export default FooterThree
+        <div className="d-flex align-items-center gap-3">
+          {socialLinks.map((social) => (
+            <a
+              key={social.label}
+              href={social.href}
+              className="text-white-50 d-inline-flex align-items-center"
+              aria-label={social.label}
+            >
+              {social.icon}
+            </a>
+          ))}
+        </div>
+      </div>
+
+      <div className="w-100 border-top" style={{ opacity: 0.2 }}></div>
+
+      <p className="small text-white-50 py-1">
+        © Mega Travel – México 1999 – 2026
+      </p>
+    </footer>
+  );
+};
+
+export default FooterThree;
