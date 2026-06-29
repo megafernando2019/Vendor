@@ -7,18 +7,19 @@
 @import "../../public/assets/css/flatpicker.css";
 @import "../../public/assets/css/fontawesome-all.min.css";
 
-.bg-morado-custom, .btn-purple {
-    background-color: #6f42c1 !important; /* Morado estándar de Bootstrap */
-    color: white;
+.bg-morado-custom,
+.btn-purple {
+  background-color: #6f42c1 !important; /* Morado estándar de Bootstrap */
+  color: white;
 }
 .text-morado-custom {
-    color: #6f42c1 !important; /* Morado estándar de Bootstrap */
+  color: #6f42c1 !important; /* Morado estándar de Bootstrap */
 }
 
 .rounded-circale,
 .rounded-circle {
-    border-radius: 50% !important;
-    overflow: hidden;
+  border-radius: 50% !important;
+  overflow: hidden;
 }
 .tg-booking-form-wrap {
   border-radius: 50px !important;
@@ -27,7 +28,7 @@
   box-shadow: 0 4px 20px rgba(111, 66, 193, 0.15);
   width: 100%;
 }
-.tg-booking-form-search-btn{
+.tg-booking-form-search-btn {
   margin-right: 1px;
 }
 :root {
@@ -84,11 +85,13 @@
 }
 
 .booking-forms-sticky-row {
+  --sticky-collapsed-size: 56px;
+  --sticky-panel-gap: 12px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   width: 100%;
-  gap: 16px;
+  gap: var(--sticky-panel-gap);
 }
 
 .booking-forms-sticky-panel {
@@ -98,15 +101,30 @@
   overflow: visible;
 }
 
+.booking-forms-sticky-panel.is-expanded {
+  flex: 1 1 auto;
+  width: calc(100% - var(--sticky-collapsed-size) - var(--sticky-panel-gap));
+  min-width: 0;
+}
+
+.booking-forms-sticky-panel.is-collapsed {
+  flex: 0 0 var(--sticky-collapsed-size);
+  width: var(--sticky-collapsed-size) !important;
+}
+
 .booking-forms-sticky-panel .tg-booking-form-wrap {
   position: relative;
   z-index: 0;
   width: 100%;
   margin-top: 0 !important;
-  overflow: visible;
   background: transparent !important;
   border: 1px solid #e1e1e1;
   box-shadow: var(--bs-box-shadow, 0 0.5rem 1rem rgba(0, 0, 0, 0.15));
+  transition:
+    border-radius 0.35s ease-in-out,
+    padding 0.35s ease-in-out,
+    width 0.35s ease-in-out,
+    height 0.35s ease-in-out;
 }
 
 .booking-forms-sticky-panel .tg-booking-form-wrap::before {
@@ -128,19 +146,141 @@
   z-index: 1;
 }
 
+.booking-forms-sticky-panel.is-expanded .tg-booking-form-wrap {
+  border-radius: 50px !important;
+  padding: 3px;
+  overflow: visible;
+}
+
+.booking-forms-sticky-panel.is-collapsed .tg-booking-form-wrap {
+  border-radius: 50% !important;
+  padding: 6px !important;
+  width: var(--sticky-collapsed-size);
+  height: var(--sticky-collapsed-size);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.booking-forms-sticky-panel--search .banner-form-two-expandable-inner {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
+  gap: 6px;
+  min-width: min-content;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.booking-forms-sticky-panel--search
+  .banner-form-two-expandable-inner::-webkit-scrollbar {
+  display: none;
+}
+
+.booking-forms-sticky-panel--search .banner-form-two-expandable-inner > * {
+  flex: 0 0 auto;
+}
+
 .booking-forms-sticky-panel .banner-form-two-expandable {
   min-width: 0;
-  flex-shrink: 0;
 }
 
 .booking-forms-sticky-panel .banner-form-two-navbar-menu.banner-form-two-expandable {
+  overflow-x: auto;
+  overflow-y: hidden;
+  flex: 1 1 auto;
+  min-width: 0;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.booking-forms-sticky-panel
+  .banner-form-two-navbar-menu.banner-form-two-expandable::-webkit-scrollbar {
+  display: none;
+}
+
+.booking-forms-sticky-panel--navbar.is-expanded .banner-form-two-navbar-menu {
+  display: flex !important;
+  align-items: center;
+  justify-content: flex-start !important;
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.booking-forms-sticky-panel--navbar.is-expanded .tg-booking-form-wrap {
   overflow: hidden;
-  flex: 1;
-  flex-shrink: 1;
+}
+
+.booking-forms-sticky-panel--navbar.is-expanded .banner-form-two-navbar-menu li {
+  flex: 0 0 auto;
+  min-width: auto;
+}
+
+.booking-forms-sticky-panel--navbar.is-expanded .banner-form-two-navbar-group {
+  justify-content: flex-start !important;
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.booking-forms-sticky-panel--navbar.is-expanded .tg-booking-form-search-btn {
+  flex: 0 0 auto;
+  margin-left: 0 !important;
+}
+
+.booking-forms-sticky-panel--navbar.is-expanded .banner-form-two-navbar-link-icon {
+  display: flex !important;
+}
+
+.booking-forms-sticky-panel--search.is-expanded .banner-form-two-expandable--open,
+.booking-forms-sticky-panel--search.is-expanded .banner-form-two-expandable {
+  display: flex !important;
+  align-items: center;
+  overflow: visible;
 }
 
 .booking-forms-sticky-panel--search .banner-form-two-expandable {
+  display: none;
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.booking-forms-sticky-panel--search .banner-form-two-expandable--open {
+  display: flex !important;
+  align-items: center;
+  flex: 1 1 auto;
+  min-width: 0;
   overflow: visible;
+}
+
+.booking-forms-sticky-panel--search .banner-form-two-expandable--visible {
+  display: flex !important;
+  align-items: center;
+}
+
+.booking-forms-sticky-panel--search
+  form.banner-form-two
+  .tg-booking-form-input-group {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 6px;
+  width: 100%;
+  min-width: 0;
+}
+
+.booking-forms-sticky-panel--search .tg-booking-form-search-btn {
+  flex: 0 0 auto;
 }
 
 .booking-forms-sticky-panel--search .tg-booking-form-parent-inner {
@@ -153,32 +293,146 @@
   z-index: 20;
 }
 
-.booking-forms-sticky-panel--search .tg-booking-form-location-list.tg-list-open {
+.booking-forms-sticky-panel--search
+  .tg-booking-form-location-list.tg-list-open {
   z-index: 110;
 }
 
-.booking-forms-sticky-panel--navbar {
-  margin-right: auto;
+/* Dropdowns destino/pasajeros: escapar del overflow y posicionamiento */
+.booking-forms-sticky-panel--search .tg-booking-form-input-group:has(.tg-list-open),
+.booking-forms-sticky-panel--search .banner-form-two-expandable:has(.tg-list-open),
+.booking-forms-sticky-panel--search .banner-form-two-expandable--open:has(.tg-list-open),
+.booking-forms-sticky-panel--search
+  .banner-form-two-expandable--visible:has(.tg-list-open),
+.booking-forms-sticky-panel--search .banner-form-two-expandable-inner:has(.tg-list-open),
+.booking-forms-sticky-panel.is-expanded.booking-forms-sticky-panel--search
+  .tg-booking-form-wrap:has(.tg-list-open),
+form.banner-form-two .banner-form-two-expandable:has(.tg-list-open),
+form.banner-form-two .banner-form-two-expandable-inner:has(.tg-list-open) {
+  overflow: visible !important;
 }
 
-.booking-forms-sticky-panel--search {
-  margin-left: auto;
+.banner-form-two .tg-booking-form-parent-inner.tg-hero-quantity {
+  overflow: visible;
 }
 
-.booking-forms-sticky-panel.is-collapsed {
-  width: 56px !important;
-  height: 56px;
+.banner-form-two .tg-booking-form-destino-list,
+.banner-form-two .tg-booking-form-pasajeros-list {
+  width: min(320px, calc(100vw - 24px));
+  min-width: 220px;
 }
 
-.booking-forms-sticky-panel.is-collapsed .tg-booking-form-wrap {
-  border-radius: 50% !important;
-  padding: 6px !important;
-  width: 56px;
-  height: 56px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-sizing: border-box;
+.banner-form-two .tg-booking-form-location-list.tg-list-open {
+  opacity: 1 !important;
+  visibility: visible !important;
+  position: absolute;
+  top: 100%;
+  bottom: auto;
+  left: 0;
+  right: auto;
+  margin-top: 6px;
+  margin-bottom: 0;
+  z-index: 120;
+}
+
+@media (min-width: 575px) {
+  .tg-booking-form-sticky-bar .tg-booking-form-location-list,
+  .tg-booking-form-sticky-bar .tg-booking-form-location-list.tg-list-open,
+  .banner-form-two .tg-booking-form-location-list,
+  .banner-form-two .tg-booking-form-location-list.tg-list-open {
+    top: 100% !important;
+    bottom: auto !important;
+    margin-top: 6px !important;
+    margin-bottom: 0 !important;
+  }
+}
+
+.tg-booking-form-sticky-bar:has(.tg-list-open),
+.tg-booking-form-sticky-bar:has(.tg-list-open) .container,
+.tg-booking-form-sticky-bar:has(.tg-list-open) .booking-forms-sticky-row,
+.tg-booking-form-sticky-bar:has(.tg-list-open) .booking-forms-sticky-panel.is-expanded {
+  overflow: visible !important;
+}
+
+@media (max-width: 574px) {
+  .banner-form-two-picker-sheet-layer {
+    position: fixed;
+    inset: 0;
+    z-index: 220;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    pointer-events: none;
+  }
+
+  body:has(.tg-booking-form-sticky-bar) .banner-form-two-picker-sheet-layer {
+    padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px) + 8px);
+  }
+
+  .banner-form-two-picker-sheet-backdrop {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    border: none;
+    padding: 0;
+    margin: 0;
+    background: rgba(15, 23, 42, 0.45);
+    cursor: pointer;
+    pointer-events: auto;
+    animation: banner-form-two-picker-backdrop-in 0.28s ease-out;
+  }
+
+  .banner-form-two-picker-sheet--portal.banner-form-two-picker-sheet--open {
+    position: relative;
+    z-index: 1;
+    left: auto !important;
+    right: auto !important;
+    top: auto !important;
+    bottom: auto !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    box-sizing: border-box;
+    border-radius: 16px 16px 0 0;
+    pointer-events: auto;
+    padding: 16px 12px calc(16px + env(safe-area-inset-bottom, 0px));
+    background: var(--tg-common-white, #fff);
+    box-shadow: 0 -8px 32px rgba(15, 23, 42, 0.14);
+    opacity: 1 !important;
+    visibility: visible !important;
+    animation: banner-form-two-picker-sheet-in 0.3s ease-out;
+  }
+
+  .banner-form-two-picker-sheet--portal .scrool-height {
+    max-height: min(280px, 45vh);
+  }
+
+  .banner-form-two .banner-form-two-picker-sheet--inline {
+    display: none !important;
+  }
+}
+
+@keyframes banner-form-two-picker-backdrop-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes banner-form-two-picker-sheet-in {
+  from {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .booking-forms-sticky-panel.is-collapsed .banner-form-two-expandable {
@@ -193,7 +447,8 @@
   align-items: center;
 }
 
-.booking-forms-sticky-panel.is-collapsed.booking-forms-sticky-panel--search form.banner-form-two {
+.booking-forms-sticky-panel.is-collapsed.booking-forms-sticky-panel--search
+  form.banner-form-two {
   height: 100%;
   width: 100%;
   display: flex;
@@ -202,43 +457,64 @@
 
 .booking-forms-sticky-panel.is-collapsed .tg-booking-form-input-group,
 .booking-forms-sticky-panel.is-collapsed .banner-form-two-navbar-group {
-  position: relative;
   flex-wrap: nowrap !important;
   height: 100%;
   align-items: center !important;
-  justify-content: flex-start !important;
   width: 100%;
 }
 
-.booking-forms-sticky-panel.is-collapsed.booking-forms-sticky-panel--search .tg-booking-form-input-group {
+.booking-forms-sticky-panel.is-collapsed.booking-forms-sticky-panel--navbar
+  .banner-form-two-navbar-group {
+  justify-content: flex-start !important;
+}
+
+.booking-forms-sticky-panel.is-collapsed.booking-forms-sticky-panel--search
+  .tg-booking-form-input-group {
   justify-content: center !important;
 }
 
-.booking-forms-sticky-panel.is-collapsed .tg-booking-form-search-btn {
-  margin: 0 !important;
+.booking-forms-sticky-panel .tg-booking-form-search-btn {
+  margin: 0;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }
 
-.booking-forms-sticky-panel.is-collapsed .tg-booking-form-search-btn .btn {
+.booking-forms-sticky-panel--search.is-expanded .tg-booking-form-search-btn {
+  margin-left: auto;
+}
+
+.booking-forms-sticky-panel .banner-form-two-icon-btn {
   width: 44px;
   height: 44px;
+  min-width: 44px;
+  min-height: 44px;
   padding: 0;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  line-height: 1;
 }
-.tg-booking-add-input-field, .flatpickr-input{
+
+.booking-forms-sticky-panel .banner-form-two-icon-btn svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+.tg-booking-add-input-field,
+.flatpickr-input {
   background: none !important;
 }
 .container-780 {
-   width: 100%;
-    max-width: 820px!important;
-  }
+  width: 100%;
+  max-width: 820px !important;
+}
 
 /* BannerFormTwo */
-.banner-form-two .tg-booking-form-input-group.banner-form-two-collapsed .banner-form-two-expandable {
+.banner-form-two
+  .tg-booking-form-input-group.banner-form-two-collapsed
+  .banner-form-two-expandable {
   display: none !important;
 }
 
@@ -246,15 +522,17 @@
   justify-content: flex-end !important;
 }
 
-.banner-form-two.banner-form-two-navbar .tg-booking-form-input-group.banner-form-two-collapsed {
+.banner-form-two.banner-form-two-navbar
+  .tg-booking-form-input-group.banner-form-two-collapsed {
   justify-content: flex-start !important;
-    margin-left: -1px;
+  margin-left: -1px;
 }
 
 .banner-form-two-navbar-group {
   gap: 12px;
   flex-wrap: nowrap;
   width: 100%;
+  min-width: 0;
 }
 
 .banner-form-two-navbar-menu {
@@ -262,18 +540,18 @@
   flex-direction: row;
   align-items: center;
   flex-wrap: nowrap;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: 8px;
-  flex: 1;
-  width: 100%;
+  flex: 1 1 auto;
+  width: auto;
   min-width: 0;
 }
 
 .banner-form-two-navbar-menu li {
-  flex: 1;
+  flex: 0 0 auto;
   display: flex;
   justify-content: center;
-  min-width: 0;
+  min-width: auto;
 }
 
 .banner-form-two.banner-form-two-navbar .banner-form-two-navbar-link {
@@ -282,16 +560,39 @@
   min-width: 0;
   text-decoration: none;
   justify-content: center;
+  align-items: center;
+  gap: 6px;
   cursor: pointer;
-  transition: color 0.2s ease;
+  transition:
+    color 0.2s ease,
+    padding 0.2s ease,
+    width 0.2s ease;
 }
 
-.banner-form-two.banner-form-two-navbar .banner-form-two-navbar-link .tg-booking-title-value {
+.banner-form-two-navbar-link-icon {
+  display: none;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  color: var(--tg-grey-4);
+}
+
+.banner-form-two.banner-form-two-navbar
+  .banner-form-two-navbar-link:hover
+  .banner-form-two-navbar-link-icon {
+  color: var(--tg-common-black, #353844);
+}
+
+.banner-form-two.banner-form-two-navbar
+  .banner-form-two-navbar-link
+  .tg-booking-title-value {
   font-size: 13px;
   color: var(--tg-grey-4);
 }
 
-.banner-form-two.banner-form-two-navbar .banner-form-two-navbar-link:hover .tg-booking-title-value {
+.banner-form-two.banner-form-two-navbar
+  .banner-form-two-navbar-link:hover
+  .tg-booking-title-value {
   color: var(--tg-common-black, #353844);
 }
 
@@ -309,7 +610,9 @@
   box-sizing: border-box;
 }
 
-.banner-form-two .tg-booking-form-field-keyword .tg-booking-add-input-field.active {
+.banner-form-two
+  .tg-booking-form-field-keyword
+  .tg-booking-add-input-field.active {
   border: none;
   box-shadow: none;
   outline: none;
@@ -339,13 +642,19 @@
   min-width: 0;
 }
 
-.banner-form-two .tg-booking-form-parent-inner-range .tg-booking-add-input-date .input {
+.banner-form-two
+  .tg-booking-form-parent-inner-range
+  .tg-booking-add-input-date
+  .input {
   width: 230px;
   padding-left: 36px;
   padding-right: 18px;
 }
 
-.banner-form-two .tg-booking-form-parent-inner-range .tg-booking-add-input-date span {
+.banner-form-two
+  .tg-booking-form-parent-inner-range
+  .tg-booking-add-input-date
+  span {
   left: 14px;
   right: auto;
 }
@@ -404,4 +713,1119 @@
 .banner-form-two .tg-booking-form-pasajeros-list ul li.selected {
   background: var(--tg-grey-3);
   font-weight: 500;
+}
+
+ul.scrool-bar.scrool-height {
+  text-align: left;
+}
+
+ul.scrool-bar.scrool-height > li {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  text-align: left;
+  gap: 10px;
+}
+
+ul.scrool-bar.scrool-height > li > span {
+  text-align: left;
+  margin-left: 0;
+}
+
+.tg-booking-form-location-list ul.scrool-bar.scrool-height > li {
+  justify-content: flex-start !important;
+}
+
+/* BookingFormsSticky — responsive progresivo */
+@media (max-width: 1199px) {
+  .banner-form-two-navbar-group {
+    gap: 8px;
+  }
+
+  .banner-form-two-navbar-menu {
+    gap: 6px;
+  }
+
+  .booking-forms-sticky-panel--search .banner-form-two-expandable-inner {
+    gap: 6px;
+  }
+
+  .banner-form-two .tg-booking-add-input-field {
+    width: 110px;
+    padding: 8px 8px;
+    gap: 4px;
+  }
+
+  .banner-form-two .tg-booking-form-field-keyword .tg-booking-add-input-field {
+    width: 140px;
+  }
+
+  .banner-form-two
+    .tg-booking-form-parent-inner-range
+    .tg-booking-add-input-date
+    .input {
+    width: 200px;
+  }
+}
+
+@media (max-width: 1050px) {
+  .banner-form-two-navbar-menu {
+    gap: 4px;
+  }
+
+  .booking-forms-sticky-panel--search .banner-form-two-expandable-inner {
+    gap: 4px;
+  }
+
+  .banner-form-two .tg-booking-add-input-field {
+    width: 96px;
+    padding: 8px 6px;
+  }
+
+  .banner-form-two .tg-booking-form-field-keyword .tg-booking-add-input-field {
+    width: 120px;
+  }
+
+  .banner-form-two
+    .tg-booking-form-parent-inner-range
+    .tg-booking-add-input-date
+    .input {
+    width: 170px;
+    padding-right: 10px;
+  }
+}
+
+@media (max-width: 991px) {
+  .banner-form-two-navbar-menu {
+    gap: 2px;
+  }
+
+  .banner-form-two-navbar-menu li {
+    flex: 0 0 auto;
+  }
+
+  .banner-form-two-navbar-link-text {
+    display: none !important;
+  }
+
+  .banner-form-two-navbar-link-icon {
+    display: flex;
+  }
+
+  .banner-form-two.banner-form-two-navbar .banner-form-two-navbar-link {
+    width: 42px;
+    min-width: 42px;
+    max-width: 42px;
+    padding: 8px;
+    justify-content: center;
+  }
+
+  .booking-forms-sticky-panel--search .banner-form-two-expandable-inner {
+    gap: 4px;
+    justify-content: space-evenly;
+  }
+
+  .booking-forms-sticky-panel--search.is-expanded
+    form.banner-form-two
+    .tg-booking-form-input-group {
+    justify-content: flex-start !important;
+  }
+
+  .booking-forms-sticky-panel--search.is-expanded
+    .banner-form-two-expandable--open,
+  .booking-forms-sticky-panel--search.is-expanded
+    .banner-form-two-expandable {
+    flex: 1 1 auto;
+    min-width: 0;
+    max-width: none;
+  }
+
+  .booking-forms-sticky-panel--search.is-expanded
+    .banner-form-two-expandable-inner {
+    justify-content: space-evenly;
+    width: 100%;
+  }
+
+  .booking-forms-sticky-panel--search.is-expanded
+    .tg-booking-form-search-btn {
+    margin-left: 0 !important;
+    flex: 0 0 auto;
+  }
+
+  .banner-form-two .banner-form-two-field-text {
+    display: none !important;
+  }
+
+  .banner-form-two .tg-booking-add-input-field {
+    width: 42px;
+    min-width: 42px;
+    max-width: 42px;
+    padding: 8px;
+    justify-content: center;
+    gap: 0;
+  }
+
+  .banner-form-two .tg-booking-form-field-keyword .tg-booking-add-input-field {
+    width: 42px;
+    min-width: 42px;
+    max-width: 42px;
+  }
+
+  .banner-form-two
+    .tg-booking-form-field-keyword
+    .tg-booking-add-input-field.active {
+    width: 130px;
+    min-width: 130px;
+    max-width: 130px;
+    padding: 8px 10px;
+    gap: 6px;
+  }
+
+  .banner-form-two
+    .tg-booking-form-field-keyword
+    .tg-booking-add-input-field.active
+    .banner-form-two-field-text,
+  .banner-form-two
+    .tg-booking-form-field-keyword
+    .tg-booking-add-input-field.active
+    .banner-form-two-keyword-input {
+    display: block !important;
+  }
+
+  .banner-form-two
+    .tg-booking-form-parent-inner-range
+    .tg-booking-add-input-date {
+    position: relative;
+    width: 42px;
+    min-width: 42px;
+    max-width: 42px;
+    height: 42px;
+    padding: 0;
+    overflow: visible;
+  }
+
+  .banner-form-two
+    .tg-booking-form-parent-inner-range
+    .tg-booking-add-input-date
+    > span {
+    position: absolute;
+    inset: 0;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    left: 0 !important;
+    right: 0 !important;
+    top: 0 !important;
+    transform: none !important;
+    margin-top: 0 !important;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .banner-form-two
+    .tg-booking-form-parent-inner-range
+    .tg-booking-add-input-date
+    > span
+    svg {
+    width: 18px;
+    height: 18px;
+    color: var(--tg-grey-4);
+  }
+
+  .banner-form-two
+    .tg-booking-form-parent-inner-range
+    .tg-booking-add-input-date
+    .input,
+  .banner-form-two
+    .tg-booking-form-parent-inner-range
+    .tg-booking-add-input-date
+    .flatpickr-input {
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    opacity: 0;
+    color: transparent;
+    caret-color: transparent;
+    background: transparent !important;
+    z-index: 2;
+    cursor: pointer;
+  }
+
+  .banner-form-two .tg-booking-add-input-date > span {
+    margin-top: 0;
+  }
+}
+
+@media (max-width: 767px) {
+  .banner-form-two-navbar-group {
+    gap: 6px;
+  }
+
+  .banner-form-two.banner-form-two-navbar .banner-form-two-navbar-link {
+    width: 38px;
+    min-width: 38px;
+    max-width: 38px;
+    padding: 7px;
+  }
+
+  .banner-form-two .tg-booking-add-input-field,
+  .banner-form-two .tg-booking-form-field-keyword .tg-booking-add-input-field,
+  .banner-form-two
+    .tg-booking-form-parent-inner-range
+    .tg-booking-add-input-date,
+  .banner-form-two
+    .tg-booking-form-parent-inner-range
+    .tg-booking-add-input-date
+    .input {
+    width: 38px;
+    min-width: 38px;
+    max-width: 38px;
+  }
+
+  .banner-form-two
+    .tg-booking-form-field-keyword
+    .tg-booking-add-input-field.active {
+    width: 110px;
+    min-width: 110px;
+    max-width: 110px;
+  }
+}
+
+/* Tablet: iconos del menú y del buscador repartidos en el espacio (575px–990px) */
+@media (min-width: 575px) and (max-width: 990px) {
+  .banner-form-two-navbar
+    .tg-booking-form-input-group:not(.banner-form-two-collapsed) {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    width: 100%;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .banner-form-two-navbar
+    .tg-booking-form-input-group:not(.banner-form-two-collapsed)
+    > .tg-booking-form-search-btn {
+    display: flex !important;
+    flex: 1 1 auto !important;
+    flex-shrink: 1 !important;
+    min-width: 0;
+    width: 100%;
+    max-width: 100%;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 4px;
+    overflow: hidden;
+    margin: 0 !important;
+  }
+
+  .banner-form-two-navbar
+    .tg-booking-form-search-btn
+    > .banner-form-two-icon-btn {
+    flex: 0 0 auto;
+  }
+
+  .banner-form-two-navbar
+    .tg-booking-form-search-btn
+    > .banner-form-two-navbar-menu,
+  .banner-form-two-navbar
+    .tg-booking-form-search-btn
+    > .banner-form-two-navbar-menu.banner-form-two-expandable--visible {
+    display: flex !important;
+    flex: 1 1 auto;
+    min-width: 0;
+    width: auto;
+    max-width: none;
+    justify-content: space-evenly !important;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    gap: 4px;
+    scrollbar-width: none;
+  }
+
+  .banner-form-two-navbar
+    .tg-booking-form-search-btn
+    > .banner-form-two-navbar-menu
+    li {
+    flex: 1 1 0;
+    min-width: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .banner-form-two.banner-form-two-navbar .banner-form-two-navbar-link {
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+    flex-shrink: 1;
+    justify-content: center;
+  }
+
+  form.banner-form-two
+    .tg-booking-form-input-group:not(.banner-form-two-collapsed)
+    .banner-form-two-expandable--open,
+  form.banner-form-two
+    .tg-booking-form-input-group:not(.banner-form-two-collapsed)
+    .banner-form-two-expandable--visible {
+    display: flex !important;
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  form.banner-form-two
+    .tg-booking-form-input-group:not(.banner-form-two-collapsed)
+    .banner-form-two-expandable-inner {
+    display: flex !important;
+    flex: 1 1 auto;
+    min-width: 0;
+    width: 100%;
+    justify-content: space-evenly;
+    align-items: center;
+    overflow-x: hidden;
+    gap: 4px;
+  }
+
+  form.banner-form-two
+    .banner-form-two-expandable-inner
+    > *,
+  form.banner-form-two
+    .banner-form-two-expandable-inner
+    .tg-booking-form-parent-inner,
+  form.banner-form-two
+    .banner-form-two-expandable-inner
+    .tg-booking-form-parent-inner-range {
+    flex: 1 1 0;
+    min-width: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  form.banner-form-two .tg-booking-add-input-field,
+  form.banner-form-two
+    .tg-booking-form-field-keyword
+    .tg-booking-add-input-field,
+  form.banner-form-two
+    .tg-booking-form-parent-inner-range
+    .tg-booking-add-input-date {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 44px;
+    margin: 0 auto;
+  }
+
+  .booking-forms-sticky-panel--navbar.is-expanded .banner-form-two-navbar-group {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: flex-start !important;
+    align-items: center;
+    width: 100%;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .booking-forms-sticky-panel--navbar.is-expanded .tg-booking-form-search-btn {
+    display: flex !important;
+    flex: 1 1 auto !important;
+    flex-shrink: 1 !important;
+    min-width: 0;
+    width: 100%;
+    max-width: 100%;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 4px;
+    overflow: hidden;
+    margin: 0 !important;
+  }
+
+  .booking-forms-sticky-panel--navbar.is-expanded
+    .tg-booking-form-search-btn
+    > .banner-form-two-icon-btn {
+    flex: 0 0 auto;
+  }
+
+  .booking-forms-sticky-panel--navbar.is-expanded
+    .tg-booking-form-search-btn
+    > .banner-form-two-navbar-menu,
+  .booking-forms-sticky-panel--navbar.is-expanded
+    .tg-booking-form-search-btn
+    > .banner-form-two-navbar-menu.banner-form-two-expandable--visible {
+    display: flex !important;
+    flex: 1 1 auto;
+    min-width: 0;
+    max-width: none;
+    width: auto;
+    justify-content: space-evenly !important;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    gap: 4px;
+    scrollbar-width: none;
+  }
+
+  .booking-forms-sticky-panel--navbar.is-expanded
+    .tg-booking-form-search-btn
+    > .banner-form-two-navbar-menu
+    li {
+    flex: 1 1 0;
+    min-width: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .booking-forms-sticky-panel--navbar.is-expanded
+    .banner-form-two.banner-form-two-navbar
+    .banner-form-two-navbar-link {
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+    height: 42px;
+    padding: 8px 4px;
+    justify-content: center;
+    flex-shrink: 1;
+  }
+
+  .booking-forms-sticky-panel--navbar.is-expanded .tg-booking-form-wrap {
+    overflow: hidden;
+  }
+
+  .booking-forms-sticky-panel--search.is-expanded
+    form.banner-form-two
+    .tg-booking-form-input-group {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: flex-start !important;
+    width: 100%;
+    min-width: 0;
+    gap: 6px;
+  }
+
+  .booking-forms-sticky-panel--search.is-expanded .banner-form-two-expandable--open,
+  .booking-forms-sticky-panel--search.is-expanded .banner-form-two-expandable,
+  .booking-forms-sticky-panel--search.is-expanded
+    .banner-form-two-expandable--visible {
+    display: flex !important;
+    flex: 1 1 auto;
+    min-width: 0;
+    max-width: none !important;
+    overflow: hidden;
+  }
+
+  .booking-forms-sticky-panel--search.is-expanded .banner-form-two-expandable-inner {
+    display: flex !important;
+    flex: 1 1 auto;
+    min-width: 0;
+    width: 100%;
+    max-width: none;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    justify-content: space-evenly;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .booking-forms-sticky-panel--search.is-expanded
+    .banner-form-two-expandable-inner
+    > * {
+    flex: 1 1 0;
+    min-width: 0;
+    flex-shrink: 1;
+  }
+
+  .booking-forms-sticky-panel--search
+    .banner-form-two-expandable-inner
+    .tg-booking-form-parent-inner,
+  .booking-forms-sticky-panel--search
+    .banner-form-two-expandable-inner
+    .tg-booking-form-parent-inner-range {
+    flex: 1 1 0;
+    min-width: 0;
+    width: auto;
+    overflow: visible;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .booking-forms-sticky-panel--search.is-expanded
+    .banner-form-two-expandable-inner
+    .tg-booking-form-parent-inner
+    > .tg-booking-add-input-field,
+  .booking-forms-sticky-panel--search.is-expanded
+    .banner-form-two-form-field-dates
+    .tg-booking-add-input-date {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 44px;
+    height: 42px;
+    margin: 0 auto;
+  }
+
+  .booking-forms-sticky-panel--search.is-expanded .tg-booking-form-search-btn {
+    flex: 0 0 42px;
+    width: 42px;
+    margin: 0 0 0 auto !important;
+    align-self: center;
+  }
+
+  .booking-forms-sticky-panel--search.is-expanded
+    .banner-form-two
+    .tg-booking-form-field-keyword
+    .tg-booking-add-input-field.active {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 130px;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 574px) {
+  /* Barra completa (navbar + search) fija abajo */
+  .tg-booking-form-sticky-bar {
+    position: fixed !important;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: auto !important;
+    margin-top: 0;
+    padding-top: 8px;
+    padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+    z-index: 105;
+    width: 100%;
+    overflow: visible;
+    background: linear-gradient(
+      to top,
+      rgba(255, 255, 255, 0.98) 75%,
+      rgba(255, 255, 255, 0)
+    );
+  }
+
+  body:has(.tg-booking-form-sticky-bar) {
+    padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .tg-booking-form-sticky-bar .container,
+  .tg-booking-form-sticky-bar .row,
+  .tg-booking-form-sticky-bar .booking-forms-sticky-row {
+    overflow: visible;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .tg-booking-form-sticky-bar .container {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .tg-booking-form-sticky-bar .row {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .tg-booking-form-sticky-bar .col-12 {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .booking-forms-sticky-row {
+    --sticky-collapsed-size: 48px;
+    --sticky-panel-gap: 6px;
+    --sticky-expanded-width: calc(
+      100% - var(--sticky-collapsed-size) - var(--sticky-panel-gap)
+    );
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    gap: var(--sticky-panel-gap);
+  }
+
+  .booking-forms-sticky-panel {
+    flex: 0 0 auto;
+    max-width: 100%;
+    transition: width 0.35s ease-in-out, flex 0.35s ease-in-out;
+  }
+
+  /* Menú abierto: barra del menú + lupa circular a la derecha = 100% */
+  .booking-forms-sticky-row.is-navbar-active
+    .booking-forms-sticky-panel--navbar.is-expanded {
+    flex: 1 1 var(--sticky-expanded-width);
+    width: var(--sticky-expanded-width) !important;
+    min-width: 0;
+  }
+
+  .booking-forms-sticky-row.is-navbar-active
+    .booking-forms-sticky-panel--search.is-collapsed {
+    flex: 0 0 var(--sticky-collapsed-size);
+    width: var(--sticky-collapsed-size) !important;
+  }
+
+  /* Formulario abierto: casa circular + barra del formulario = 100% */
+  .booking-forms-sticky-row.is-search-active
+    .booking-forms-sticky-panel--navbar.is-collapsed {
+    flex: 0 0 var(--sticky-collapsed-size);
+    width: var(--sticky-collapsed-size) !important;
+  }
+
+  .booking-forms-sticky-row.is-search-active
+    .booking-forms-sticky-panel--search.is-expanded {
+    flex: 1 1 var(--sticky-expanded-width);
+    width: var(--sticky-expanded-width) !important;
+    min-width: 0;
+  }
+
+  .booking-forms-sticky-panel.is-expanded {
+    overflow: visible;
+  }
+
+  .booking-forms-sticky-panel.is-collapsed {
+    flex: 0 0 var(--sticky-collapsed-size);
+    width: var(--sticky-collapsed-size) !important;
+    z-index: 2;
+  }
+
+  .booking-forms-sticky-panel.is-expanded .tg-booking-form-wrap,
+  .booking-forms-sticky-panel.is-expanded .tg-booking-form-item,
+  .booking-forms-sticky-panel.is-expanded form.banner-form-two,
+  .booking-forms-sticky-panel.is-expanded .tg-booking-form-input-group,
+  .booking-forms-sticky-panel.is-expanded .banner-form-two-navbar-group {
+    overflow: visible;
+    height: auto !important;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .booking-forms-sticky-panel.is-collapsed .banner-form-two-expandable,
+  .booking-forms-sticky-panel.is-collapsed .banner-form-two-navbar-menu {
+    display: none !important;
+  }
+
+  .booking-forms-sticky-panel.is-collapsed .tg-booking-form-wrap {
+    width: var(--sticky-collapsed-size);
+    height: var(--sticky-collapsed-size);
+    padding: 4px !important;
+  }
+
+  .booking-forms-sticky-panel .banner-form-two-icon-btn {
+    width: 38px;
+    height: 38px;
+    min-width: 38px;
+    min-height: 38px;
+  }
+
+  /* Menú abierto: casa a la izquierda, ítems en scroll */
+  .booking-forms-sticky-panel--navbar.is-expanded .banner-form-two-navbar-group {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: flex-start !important;
+    align-items: center;
+    width: 100%;
+    min-width: 0;
+    gap: 4px;
+    overflow: hidden;
+  }
+
+  .booking-forms-sticky-panel--navbar.is-expanded .tg-booking-form-search-btn {
+    flex: 0 0 auto;
+    margin: 0 !important;
+  }
+
+  .booking-forms-sticky-panel--navbar.is-expanded .banner-form-two-navbar-menu,
+  .booking-forms-sticky-panel--navbar.is-expanded
+    .banner-form-two-navbar-menu.banner-form-two-expandable--visible {
+    display: flex !important;
+    flex: 1 1 auto;
+    min-width: 0;
+    max-width: none;
+    width: 100%;
+    justify-content: space-evenly !important;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    gap: 2px;
+  }
+
+  .booking-forms-sticky-panel--navbar.is-expanded .banner-form-two-navbar-link-icon {
+    display: flex !important;
+  }
+
+  .booking-forms-sticky-panel--navbar.is-expanded .banner-form-two-navbar-menu li {
+    flex: 1 1 0;
+    min-width: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .booking-forms-sticky-panel--navbar.is-expanded
+    .banner-form-two.banner-form-two-navbar
+    .banner-form-two-navbar-link {
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+    height: 36px;
+    padding: 6px 2px;
+    justify-content: center;
+  }
+
+  .booking-forms-sticky-panel--navbar.is-expanded .tg-booking-form-wrap {
+    overflow: hidden;
+  }
+
+  /* Formulario abierto: campos en scroll + lupa fija a la derecha */
+  .booking-forms-sticky-panel--search.is-expanded
+    form.banner-form-two
+    .tg-booking-form-input-group {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: flex-start !important;
+    width: 100%;
+    min-width: 0;
+    gap: 4px;
+  }
+
+  .booking-forms-sticky-panel--search.is-expanded .banner-form-two-expandable--open,
+  .booking-forms-sticky-panel--search.is-expanded .banner-form-two-expandable,
+  .booking-forms-sticky-panel--search.is-expanded
+    .banner-form-two-expandable--visible {
+    display: flex !important;
+    flex: 1 1 auto;
+    min-width: 0;
+    max-width: none !important;
+    overflow: hidden;
+  }
+
+  .booking-forms-sticky-panel--search.is-expanded .banner-form-two-expandable-inner {
+    display: flex !important;
+    flex: 1 1 auto;
+    min-width: 0;
+    width: 100%;
+    max-width: none;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    justify-content: space-evenly;
+    align-items: center;
+    gap: 2px;
+  }
+
+  .booking-forms-sticky-panel--search.is-expanded .tg-booking-form-search-btn {
+    flex: 0 0 38px;
+    width: 38px;
+    margin: 0 0 0 auto !important;
+    align-self: center;
+  }
+
+  .booking-forms-sticky-panel.is-expanded .banner-form-two-expandable--visible {
+    display: flex !important;
+    align-items: center;
+  }
+
+  .booking-forms-sticky-panel
+    .banner-form-two-navbar-menu.banner-form-two-expandable {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .banner-form-two-navbar-group {
+    gap: 4px;
+    min-width: 0;
+    width: 100%;
+  }
+
+  .banner-form-two.banner-form-two-navbar .banner-form-two-navbar-link {
+    width: 36px;
+    min-width: 36px;
+    max-width: 36px;
+    padding: 6px;
+    flex-shrink: 0;
+  }
+
+  .booking-forms-sticky-panel--navbar.is-expanded
+    .banner-form-two.banner-form-two-navbar
+    .banner-form-two-navbar-link {
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+    flex-shrink: 1;
+  }
+
+  .banner-form-two-navbar-link-icon svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .booking-forms-sticky-panel--search
+    form.banner-form-two
+    .tg-booking-form-input-group {
+    gap: 4px;
+  }
+
+  .banner-form-two .tg-booking-add-input-field,
+  .banner-form-two .tg-booking-form-field-keyword .tg-booking-add-input-field,
+  .banner-form-two
+    .tg-booking-form-parent-inner-range
+    .tg-booking-add-input-date {
+    width: 36px;
+    min-width: 36px;
+    max-width: 36px;
+    height: 36px;
+    padding: 0;
+    box-sizing: border-box;
+    justify-content: center;
+    align-items: center;
+    gap: 0;
+  }
+
+  .banner-form-two .tg-booking-add-input-field span.location {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+  }
+
+  .banner-form-two
+    .tg-booking-form-parent-inner-range
+    .tg-booking-add-input-date {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: visible;
+  }
+
+  .banner-form-two
+    .tg-booking-form-parent-inner-range
+    .tg-booking-add-input-date
+    span {
+    position: absolute;
+    inset: 0;
+    left: 0 !important;
+    right: 0 !important;
+    top: 0 !important;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    transform: none !important;
+    margin-top: 0 !important;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .banner-form-two
+    .tg-booking-form-parent-inner-range
+    .tg-booking-add-input-date
+    > span
+    svg {
+    width: 18px;
+    height: 18px;
+    color: var(--tg-grey-4);
+  }
+
+  .banner-form-two
+    .tg-booking-form-parent-inner-range
+    .tg-booking-add-input-date
+    .input,
+  .banner-form-two
+    .tg-booking-form-parent-inner-range
+    .tg-booking-add-input-date
+    .flatpickr-input {
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    opacity: 0;
+    color: transparent;
+    caret-color: transparent;
+    background: transparent !important;
+    z-index: 2;
+    cursor: pointer;
+  }
+
+  .booking-forms-sticky-panel--search
+    .banner-form-two-expandable-inner
+    .tg-booking-form-parent-inner,
+  .booking-forms-sticky-panel--search
+    .banner-form-two-expandable-inner
+    .tg-booking-form-parent-inner-range {
+    flex: 1 1 0;
+    min-width: 0;
+    width: auto;
+    overflow: visible;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .booking-forms-sticky-panel--search.is-expanded
+    .banner-form-two-expandable-inner
+    .tg-booking-form-parent-inner
+    > .tg-booking-add-input-field,
+  .booking-forms-sticky-panel--search.is-expanded
+    .banner-form-two-form-field-dates
+    .tg-booking-add-input-date {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 40px;
+    margin: 0 auto;
+  }
+
+  .booking-forms-sticky-panel--search
+    .banner-form-two-expandable-inner
+    .tg-booking-add-input-field,
+  .booking-forms-sticky-panel--search
+    .banner-form-two-form-field-dates
+    .tg-booking-add-input-date {
+    background: var(--tg-grey-3, #f0f0f0) !important;
+    border-radius: 8px;
+  }
+
+  .banner-form-two .tg-booking-form-field-destino span.location img,
+  .banner-form-two .tg-booking-form-field-pasajeros span.location img,
+  .banner-form-two .tg-booking-form-field-keyword span.location img {
+    width: 20px !important;
+    height: 20px !important;
+    max-width: 20px;
+    max-height: 20px;
+    object-fit: contain;
+  }
+
+  .booking-forms-sticky-panel--search.is-expanded
+    .banner-form-two-expandable-inner
+    > * {
+    flex: 1 1 0;
+    min-width: 0;
+    flex-shrink: 1;
+  }
+
+  .booking-forms-sticky-panel--search.is-expanded
+    .banner-form-two-expandable-inner
+    .tg-booking-add-input-field,
+  .booking-forms-sticky-panel--search.is-expanded
+    .banner-form-two-form-field-dates
+    .tg-booking-add-input-date {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 40px;
+    height: 36px;
+    margin: 0 auto;
+  }
+
+  .banner-form-two
+    .tg-booking-form-field-keyword
+    .tg-booking-add-input-field.active {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 72px;
+    padding: 0 6px;
+    gap: 4px;
+  }
+
+  .banner-form-two
+    .tg-booking-form-field-keyword
+    .banner-form-two-keyword-trigger--sheet-open {
+    background: var(--tg-grey-3, #f0f0f0);
+  }
+}
+
+/* Sheet emergente de palabra clave (<575px) */
+.banner-form-two-keyword-sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 220;
+  display: flex;
+  flex-direction: column;
+  pointer-events: auto;
+}
+
+.banner-form-two-keyword-sheet-backdrop {
+  position: absolute;
+  inset: 0;
+  border: none;
+  padding: 0;
+  margin: 0;
+  background: rgba(15, 23, 42, 0.45);
+  cursor: pointer;
+}
+
+.banner-form-two-keyword-sheet-panel {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  background: #fff;
+  padding: calc(10px + env(safe-area-inset-top, 0px)) 12px 14px;
+  box-shadow: 0 8px 32px rgba(15, 23, 42, 0.14);
+  animation: banner-form-two-keyword-sheet-in 0.28s ease-out;
+}
+
+.banner-form-two-keyword-sheet-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 6px 8px 6px 12px;
+  background: var(--tg-grey-3, #f3f4f6);
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+}
+
+.banner-form-two-keyword-sheet-icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+}
+
+.banner-form-two-keyword-sheet-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 36px;
+  border: none;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.2;
+  color: var(--tg-common-black, #353844);
+  outline: none;
+  box-shadow: none;
+}
+
+.banner-form-two-keyword-sheet-input::placeholder {
+  color: var(--tg-grey-4, #9ca3af);
+}
+
+.banner-form-two-keyword-sheet-cancel {
+  flex-shrink: 0;
+  border: none;
+  background: transparent;
+  padding: 6px 4px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--tg-theme-primary, #6f42c1);
+  cursor: pointer;
+}
+
+@keyframes banner-form-two-keyword-sheet-in {
+  from {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

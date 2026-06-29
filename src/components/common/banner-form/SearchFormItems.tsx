@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import Flatpickr from "react-flatpickr";
 import Image from "next/image";
 import { format } from "date-fns";
@@ -12,6 +13,10 @@ import {
   type ItemSearch,
 } from "@/redux/slices/searchSlice";
 import { resetView } from "@/redux/slices/viewSlice";
+import { useDelayedPanelItems } from "@/hooks/useDelayedPanelItems";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
+
+const MOBILE_SEARCH_MQ = "(max-width: 574px)";
 
 const destinoOptions = [
   { value: "3", label: "Europa", icon: "/assets/img/icons/Europa.png" },
@@ -95,15 +100,12 @@ const buildBusquedaPayload = (
 
 interface FormItemsProps {
   searchOpen: boolean;
-  showItems?: boolean;
   onToggle: () => void;
 }
 
-const SearchFormItems = ({
-  searchOpen,
-  showItems = searchOpen,
-  onToggle,
-}: FormItemsProps) => {
+const SearchFormItems = ({ searchOpen, onToggle }: FormItemsProps) => {
+  const formFieldsVisible = useDelayedPanelItems(searchOpen);
+  const isMobileSearchUI = useMediaQuery(MOBILE_SEARCH_MQ);
   const dispatch = useAppDispatch();
   const router = useRouter();
   const [location, setLocation] = useState(false);
@@ -114,6 +116,8 @@ const SearchFormItems = ({
   const [dateRange, setDateRange] = useState<Date[]>(getDefaultDateRange);
   const [keyword, setKeyword] = useState("");
   const [keywordEditing, setKeywordEditing] = useState(false);
+  const [keywordSheetOpen, setKeywordSheetOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const [formData, setFormData] = useState<SearchFormData>(() =>
     buildSearchFormData(
       DEFAULT_DESTINO_ID,
@@ -126,7 +130,36 @@ const SearchFormItems = ({
   const locationRef = useRef<HTMLDivElement>(null);
   const passengersRef = useRef<HTMLDivElement>(null);
   const keywordInputRef = useRef<HTMLInputElement>(null);
+  const keywordSheetInputRef = useRef<HTMLInputElement>(null);
   const flatpickrRef = useRef<any>(null);
+
+  const closeKeywordSheet = (saveValue = true) => {
+    if (saveValue && keywordSheetInputRef.current) {
+      setKeyword(keywordSheetInputRef.current.value.trim());
+    }
+    setKeywordSheetOpen(false);
+  };
+
+  const openKeywordSheet = () => {
+    setLocation(false);
+    setPassengers(false);
+    setKeywordEditing(false);
+    setKeywordSheetOpen(true);
+  };
+
+  const handleKeywordTriggerClick = () => {
+    setLocation(false);
+    setPassengers(false);
+
+    if (isMobileSearchUI) {
+      openKeywordSheet();
+      return;
+    }
+
+    if (!keywordEditing) {
+      setKeywordEditing(true);
+    }
+  };
 
   const submitSearch = async (keywordOverride?: string) => {
     setLocation(false);
@@ -179,6 +212,70 @@ const SearchFormItems = ({
 
     submitSearch();
   };
+
+  useEffect(() => {
+    if (!formFieldsVisible) {
+      setLocation(false);
+      setPassengers(false);
+      setKeywordEditing(false);
+      setKeywordSheetOpen(false);
+    }
+  }, [formFieldsVisible]);
+
+  const closeMobilePickers = () => {
+    setLocation(false);
+    setPassengers(false);
+  };
+
+  const mobilePickerOpen =
+    isMobileSearchUI && mounted && (location || passengers);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    const shouldLockScroll =
+      keywordSheetOpen || (isMobileSearchUI && (location || passengers));
+
+    document.body.style.overflow = shouldLockScroll ? "hidden" : "";
+
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [keywordSheetOpen, isMobileSearchUI, location, passengers]);
+
+  useEffect(() => {
+    if (!keywordSheetOpen) return;
+
+    const frameId = window.requestAnimationFrame(() => {
+      keywordSheetInputRef.current?.focus();
+    });
+
+    return () => window.cancelAnimationFrame(frameId);
+  }, [keywordSheetOpen]);
+
+  useEffect(() => {
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+
+      if (keywordSheetOpen) {
+        closeKeywordSheet(true);
+        return;
+      }
+
+      if (isMobileSearchUI && (location || passengers)) {
+        closeMobilePickers();
+      }
+    };
+
+    if (!keywordSheetOpen && !(isMobileSearchUI && (location || passengers))) {
+      return;
+    }
+
+    document.addEventListener("keydown", handleEscape);
+    return () => document.removeEventListener("keydown", handleEscape);
+  }, [keywordSheetOpen, isMobileSearchUI, location, passengers]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -238,21 +335,44 @@ const SearchFormItems = ({
   const selectedDestinationData = destinoOptions.find(
     (dest) => dest.value === selectedDestinoId,
   );
-
   const selectedPasajerosData = pasajerosOptions.find(
     (option) => option.value === selectedPasajerosId,
   );
 
+  const renderDestinoOptions = () =>
+    destinoOptions.map((dest) => (
+      <li
+        key={dest.value}
+        className={selectedDestinoId === dest.value ? "selected" : ""}
+        onClick={() => handleSelectDestination(dest.value)}
+      >
+        <Image src={dest.icon} width={30} height={30} alt={dest.label} />
+        <span>{dest.label}</span>
+      </li>
+    ));
+
+  const renderPasajerosOptions = () =>
+    pasajerosOptions.map((option) => (
+      <li
+        key={option.value}
+        className={selectedPasajerosId === option.value ? "selected" : ""}
+        onClick={() => handleSelectPassengers(option.value)}
+      >
+        <Image src={option.icon} width={30} height={30} alt={option.label} />
+        <span>{option.label}</span>
+      </li>
+    ));
+
   return (
     <form className="banner-form-two" onSubmit={(e) => e.preventDefault()}>
       <div
-        className={`tg-booking-form-input-group d-flex align-items-center justify-content-between${searchOpen ? "" : " banner-form-two-collapsed"}`}
+        className={`tg-booking-form-input-group d-flex align-items-center${searchOpen ? "" : " banner-form-two-collapsed"}`}
       >
         <div
-          className="banner-form-two-expandable d-flex align-items-center justify-content-between flex-grow-1 min-w-0"
-          style={{ display: showItems && searchOpen ? "flex" : "none" }}
-          aria-hidden={!searchOpen || !showItems}
+          className={`banner-form-two-expandable min-w-0${searchOpen && formFieldsVisible ? " banner-form-two-expandable--visible" : ""}${searchOpen ? " banner-form-two-expandable--open" : ""}`}
+          aria-hidden={!searchOpen || !formFieldsVisible}
         >
+        <div className="banner-form-two-expandable-inner d-flex align-items-center">
         <div
           ref={locationRef}
           className="tg-booking-form-parent-inner tg-hero-quantity p-relative"
@@ -260,6 +380,7 @@ const SearchFormItems = ({
           <div
             onClick={() => {
               setPassengers(false);
+              setKeywordSheetOpen(false);
               setLocation((prev) => !prev);
             }}
             className={`tg-booking-add-input-field tg-booking-form-field-destino tg-booking-quantity-toggle ${location ? "active" : ""}`}
@@ -268,8 +389,8 @@ const SearchFormItems = ({
               {selectedDestinationData ? (
                 <Image
                   src={selectedDestinationData.icon}
-                  width={30}
-                  height={30}
+                  width={35}
+                  height={35}
                   alt={selectedDestinationData.label}
                 />
               ) : (
@@ -297,33 +418,19 @@ const SearchFormItems = ({
                 </svg>
               )}
             </span>
-            <span className="tg-booking-title-value">
+            <span className="tg-booking-title-value banner-form-two-field-text">
               {selectedDestinationData?.label ?? "Destino"}
             </span>
           </div>
-          <div
-            className={`tg-booking-form-location-list tg-booking-form-destino-list tg-booking-quantity-active ${location ? "tg-list-open" : ""}`}
-          >
-            <ul className="scrool-bar scrool-height pr-5">
-              {destinoOptions.map((dest) => (
-                <li
-                  key={dest.value}
-                  className={
-                    selectedDestinoId === dest.value ? "selected" : ""
-                  }
-                  onClick={() => handleSelectDestination(dest.value)}
-                >
-                  <Image
-                    src={dest.icon}
-                    width={30}
-                    height={30}
-                    alt={dest.label}
-                  />
-                  <span>{dest.label}</span>
-                </li>
-              ))}
-            </ul>
-          </div>{" "}
+          {!isMobileSearchUI && (
+            <div
+              className={`tg-booking-form-location-list tg-booking-form-destino-list tg-booking-quantity-active banner-form-two-picker-sheet banner-form-two-picker-sheet--inline${location ? " tg-list-open banner-form-two-picker-sheet--open" : ""}`}
+            >
+              <ul className="scrool-bar scrool-height pr-5">
+                {renderDestinoOptions()}
+              </ul>
+            </div>
+          )}{" "}
         </div>
 
         <div
@@ -333,6 +440,7 @@ const SearchFormItems = ({
           <div
             onClick={() => {
               setLocation(false);
+              setKeywordSheetOpen(false);
               setPassengers((prev) => !prev);
             }}
             className={`tg-booking-add-input-field tg-booking-form-field-pasajeros tg-booking-quantity-toggle ${passengers ? "active" : ""}`}
@@ -345,36 +453,22 @@ const SearchFormItems = ({
                 alt="Pasajeros"
               />
             </span>
-            <span className="tg-booking-title-value">
+            <span className="tg-booking-title-value banner-form-two-field-text">
               {selectedPasajerosData?.label ?? "Pasajeros"}
             </span>
           </div>
-          <div
-            className={`tg-booking-form-location-list tg-booking-form-pasajeros-list tg-booking-quantity-active ${passengers ? "tg-list-open" : ""}`}
-          >
-            <ul className="scrool-bar scrool-height pr-5">
-              {pasajerosOptions.map((option) => (
-                <li
-                  key={option.value}
-                  className={
-                    selectedPasajerosId === option.value ? "selected" : ""
-                  }
-                  onClick={() => handleSelectPassengers(option.value)}
-                >
-                  <Image
-                    src={option.icon}
-                    width={30}
-                    height={30}
-                    alt={option.label}
-                  />
-                  <span>{option.label}</span>
-                </li>
-              ))}
-            </ul>
-          </div>{" "}
+          {!isMobileSearchUI && (
+            <div
+              className={`tg-booking-form-location-list tg-booking-form-pasajeros-list tg-booking-quantity-active banner-form-two-picker-sheet banner-form-two-picker-sheet--inline${passengers ? " tg-list-open banner-form-two-picker-sheet--open" : ""}`}
+            >
+              <ul className="scrool-bar scrool-height pr-5">
+                {renderPasajerosOptions()}
+              </ul>
+            </div>
+          )}{" "}
         </div>
 
-        <div className="tg-booking-form-parent-inner-range">
+        <div className="tg-booking-form-parent-inner-range banner-form-two-form-field-dates">
           <div className="tg-booking-add-input-date p-relative">
             <span>
               <svg
@@ -415,23 +509,30 @@ const SearchFormItems = ({
 
         <div className="tg-booking-form-parent-inner tg-booking-form-field-keyword p-relative">
           <div
-            onClick={() => {
-              setLocation(false);
-              setPassengers(false);
-              if (!keywordEditing) setKeywordEditing(true);
+            onClick={handleKeywordTriggerClick}
+            className={`tg-booking-add-input-field banner-form-two-keyword-trigger${keywordEditing && !isMobileSearchUI ? " active" : ""}${keywordSheetOpen ? " banner-form-two-keyword-trigger--sheet-open" : ""}`}
+            role="button"
+            tabIndex={0}
+            aria-label="Buscar por palabra clave"
+            aria-expanded={keywordSheetOpen || keywordEditing}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                handleKeywordTriggerClick();
+              }
             }}
-            className={`tg-booking-add-input-field ${keywordEditing ? "active" : ""}`}
           >
             <span className="location">
               <Image
                 src="/assets/img/icons/Buscar.png"
-                width={30}
-                height={30}
-                alt="Buscar"
+                width={20}
+                height={20}
+                alt=""
+                aria-hidden="true"
               />
             </span>
   
-            {keywordEditing ? (
+            {!isMobileSearchUI && keywordEditing ? (
               <input
                 ref={keywordInputRef}
                 type="text"
@@ -447,29 +548,30 @@ const SearchFormItems = ({
                 }}
               />
             ) : (
-              <span className="tg-booking-title-value">
+              <span className="tg-booking-title-value banner-form-two-field-text">
                 {keyword || "Palabra clave"}
               </span>
             )}
           </div>
         </div>
         </div>
+        </div>
 
         <div className="tg-booking-form-search-btn flex-shrink-0">
           <button
-            className="btn btn-dark rounded-circle p-2"
+            className="btn btn-dark rounded-circle banner-form-two-icon-btn"
             type="button"
             onClick={handleSearchButtonClick}
             aria-label={searchOpen ? "Buscar" : "Mostrar buscador"}
           >
-            <span>
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 14 14"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 14 14"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true"
+            >
                 <g clipPath="url(#clip0_53_103)">
                   <path
                     d="M13.2218 13.2222L10.5188 10.5192M12.1959 6.48705C12.1959 9.6402 9.63977 12.1963 6.48662 12.1963C3.33348 12.1963 0.777344 9.6402 0.777344 6.48705C0.777344 3.3339 3.33348 0.777771 6.48662 0.777771C9.63977 0.777771 12.1959 3.3339 12.1959 6.48705Z"
@@ -485,10 +587,91 @@ const SearchFormItems = ({
                   </clipPath>
                 </defs>
               </svg>
-            </span>
           </button>
         </div>
       </div>
+
+      {mobilePickerOpen &&
+        createPortal(
+          <div
+            className="banner-form-two-picker-sheet-layer"
+            role="dialog"
+            aria-modal="true"
+            aria-label={location ? "Seleccionar destino" : "Seleccionar pasajeros"}
+          >
+            <button
+              type="button"
+              className="banner-form-two-picker-sheet-backdrop"
+              aria-label="Cerrar selección"
+              onClick={closeMobilePickers}
+            />
+            <div
+              className={`banner-form-two tg-booking-form-location-list banner-form-two-picker-sheet banner-form-two-picker-sheet--portal banner-form-two-picker-sheet--open${location ? " tg-booking-form-destino-list" : " tg-booking-form-pasajeros-list"} tg-list-open`}
+            >
+              <ul className="scrool-bar scrool-height pr-5">
+                {location ? renderDestinoOptions() : renderPasajerosOptions()}
+              </ul>
+            </div>
+          </div>,
+          document.body,
+        )}
+
+      {mounted &&
+        isMobileSearchUI &&
+        keywordSheetOpen &&
+        createPortal(
+          <div
+            className="banner-form-two-keyword-sheet"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Buscar por palabra clave"
+          >
+            <button
+              type="button"
+              className="banner-form-two-keyword-sheet-backdrop"
+              aria-label="Cerrar búsqueda"
+              onClick={() => closeKeywordSheet(true)}
+            />
+            <div className="banner-form-two-keyword-sheet-panel">
+              <div className="banner-form-two-keyword-sheet-bar">
+                <span className="banner-form-two-keyword-sheet-icon">
+                  <Image
+                    src="/assets/img/icons/Buscar.png"
+                    width={22}
+                    height={22}
+                    alt=""
+                    aria-hidden="true"
+                  />
+                </span>
+                <input
+                  ref={keywordSheetInputRef}
+                  type="search"
+                  enterKeyHint="search"
+                  className="banner-form-two-keyword-sheet-input"
+                  defaultValue={keyword}
+                  placeholder="Palabra clave"
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      const value = e.currentTarget.value.trim();
+                      setKeyword(value);
+                      closeKeywordSheet(false);
+                      submitSearch(value);
+                    }
+                  }}
+                />
+                <button
+                  type="button"
+                  className="banner-form-two-keyword-sheet-cancel"
+                  onClick={() => closeKeywordSheet(true)}
+                >
+                  Cancelar
+                </button>
+              </div>
+            </div>
+          </div>,
+          document.body,
+        )}
     </form>
   );
 };
