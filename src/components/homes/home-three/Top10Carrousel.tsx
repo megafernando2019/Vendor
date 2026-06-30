@@ -99,7 +99,10 @@ const Top10Carrousel = () => {
   };
 
   return (
-    <div className="tg-listing-area pt-20tg-grey-bg">
+    <div
+      className="tg-listing-area pt-20tg-grey-bg include-bg"
+      style={{ backgroundImage: "url(/assets/img/top-10/Top-10.png)" }}
+    >
       <div className="container">
         <div className="row align-items-end">
           <div className="col-lg-12">

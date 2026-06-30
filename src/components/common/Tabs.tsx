@@ -19,7 +19,6 @@ export const Tabs = ({
         : "overflow-y-auto"
     }`;
 
-  // Los estilos que Bootstrap no cubre nativamente
   const panelStyle = panelClassName
     ? undefined
     : {
@@ -32,7 +31,7 @@ export const Tabs = ({
 
   return (
     <div className="mw-100 w-100">
-      <div className="d-flex flex-wrap border-bottom border-secondary-subtle">
+      <div className="d-flex flex-wrap border-secondary-subtle">
         {items.map((item) => {
           const isActive = active === item.key;
           return (
@@ -41,12 +40,12 @@ export const Tabs = ({
               onClick={() => setActive(item.key)}
               style={
                 isActive
-                  ? { borderColor: "#7f10d3", borderBottomColor: "white", color: "#7f10d3", marginBottom: "-1px" }
+                  ? { borderColor: "white", borderBottomColor: "#7f10d3", color: "#7f10d3", marginBottom: "-1px" }
                   : undefined
               }
-              className={`px-3 py-2 rounded-top border ${
+              className={`px-3 py-2${
                 isActive
-                  ? "bg-white fw-medium position-relative z-2"
+                  ? "bg-white border-purple fw-medium position-relative z-2"
                   : "bg-purple-100 border-transparent text-secondary"
               }`}
             >
