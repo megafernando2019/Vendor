@@ -1,4 +1,5 @@
-import type { FAQData } from "@/src/interfaces/ui";
+import type { FAQData, FAQQuestions } from "@/src/interfaces/ui";
+
 const DEFAULT_FAQ_DATA: FAQData = {
   Iconos: {
     General: "/icons/General.svg",
@@ -41,5 +42,30 @@ const DEFAULT_FAQ_DATA: FAQData = {
       "Aceptamos transferencia bancaria y depósito en las cuentas autorizadas de Mega Travel. Para algunos productos también está disponible pago con tarjeta corporativa previa autorización. Los comprobantes deben enviarse dentro del plazo indicado en tu confirmación.",
   },
 };
+
+export interface FaqAccordionItem {
+  id: number;
+  title: string;
+  desc: string;
+}
+
+export function flattenFaqData(data: FAQData): FaqAccordionItem[] {
+  const categories = Object.keys(data).filter((key) => key !== "Iconos");
+  let id = 1;
+  const items: FaqAccordionItem[] = [];
+
+  for (const category of categories) {
+    const questions = data[category] as FAQQuestions;
+    for (const [question, answer] of Object.entries(questions)) {
+      items.push({
+        id: id++,
+        title: question,
+        desc: answer,
+      });
+    }
+  }
+
+  return items;
+}
 
 export default DEFAULT_FAQ_DATA;

@@ -98,25 +98,24 @@ const ofertasCarrousel = () => {
   };
 
   return (
-    <div className="tg-listing-area pb-100 tg-grey-bg">
+    <div className="tg-listing-area tg-grey-bg"
+    style={{ backgroundImage: "url(/assets/img/ofertas/Ofertas.png)" }}
+>
       <div className="container">
         <div className="row align-items-end">
-          <div className="col-lg-12">
-            <div className="tg-location-section-title mb-40">
-              <h2
-                className="mb-15 text-capitalize wow fadeInUp text-center text-purple text-morado-custom"
-                data-wow-delay=".5s"
-                data-wow-duration=".9s"
-              >
-                ofertas
-              </h2>
+          <div className="col-lg-12 py-20">
+            <div className="tg-location-section-title">    
               <h5
-                className="mb-15 wow fadeInUp text-hortencia text-center text-secondary"
+                className="mb-15 wow fadeInUp text-hortencia text-left text-purple text-morado-custom"
                 data-wow-delay=".4s"
                 data-wow-duration=".9s"
               >
-                Viajes con crucero incluido
+                Promociones y precios especiales
               </h5>
+<h2 className="text-bold wow fadeInUp text-left text-dark fs-1" data-wow-delay=".5s" data-wow-duration=".9s">
+  OFERTAS
+</h2>          
+
             </div>
           </div>
           <div className="col-9"></div>

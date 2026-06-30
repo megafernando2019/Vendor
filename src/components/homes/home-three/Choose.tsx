@@ -19,13 +19,31 @@ const Choose = () => {
          <Image className="tg-chose-shape p-absolute" src={choose_shape} alt="shape" />
          <div className="container">
             <div className="row">
+               <div className="col-lg-7">
+                  <div className="tg-chose-right mb-25">
+                     <div className="row">
+                        <div className="col-lg-3 col-md-6">
+                           <div className="tg-chose-thumb">
+                              <Image className="tg-chose-shape-2 mb-30 ml-15 d-none d-lg-block" src={choose_shape2} alt="shape" />
+                              <Image className="w-100 wow fadeInRight" data-wow-delay=".4s" data-wow-duration=".9s" src={choose_thumb} alt="chose" />
+                           </div>
+                        </div>
+                        <div className="col-lg-9 col-md-6">
+                           <div className="tg-chose-thumb-inner p-relative">
+                              <div className="tg-chose-thumb-2 wow fadeInRight" data-wow-delay=".5s" data-wow-duration=".9s">
+                                 <Image className="w-100 tg-round-15" src={choose_thumb2} alt="chose" />
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
                <div className="col-lg-5">
                   <div className="tg-chose-content mb-25">
                      <div className="tg-chose-section-title mb-30">
-
-                        <h2 className="mb-15 text-capitalize wow fadeInUp text-purple text-morado-custom" data-wow-delay=".4s" data-wow-duration=".9s">Centro de Aprendizaje</h2>
-                        <h5 className="mb-15 wow fadeInUp text-hortencia" data-wow-delay=".3s" data-wow-duration=".1s">Encuentra todo lo que quieras saber sobre Vendor</h5>                       
- <p className="text-capitalize wow fadeInUp" data-wow-delay=".5s" data-wow-duration=".9s">Accede a recursos especializados para dominar la plataforma, resolver dudas rápidamente y potenciar las ventas de tu agencia.</p>
+                        <h5 className="mb-15 wow fadeInUp text-hortencia text-purple text-morado-custom" data-wow-delay=".3s" data-wow-duration=".1s">Encuentra todo lo que quieras saber sobre Vendor</h5>                       
+                        <h2 className="mb-15 text-capitalize wow fadeInUp text-dark" data-wow-delay=".4s" data-wow-duration=".9s">Centro de Aprendizaje</h2> 
+                         <p className="text-capitalize wow fadeInUp" data-wow-delay=".5s" data-wow-duration=".9s">Accede a recursos especializados para dominar la plataforma, resolver dudas rápidamente y potenciar las ventas de tu agencia.</p>
                      </div>
                      <div className="tg-chose-list-wrap">
                         <div className="tg-chose-list d-flex mb-15 wow fadeInUp" data-wow-delay=".6s" data-wow-duration=".9s"  style={{ alignItems: 'center' }}>
@@ -61,28 +79,7 @@ const Choose = () => {
                   </div>
                </div>
 
-               <div className="col-lg-7">
-                  <div className="tg-chose-right mb-25">
-                     <div className="row">
-                        <div className="col-lg-3 col-md-6">
-                           <div className="tg-chose-thumb">
-                              <Image className="tg-chose-shape-2 mb-30 ml-15 d-none d-lg-block" src={choose_shape2} alt="shape" />
-                              <Image className="w-100 wow fadeInRight" data-wow-delay=".4s" data-wow-duration=".9s" src={choose_thumb} alt="chose" />
-                           </div>
-                        </div>
-                        <div className="col-lg-9 col-md-6">
-                           <div className="tg-chose-thumb-inner p-relative">
-                              <div className="tg-chose-thumb-2 wow fadeInRight" data-wow-delay=".5s" data-wow-duration=".9s">
-                                 <Image className="w-100 tg-round-15" src={choose_thumb2} alt="chose" />
-                              </div>
-                              <div className="tg-chose-big-text d-none d-xl-block">
-                                 <h2 data-text="CONOCE">CONOCE</h2>
-                              </div>
-                           </div>
-                        </div>
-                     </div>
-                  </div>
-               </div>
+
             </div>
          </div>
       </div>

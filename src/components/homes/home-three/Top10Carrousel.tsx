@@ -75,7 +75,7 @@ const Top10Carrousel = () => {
         const top10 = (json.data?.top_10 ?? []) as RecommendationItem[];
         const { cards: mappedCards } = mapTop10Recommendations(top10);
         setCards(mappedCards);
-        console.log(mappedCards)
+        console.log(mappedCards);
       } catch {
         if (!cancelled) {
           setError("Error al consultar recomendaciones");
@@ -100,27 +100,27 @@ const Top10Carrousel = () => {
 
   return (
     <div
-      className="tg-listing-area pt-20tg-grey-bg include-bg"
-      style={{ backgroundImage: "url(/assets/img/top-10/Top-10.png)" }}
+      className="tg-listing-area tg-grey-bg include-bg"
+      style={{ backgroundImage: "url(/assets/img/Top-10/Top-10.png)" }}
     >
       <div className="container">
         <div className="row align-items-end">
           <div className="col-lg-12">
             <div className="tg-location-section-title mb-40">
-              <h2
-                className="mb-15 text-capitalize wow fadeInUp text-center text-purple text-morado-custom"
-                data-wow-delay=".5s"
-                data-wow-duration=".9s"
-              >
-                Top 10
-              </h2>
               <h5
-                className="mb-15 wow fadeInUp text-hortencia text-center text-secondary"
+                className="mb-15 mt-15 wow fadeInUp text-hortencia text-left text-purple text-morado-custom"
                 data-wow-delay=".4s"
                 data-wow-duration=".9s"
               >
                 Los tours más populares y mejor valorados
               </h5>
+              <h2
+                className="text-bold wow fadeInUp text-left text-dark fs-1"
+                data-wow-delay=".5s"
+                data-wow-duration=".9s"
+              >
+                TOP 10
+              </h2>
             </div>
           </div>
           <div className="col-9"></div>
@@ -172,7 +172,6 @@ const Top10Carrousel = () => {
                 modules={[Autoplay, Navigation]}
                 className="swiper-container tg-listing-slider-2 p-relative fix"
               >
-          
                 {cards.map((item) => (
                   <SwiperSlide key={item.id} className="swiper-slide">
                     <div className="tg-listing-card-item tg-listing-5-card-item mb-25">
@@ -230,8 +229,7 @@ const Top10Carrousel = () => {
                           <span className="badge rounded bg-morado-custom">
                             MT{item.clv}
                           </span>
-                            {item.title}
-
+                          {item.title}
                         </h6>
                         <span className="tg-listing-card-duration-map d-inline-block mb-10">
                           <svg
@@ -282,8 +280,6 @@ const Top10Carrousel = () => {
                           </div>
                         </div>
                       </div>
-
-
                     </div>
                   </SwiperSlide>
                 ))}

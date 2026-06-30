@@ -1,16 +1,10 @@
 "use client";
 import BookingFormsSticky from "../../common/banner-form/BookingFormsSticky";
 import Banner from "./Banner";
-import Blog from "./Blog";
 import Choose from "./Choose";
-import CtaThree from "./Cta";
-import CtaTwo from "./CtaTwo";
-import Location from "./Location";
 import Testimonial from "./Testimonial";
 import dynamic from "next/dynamic";
 import FooterThree from "@/layouts/footers/FooterThree";
-import Cta from "../home-one/Cta";
-const ListingNuevo = dynamic(() => import("./ListingNuevo"), { ssr: false });
 const Top10Carrousel = dynamic(() => import("./Top10Carrousel"), {
   ssr: false,
 });
@@ -36,9 +30,9 @@ const HomeThree = () => {
           </div>
           <Top10Carrousel />
           <CrucerosCarrousel />
-          <Choose />
+          <Choose/>
           <OfertasCarrousel/>
-          <Testimonial />
+          <Testimonial/>
         </div>
       </main>
       <FooterThree />

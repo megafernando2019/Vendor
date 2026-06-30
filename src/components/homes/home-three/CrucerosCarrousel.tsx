@@ -98,25 +98,24 @@ const CrucerosCarrousel = () => {
   };
 
   return (
-    <div className="tg-listing-area pt-135 pb-105 tg-grey-bg">
+    <div
+      className="tg-listing-area tg-grey-bg include-bg"
+      style={{ backgroundImage: "url(/assets/img/cruceros/Cruceros.png)" }}
+    >
       <div className="container">
         <div className="row align-items-end">
           <div className="col-lg-12">
             <div className="tg-location-section-title mb-40">
-              <h2
-                className="mb-15 text-capitalize wow fadeInUp text-center text-purple text-morado-custom"
-                data-wow-delay=".5s"
-                data-wow-duration=".9s"
-              >
-                Cruceros
-              </h2>
               <h5
-                className="mb-15 wow fadeInUp text-hortencia text-center text-secondary"
+                className="mb-15 wow fadeInUp text-hortencia text-left text-purple text-morado-custom"
                 data-wow-delay=".4s"
                 data-wow-duration=".9s"
               >
                 Viajes con crucero incluido
               </h5>
+<h2 className="text-bold wow fadeInUp text-left text-dark fs-1" data-wow-delay=".5s" data-wow-duration=".9s">
+  CRUCEROS
+</h2>
             </div>
           </div>
           <div className="col-9"></div>
