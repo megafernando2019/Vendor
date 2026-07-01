@@ -1,14 +1,34 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import NabvarFormItems from "./NabvarFormItems";
 import SearchFormItems from "./SearchFormItems";
-import { useDelayedPanelItems } from "@/hooks/useDelayedPanelItems";
+import {
+  PANEL_RESIZE_MS,
+  useDelayedPanelItems,
+} from "@/hooks/useDelayedPanelItems";
 
 const BookingFormsSticky = () => {
   const [navbarOpen, setNavbarOpen] = useState(true);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [searchVisuallyCollapsed, setSearchVisuallyCollapsed] = useState(true);
   const navbarShowItems = useDelayedPanelItems(navbarOpen);
+
+  useEffect(() => {
+    if (searchOpen) {
+      setSearchVisuallyCollapsed(false);
+      return;
+    }
+
+    const timeoutId = setTimeout(
+      () => setSearchVisuallyCollapsed(true),
+      PANEL_RESIZE_MS
+    );
+    return () => clearTimeout(timeoutId);
+  }, [searchOpen]);
+
+  const searchPanelExpanded = searchOpen || !searchVisuallyCollapsed;
+  const searchPanelClosing = !searchOpen && !searchVisuallyCollapsed;
 
   const toggleNavbar = () => {
     setNavbarOpen((prev) => {
@@ -36,7 +56,7 @@ const BookingFormsSticky = () => {
         <div className="row justify-content-center">
           <div className="col-12 col-lg-10">
             <div
-              className={`booking-forms-sticky-row d-flex justify-content-between${
+              className={`booking-forms-sticky-row${
                 searchOpen ? " is-search-active" : ""
               }${navbarOpen ? " is-navbar-active" : ""}`}
             >
@@ -55,7 +75,7 @@ const BookingFormsSticky = () => {
               </div>
 
               <div
-                className={`booking-forms-sticky-panel booking-forms-sticky-panel--search${searchOpen ? " is-expanded" : " is-collapsed"}`}
+                className={`booking-forms-sticky-panel booking-forms-sticky-panel--search${searchPanelExpanded ? " is-expanded" : " is-collapsed"}${searchPanelClosing ? " is-closing" : ""}`}
               >
                 <div className="tg-booking-form-wrap">
                   <div className="tg-booking-form-item">

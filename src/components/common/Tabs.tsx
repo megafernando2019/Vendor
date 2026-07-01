@@ -13,10 +13,8 @@ export const Tabs = ({
 
   const panelClasses =
     panelClassName ??
-    `p-3 border border-top-0 rounded-bottom position-relative overflow-x-hidden ${
-      panelUsesInnerScroll
-        ? "overflow-y-auto"
-        : "overflow-y-auto"
+    `app-tabs__panel p-3 border border-top-0 rounded-bottom position-relative overflow-x-hidden ${
+      panelUsesInnerScroll ? "overflow-y-auto" : "overflow-y-auto"
     }`;
 
   const panelStyle = panelClassName
@@ -30,24 +28,18 @@ export const Tabs = ({
       };
 
   return (
-    <div className="mw-100 w-100">
-      <div className="d-flex flex-wrap border-secondary-subtle">
+    <div className="app-tabs mw-100 w-100">
+      <div className="app-tabs__list d-flex flex-wrap justify-content-center" role="tablist">
         {items.map((item) => {
           const isActive = active === item.key;
           return (
             <button
               key={item.key}
+              type="button"
+              role="tab"
+              aria-selected={isActive}
               onClick={() => setActive(item.key)}
-              style={
-                isActive
-                  ? { borderColor: "white", borderBottomColor: "#7f10d3", color: "#7f10d3", marginBottom: "-1px" }
-                  : undefined
-              }
-              className={`px-3 py-2${
-                isActive
-                  ? "bg-white border-purple fw-medium position-relative z-2"
-                  : "bg-purple-100 border-transparent text-secondary"
-              }`}
+              className={`app-tabs__trigger${isActive ? " app-tabs__trigger--active" : ""}`}
             >
               {item.label}
             </button>

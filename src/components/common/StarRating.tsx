@@ -1,13 +1,17 @@
 import React from "react";
 import type { StarRatingProps } from "@/src/interfaces/ui";
 
-const StarRating: React.FC<StarRatingProps> = ({ rating }) => {
+const StarRating: React.FC<StarRatingProps> = ({
+  rating,
+  className = "",
+  starClassName = "fs-4",
+}) => {
   const stars = [];
 
   for (let i = 1; i <= 5; i++) {
     if (rating >= i) {
       stars.push(
-        <span key={i} className="fs-4" style={{ color: "#facc15" }}>
+        <span key={i} className={starClassName} style={{ color: "#facc15" }}>
           ★
         </span>
       );
@@ -15,7 +19,7 @@ const StarRating: React.FC<StarRatingProps> = ({ rating }) => {
       stars.push(
         <span
           key={i}
-          className="fs-4 position-relative d-inline-block"
+          className={`${starClassName} position-relative d-inline-block`}
           style={{ color: "#facc15" }}
         >
           <span style={{ color: "#d1d5db" }}>★</span>
@@ -29,7 +33,7 @@ const StarRating: React.FC<StarRatingProps> = ({ rating }) => {
       );
     } else {
       stars.push(
-        <span key={i} className="fs-4" style={{ color: "#d1d5db" }}>
+        <span key={i} className={starClassName} style={{ color: "#d1d5db" }}>
           ★
         </span>
       );
@@ -37,7 +41,9 @@ const StarRating: React.FC<StarRatingProps> = ({ rating }) => {
   }
 
   return (
-    <div className="d-flex align-items-center justify-content-start gap-2">
+    <div
+      className={`d-flex align-items-center justify-content-start gap-2 ${className}`.trim()}
+    >
       <div className="d-flex">{stars}</div>
     </div>
   );

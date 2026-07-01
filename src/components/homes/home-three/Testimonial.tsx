@@ -23,17 +23,11 @@ const setting = {
   pagination: false,
   navigation: false,
   breakpoints: {
-    "1200": {
+    "1400": {
       slidesPerView: 3,
     },
     "992": {
       slidesPerView: 2,
-    },
-    "768": {
-      slidesPerView: 2,
-    },
-    "576": {
-      slidesPerView: 1,
     },
     "0": {
       slidesPerView: 1,
@@ -100,7 +94,7 @@ const TestimonialSlider = ({ items }: { items: TestimonialItem[] }) => (
   <Swiper
     {...setting}
     modules={[Autoplay]}
-    className="swiper-container tg-testimonial-slider fix"
+    className="swiper-container tg-testimonial-slider tg-testimonial-section__slider fix"
   >
     {items.map((item) => (
       <SwiperSlide key={item.id} className="swiper-slide">
@@ -130,12 +124,17 @@ const tabItems = [
 
 const Testimonial = () => {
   return (
-    <div className="tg-listing-area tg-grey-bg include-bg pt-105"
-      style={{ backgroundImage: "url(/assets/img/nuestros-clientes/avion.png)", backgroundRepeat: "no-repeat",  backgroundSize: "100% 100%",}}
->
+    <div
+      className="tg-testimonial-section tg-listing-area tg-grey-bg include-bg pt-105"
+      style={{
+        backgroundImage: "url(/assets/img/nuestros-clientes/avion.png)",
+        backgroundRepeat: "no-repeat",
+        backgroundSize: "100% 100%",
+      }}
+    >
       <div className="container">
-        <div className="row">
-          <div className="col-lg-12">
+        <div className="row justify-content-center">
+          <div className="col-12">
             <div className="tg-location-section-title text-center mb-30">
               <h2
                 className="mb-15 text-capitalize wow fadeInUp text-purple text-morado-custom"
@@ -153,13 +152,10 @@ const Testimonial = () => {
               </h5>
             </div>
           </div>
-          <div className="col-12 col-md-4 col-lg-3">
-          </div>
-          <div className="col-12 col-md-8 col-lg-8"
-
->
+          <div className="col-2"></div>
+          <div className="col-10">
             <Tabs
-              panelClassName="p-4 min-h-120 border-t-[0.5px] border-[#7f10d3] rounded-b-md relative z-0 -mt-px overflow-x-hidden"
+              panelClassName="app-tabs__panel app-tabs__panel--testimonial"
               defaultActiveKey="asesores"
               items={tabItems}
               layout="horizontal"

@@ -178,7 +178,6 @@ const Top10Carrousel = () => {
                       <div className="tg-listing-card-thumb tg-listing-2-card-thumb mb-15 fix p-relative">
                         <Link href={`/tour-details?mt=${item.clv}`}>
                           {item.thumb ? (
-                            // eslint-disable-next-line @next/next/no-img-element
                             <img
                               className="tg-card-border w-100"
                               src={item.thumb}

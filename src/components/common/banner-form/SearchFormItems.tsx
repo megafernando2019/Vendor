@@ -366,7 +366,7 @@ const SearchFormItems = ({ searchOpen, onToggle }: FormItemsProps) => {
   return (
     <form className="banner-form-two" onSubmit={(e) => e.preventDefault()}>
       <div
-        className={`tg-booking-form-input-group d-flex align-items-center${searchOpen ? "" : " banner-form-two-collapsed"}`}
+        className={`tg-booking-form-input-group align-items-center${searchOpen ? "" : " banner-form-two-collapsed"}`}
       >
         <div
           className={`banner-form-two-expandable min-w-0${searchOpen && formFieldsVisible ? " banner-form-two-expandable--visible" : ""}${searchOpen ? " banner-form-two-expandable--open" : ""}`}

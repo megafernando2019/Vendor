@@ -33,7 +33,7 @@ const NabvarFormItems = ({
       aria-label="Menú principal"
     >
       <div
-        className={`tg-booking-form-input-group d-flex align-items-center banner-form-two-navbar-group${searchOpen ? "" : " banner-form-two-collapsed"}`}
+        className={`tg-booking-form-input-group align-items-center banner-form-two-navbar-group${searchOpen ? "" : " banner-form-two-collapsed"}`}
       >
         <div className="tg-booking-form-search-btn flex-shrink-0">
           <button

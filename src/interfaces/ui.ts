@@ -12,6 +12,8 @@ export interface SearchInputProps {
 
 export interface StarRatingProps {
   rating: number;
+  className?: string;
+  starClassName?: string;
 }
 
 export interface TabItem {

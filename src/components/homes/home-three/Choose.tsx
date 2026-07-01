@@ -1,37 +1,38 @@
 import Image from "next/image"
-import Choose4 from "@/svg/home-one/Choose4"
-import Choose5 from "@/svg/home-one/Choose5"
 import Button from "@/components/common/Button"
+import Choose5 from "@/svg/home-one/Choose5"
+import Choose4 from "@/svg/home-one/Choose4"
 
-import choose_shape from "@/assets/img/chose/chose-shape-2.png"
-import choose_shape2 from "@/assets/img/chose/chose-shape.png"
-import choose_thumb from "@/assets/img/chose/chose.png"
-import choose_thumb2 from "@/assets/img/chose/chose-2.jpg"
-import iconAsesores from "@/assets/img/centro-aprendizaje/Asesores.png"
-import iconPlataforma from "@/assets/img/centro-aprendizaje/Plataforma.png"
-import iconProgramas from "@/assets/img/centro-aprendizaje/Programas.png"
-import Link from "next/link"
-
+import img_1 from "@/assets/img/chose/chose-3/bridge.png"
+import img_2 from "@/assets/img/chose/chose-3/map.png"
+import img_3 from "@/assets/img/chose/chose-3/circle-text.png"
+import img_4 from "@/assets/img/chose/chose-3/star.png"
+import img_5 from "@/assets/img/chose/chose-3/thumb-2.jpg"
+import img_6 from "@/assets/img/chose/chose-3/thumb-1.jpg"
 
 const Choose = () => {
    return (
-      <div className="tg-chose-area p-relative pt-135 pb-100">
-         <Image className="tg-chose-shape p-absolute" src={choose_shape} alt="shape" />
+      <div className="tg-chose-area p-relative z-index-1  tg-grey-bg pt-115 pb-90">
+         <Image className="tg-chose-3-shape p-absolute" src={img_1} alt="shape" />
          <div className="container">
             <div className="row">
                <div className="col-lg-7">
-                  <div className="tg-chose-right mb-25">
+                  <div className="tg-chose-3-left p-relative mb-35">
+                     <Image className="tg-chose-3-map" src={img_2} alt="map" />
                      <div className="row">
-                        <div className="col-lg-3 col-md-6">
-                           <div className="tg-chose-thumb">
-                              <Image className="tg-chose-shape-2 mb-30 ml-15 d-none d-lg-block" src={choose_shape2} alt="shape" />
-                              <Image className="w-100 wow fadeInRight" data-wow-delay=".4s" data-wow-duration=".9s" src={choose_thumb} alt="chose" />
+                        <div className="col-lg-4 col-md-6 col-sm-6">
+                           <div className="tg-chose-3-thumb">
+                              <div className="tg-chose-3-rounded p-relative mb-20">
+                                 <Image className="rotate-infinite-2" src={img_3} alt="shape" />
+                                 <Image className="tg-chose-3-star" src={img_4} alt="shape" />
+                              </div>
+                              <Image className="main-thumb" src={img_5} alt="" />
                            </div>
                         </div>
-                        <div className="col-lg-9 col-md-6">
-                           <div className="tg-chose-thumb-inner p-relative">
-                              <div className="tg-chose-thumb-2 wow fadeInRight" data-wow-delay=".5s" data-wow-duration=".9s">
-                                 <Image className="w-100 tg-round-15" src={choose_thumb2} alt="chose" />
+                        <div className="col-lg-8 col-md-6 col-sm-6">
+                           <div className="tg-chose-3-thumb-inner p-relative">
+                              <div className="tg-chose-3-thumb-2">
+                                 <Image className="w-100 tg-round-15" src={img_6} alt="" />
                               </div>
                            </div>
                         </div>
@@ -41,45 +42,41 @@ const Choose = () => {
                <div className="col-lg-5">
                   <div className="tg-chose-content mb-25">
                      <div className="tg-chose-section-title mb-30">
-                        <h5 className="mb-15 wow fadeInUp text-hortencia text-purple text-morado-custom" data-wow-delay=".3s" data-wow-duration=".1s">Encuentra todo lo que quieras saber sobre Vendor</h5>                       
-                        <h2 className="mb-15 text-capitalize wow fadeInUp text-dark" data-wow-delay=".4s" data-wow-duration=".9s">Centro de Aprendizaje</h2> 
-                         <p className="text-capitalize wow fadeInUp" data-wow-delay=".5s" data-wow-duration=".9s">Accede a recursos especializados para dominar la plataforma, resolver dudas rápidamente y potenciar las ventas de tu agencia.</p>
+                        <h5 className="tg-section-subtitle mb-15 wow fadeInUp" data-wow-delay=".3s" data-wow-duration=".1s">Dream Your Next Trip</h5>
+                        <h2 className="mb-15 text-capitalize wow fadeInUp" data-wow-delay=".4s" data-wow-duration=".9s">discover when even<br /> you want to go</h2>
+                        <p className="text-capitalize wow fadeInUp" data-wow-delay=".5s" data-wow-duration=".9s">Are you tired of the typical tourist destinations and looking
+                           to step out of your comfort zone? Adventure travel may be
+                           the perfect solution for you! Here are four.</p>
                      </div>
                      <div className="tg-chose-list-wrap">
-                        <div className="tg-chose-list d-flex mb-15 wow fadeInUp" data-wow-delay=".6s" data-wow-duration=".9s"  style={{ alignItems: 'center' }}>
-                           <span className="tg-chose-list-icon mr-20"> 
-                               <Image src={iconAsesores} width={80} height={80} alt="asesores"/>
-                           </span>
-                           <div className="tg-chose-list-content">
-                              <h4 className="tg-chose-list-title mb-5">Asesores</h4>
-                           </div>
-                        </div>
-                        <div className="tg-chose-list d-flex mb-25 wow fadeInUp" data-wow-delay=".7s" data-wow-duration=".9s"  style={{ alignItems: 'center' }}>
-                           <span className="tg-chose-list-icon mr-20">                                                                                
-                               <Image src={iconPlataforma} width={80} height={80} alt="asesores"/>
-                           </span>
-                           <div className="tg-chose-list-content">
-                              <h4 className="tg-chose-list-title mb-5">Plataforma</h4>
-                           </div>
-                        </div>
-                       <div className="tg-chose-list d-flex mb-25 wow fadeInUp" data-wow-delay=".7s" data-wow-duration=".9s"  style={{ alignItems: 'center' }}>
+                        <div className="tg-chose-list d-flex mb-15 wow fadeInUp" data-wow-delay=".6s" data-wow-duration=".9s">
                            <span className="tg-chose-list-icon mr-20">
-                               <Image src={iconProgramas} width={80} height={80} alt="asesores"/>
+                              <Choose4 />
                            </span>
                            <div className="tg-chose-list-content">
-                              <h4 className="tg-chose-list-title mb-5">Programas</h4>
+                              <h4 className="tg-chose-list-title mb-5">Best Travel Agency</h4>
+                              <p>Are you tired of the typical tourist destinatio
+                                 and looking  step out of your comfort.</p>
+                           </div>
+                        </div>
+                        <div className="tg-chose-list d-flex mb-40 wow fadeInUp" data-wow-delay=".7s" data-wow-duration=".9s">
+                           <span className="tg-chose-list-icon mr-20">
+                              <Choose5 />
+                           </span>
+                           <div className="tg-chose-list-content">
+                              <h4 className="tg-chose-list-title mb-5">Secure Journey With Us</h4>
+                              <p>Are you tired of the typical tourist destinatio
+                                 and looking  step out of your comfort.</p>
                            </div>
                         </div>
                         <div className="tg-chose-btn wow fadeInUp" data-wow-delay=".8s" data-wow-duration=".9s">
-                           <Link href="/faqs" className="tg-btn tg-btn-switch-animation">
-                              <Button text="Comienza" />
-                           </Link>
+                           <a href="contact.html" className="tg-btn tg-btn-switch-animation">
+                              <Button text="Book Your Trip" />
+                           </a>
                         </div>
                      </div>
                   </div>
                </div>
-
-
             </div>
          </div>
       </div>

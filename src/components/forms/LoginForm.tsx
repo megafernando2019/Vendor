@@ -7,6 +7,13 @@ import { useRouter } from "next/navigation";
 import { persistor } from "@/src/redux/store";
 import { clearPreLoginStorage } from "@/src/utils/clearPreLoginStorage";
 
+function getSafeCallbackUrl(url: string | null): string {
+  if (!url || !url.startsWith("/") || url.startsWith("//")) {
+    return "/";
+  }
+  return url;
+}
+
 export default function LoginForm() {
   const router = useRouter();
   const [credentials, setCredentials] = useState({
@@ -57,7 +64,10 @@ export default function LoginForm() {
 
       if (res.ok && data?.success) {
         toast.success("Bienvenido");
-        router.push("/");
+        const callbackUrl = new URLSearchParams(window.location.search).get(
+          "callbackUrl"
+        );
+        router.push(getSafeCallbackUrl(callbackUrl));
         return;
       }
 

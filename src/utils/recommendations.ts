@@ -23,6 +23,8 @@ export type RecommendationCard = {
   price: number;
   currency: string;
   departuresCount: number;
+  days: number;
+  nights: number;
 };
 
 const EMPTY_RECOMMENDATIONS: RecommendationsData = {
@@ -193,6 +195,8 @@ export function mapRecommendationToCard(
     price: item.total_from,
     currency: resolveRecommendationCurrency(item),
     departuresCount: item.departures_count ?? 0,
+    days: item.days,
+    nights: item.nights,
   };
 }
 
@@ -216,7 +220,9 @@ export function buildCountryFilterGroups(
   }));
 }
 
-export function mapTop10Recommendations(items: RecommendationItem[]): {
+export type RecommendationSectionKey = keyof RecommendationsData;
+
+export function mapRecommendationItemsToCards(items: RecommendationItem[]): {
   cards: RecommendationCard[];
   groups: RecommendationGroupTab[];
 } {
@@ -225,4 +231,12 @@ export function mapTop10Recommendations(items: RecommendationItem[]): {
     cards,
     groups: buildCountryFilterGroups(items),
   };
+}
+
+/** @deprecated Use mapRecommendationItemsToCards */
+export function mapTop10Recommendations(items: RecommendationItem[]): {
+  cards: RecommendationCard[];
+  groups: RecommendationGroupTab[];
+} {
+  return mapRecommendationItemsToCards(items);
 }
