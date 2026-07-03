@@ -10,9 +10,10 @@ export interface ResultData {
     total_from: number;
     total_upto: number;
     departures_count: number;
-
-countries: string[];        // ← agregar
-  filtered_departures: any[]; // ← agregar (reemplaza `any` con el tipo real)
+    has_promotions: boolean;
+    promotions: Promotions[];
+    countries: string[];
+    filtered_departures: any[];
     currencies: string[];
     multimedias: string[];
 }
@@ -24,7 +25,10 @@ export interface RecommendationDeparture {
   dbl_adt_cost: number;
   currency: string;
 }
-
+export interface Promotions{
+  uuid: string;
+  name: string;
+}
 export interface RecommendationItem {
   clv: string;
   destination_name: string;
@@ -34,6 +38,8 @@ export interface RecommendationItem {
   countries: string | string[];
   total_from: number;
   total_upto: number;
+  has_promotions: boolean;
+  promotions: Promotions[];
   multimedias: string[];
   filtered_departures: RecommendationDeparture[];
   currencies: string[];

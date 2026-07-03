@@ -1,13 +1,16 @@
 import type {
+  Promotions,
   RecommendationItem,
   RecommendationsData,
   ResultData,
-} from "@/src/interfaces/disponibilidad";
+} from "@/interfaces/disponibilidad";
 
 export type RecommendationGroupTab = {
   category: string;
   name: string;
 };
+
+export type { Promotions };
 
 export type RecommendationCard = {
   id: string | number;
@@ -25,6 +28,8 @@ export type RecommendationCard = {
   departuresCount: number;
   days: number;
   nights: number;
+  has_promotions: boolean;
+  promotions: Promotions[];
 };
 
 const EMPTY_RECOMMENDATIONS: RecommendationsData = {
@@ -93,9 +98,38 @@ export function normalizeRecommendationsData(raw: unknown): RecommendationsData 
   };
 }
 
+function normalizePromotions(value: unknown): Promotions[] {
+  if (!Array.isArray(value)) return [];
+
+  return value
+    .filter(
+      (promotion): promotion is Promotions & { title?: string } =>
+        Boolean(promotion) &&
+        typeof promotion === "object" &&
+        ("name" in promotion || "title" in promotion),
+    )
+    .map((promotion) => ({
+      uuid: String(promotion.uuid ?? promotion.name ?? promotion.title ?? ""),
+      name: String(promotion.name ?? promotion.title ?? ""),
+    }))
+    .filter((promotion) => promotion.name.trim().length > 0);
+}
+
+function normalizeHasPromotions(
+  value: unknown,
+  promotions: Promotions[],
+): boolean {
+  if (promotions.length > 0) return true;
+  if (typeof value === "boolean") return value;
+  if (value === 1 || value === "1" || value === "true") return true;
+  return false;
+}
+
 export function mapRecommendationToResultData(
   item: RecommendationItem
 ): ResultData {
+  const promotions = normalizePromotions(item.promotions);
+
   return {
     clv: item.clv,
     uuid: item.clv,
@@ -107,6 +141,8 @@ export function mapRecommendationToResultData(
     nights: item.nights,
     total_from: item.total_from,
     total_upto: item.total_upto,
+    has_promotions: normalizeHasPromotions(item.has_promotions, promotions),
+    promotions,
     departures_count: item.departures_count,
     countries: normalizeCountries(item.countries),
     filtered_departures: item.filtered_departures ?? [],
@@ -180,6 +216,8 @@ export function mapRecommendationToCard(
   const countries = normalizeCountries(item.countries);
   const primaryCountry = countries[0];
   const hasDiscount = item.total_upto > item.total_from;
+  const promotions = normalizePromotions(item.promotions);
+  const hasPromotions = normalizeHasPromotions(item.has_promotions, promotions);
 
   return {
     id: item.clv || index,
@@ -197,6 +235,8 @@ export function mapRecommendationToCard(
     departuresCount: item.departures_count ?? 0,
     days: item.days,
     nights: item.nights,
+    has_promotions: hasPromotions,
+    promotions,
   };
 }
 

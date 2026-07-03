@@ -96,7 +96,8 @@ const socialLinks = [
 const FooterThree = () => {
   return (
     <>
-      <div id="footer-rounded"></div>
+      <div id="footer-rounded">
+     </div>
       <footer className="mt-auto w-100 text-white pb-4 pb-5 d-flex flex-column align-items-center gap-4 bg-purple">
         <div className="d-flex align-items-start justify-content-center flex-wrap gap-3">
           <div
@@ -109,10 +110,6 @@ const FooterThree = () => {
               className="img-fluid"
             />
           </div>
-          <div
-            className="d-none d-sm-block border-start"
-            style={{ height: "80px", opacity: 0.4 }}
-          ></div>
           <div
             className="position-relative px-5"
             style={{ height: "50px", width: "260px" }}
@@ -157,9 +154,7 @@ const FooterThree = () => {
           </div>
         </div>
 
-        <div className="w-100 border-top" style={{ opacity: 0.2 }}></div>
-
-        <p className="small text-white-50 py-1">
+        <p className="small text-white-50 py-1 mb-0">
           © Mega Travel – México 1999 – 2026
         </p>
       </footer>

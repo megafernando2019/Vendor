@@ -125,16 +125,11 @@ const tabItems = [
 const Testimonial = () => {
   return (
     <div
-      className="tg-testimonial-section tg-listing-area tg-grey-bg include-bg pt-105"
-      style={{
-        backgroundImage: "url(/assets/img/nuestros-clientes/avion.png)",
-        backgroundRepeat: "no-repeat",
-        backgroundSize: "100% 100%",
-      }}
+      className="tg-testimonial-section tg-listing-area pt-105 bg-testimonial"
     >
       <div className="container">
         <div className="row justify-content-center">
-          <div className="col-12">
+          <div className="col-9">
             <div className="tg-location-section-title text-center mb-30">
               <h2
                 className="mb-15 text-capitalize wow fadeInUp text-purple text-morado-custom"
@@ -152,8 +147,7 @@ const Testimonial = () => {
               </h5>
             </div>
           </div>
-          <div className="col-2"></div>
-          <div className="col-10">
+          <div className="col-12 p-50 mt-50">
             <Tabs
               panelClassName="app-tabs__panel app-tabs__panel--testimonial"
               defaultActiveKey="asesores"

@@ -14,7 +14,6 @@ import {
   type RecommendationSectionKey,
 } from "@/utils/recommendations";
 import RecommendationTourCard from "./RecommendationTourCard";
-import AnimateOnScroll from "@/components/common/AnimateOnScroll";
 
 const MAX_SLIDES_PER_VIEW = 4;
 
@@ -130,17 +129,9 @@ const RecommendationCarrousel = ({
   }, []);
 
   return (
-    <AnimateOnScroll
-      animation="fadeInUp"
-      delay=".2s"
-      duration=".9s"
-      className={`tg-listing-area tg-grey-bg recommendation-carrousel-section${
-        includeBg ? " include-bg" : ""
-      }`}
-      style={{ backgroundImage: `url(${backgroundImage})` }}
-    >
+    <div className="recommendation-carrousel-root">
       <div className="container">
-        <div className="row align-items-end">
+        <div className="row align-items-start">
           <div className={titleColumnClassName}>
             <div className={`tg-location-section-title ${headerClassName}`}>
               <h5 className="mb-15 mt-15 text-hortencia text-left text-purple text-morado-custom">
@@ -149,9 +140,7 @@ const RecommendationCarrousel = ({
               <h2 className="text-bold text-left text-dark fs-1">{title}</h2>
             </div>
           </div>
-          <div className="col-9" />
-          <div className="col-lg-3">
-            <div className="tg-listing-5-slider-navigation text-end mb-50">
+           <div className="tg-listing-5-slider-navigation text-end mb-50">
               <button
                 type="button"
                 className={`${navigationId}-prev tg-listing-5-slide-prev`}
@@ -167,9 +156,10 @@ const RecommendationCarrousel = ({
                 <i className="fa-solid fa-chevron-right" />
               </button>
             </div>
-          </div>
-        </div>
 
+        </div>
+        
+ 
         {loading && (
           <div className="row">
             <div className="col-12 text-center py-5">
@@ -197,30 +187,32 @@ const RecommendationCarrousel = ({
         {!loading && !error && cards.length > 0 && (
           <div className="row">
             <div className="col-12">
-              <Swiper
-                {...swiperSettings}
-                modules={[Autoplay, Navigation]}
-                onSwiper={(swiper) => {
-                  swiperRef.current = swiper;
-                }}
-                className="swiper-container tg-listing-slider-2 p-relative fix recommendation-carousel"
-              >
-                {cards.map((item) => (
-                  <SwiperSlide key={item.id} className="swiper-slide">
-                    <RecommendationTourCard
-                      item={item}
-                      ratingLabel={ratingLabel}
-                      onAddToWishlist={handleAddToWishlist}
-                      onActionMenuOpenChange={handleActionMenuOpenChange}
-                    />
-                  </SwiperSlide>
-                ))}
-              </Swiper>
+              <div className="recommendation-carousel-wrap">
+                <Swiper
+                  {...swiperSettings}
+                  modules={[Autoplay, Navigation]}
+                  onSwiper={(swiper) => {
+                    swiperRef.current = swiper;
+                  }}
+                  className="swiper recommendation-carousel"
+                >
+                  {cards.map((item) => (
+                    <SwiperSlide key={item.id} className="swiper-slide">
+                      <RecommendationTourCard
+                        item={item}
+                        ratingLabel={ratingLabel}
+                        onAddToWishlist={handleAddToWishlist}
+                        onActionMenuOpenChange={handleActionMenuOpenChange}
+                      />
+                    </SwiperSlide>
+                  ))}
+                </Swiper>
+              </div>
             </div>
           </div>
         )}
       </div>
-    </AnimateOnScroll>
+    </div>
   );
 };
 

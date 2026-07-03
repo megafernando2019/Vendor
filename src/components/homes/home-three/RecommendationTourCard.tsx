@@ -71,10 +71,23 @@ const BookmarkIcon = () => (
 );
 
 const ShareIcon = () => (
-<svg className="text-body" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-  <path stroke="currentColor" strokeLinecap="round" stroke-linejoin="round" strokeWidth="2" d="M4.248 19C3.22 15.77 5.275 8.232 12.466 8.232V6.079a1.025 1.025 0 0 1 1.644-.862l5.479 4.307a1.108 1.108 0 0 1 0 1.723l-5.48 4.307a1.026 1.026 0 0 1-1.643-.861v-2.154C5.275 13.616 4.248 19 4.248 19Z"/>
-</svg>
-
+  <svg
+    className="text-body"
+    aria-hidden="true"
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    fill="none"
+    viewBox="0 0 24 24"
+  >
+    <path
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="2"
+      d="M4.248 19C3.22 15.77 5.275 8.232 12.466 8.232V6.079a1.025 1.025 0 0 1 1.644-.862l5.479 4.307a1.108 1.108 0 0 1 0 1.723l-5.48 4.307a1.026 1.026 0 0 1-1.643-.861v-2.154C5.275 13.616 4.248 19 4.248 19Z"
+    />
+  </svg>
 );
 
 type RecommendationTourCardProps = {
@@ -219,6 +232,8 @@ const RecommendationTourCard = ({
     };
   }, [item.title]);
 
+  const promotionBadges = item.promotions ?? [];
+
   return (
     <article className="recommendation-card">
       <div className="recommendation-card__media">
@@ -241,10 +256,17 @@ const RecommendationTourCard = ({
           )}
         </Link>
 
-        {(item.offer || item.tag) && (
-          <span className="recommendation-card__badge">
-            {item.offer ?? item.tag}
-          </span>
+        {(promotionBadges.length > 0 || item.promotions) && (
+          <div className="recommendation-card__badges" aria-label="Promociones">
+            {promotionBadges.map((promotion) => (
+              <span
+                key={promotion.uuid || promotion.name}
+                className="recommendation-card__badge"
+              >
+                {promotion.name}
+              </span>
+            ))}
+          </div>
         )}
 
         <div className="recommendation-card__action-dropdown">
@@ -345,37 +367,62 @@ const RecommendationTourCard = ({
             className="recommendation-card__stars"
             starClassName="recommendation-card__star"
           />
-          <span className="recommendation-card__rating-text">( {rating+' '+ratingLabel})</span>
+          <span className="recommendation-card__rating-text">
+            ( {rating + " " + ratingLabel})
+          </span>
         </div>
 
-        <div className="recommendation-card__meta">
-          <div className="recommendation-card__meta-col">
-            <span className="recommendation-card__mt">MT{item.clv}</span>
-            <span className="recommendation-card__info">
-              <i
-                className="fa-solid fa-plane recommendation-card__info-icon"
-                aria-hidden="true"
-              />
-              {item.departuresCount} salidas
-            </span>
-          </div>
-          <div className="recommendation-card__meta-col recommendation-card__meta-col--right">
-            <span className="recommendation-card__info">
-<svg className="text-body" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-  <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 5V3m0 18v-2M7.05 7.05 5.636 5.636m12.728 12.728L16.95 16.95M5 12H3m18 0h-2M7.05 16.95l-1.414 1.414M18.364 5.636 16.95 7.05M16 12a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z"/>
-</svg>
-
-              {item.days} días
-            </span>
-            <span className="recommendation-card__info">
-              <i
-                className="fa-regular fa-moon recommendation-card__info-icon"
-                aria-hidden="true"
-              />
-              {item.nights} noches
-            </span>
-          </div>
-        </div>
+        <table className="recommendation-card__meta-table">
+          <tbody>
+            <tr>
+              <td>
+                <span className="recommendation-card__mt">MT{item.clv}</span>
+              </td>
+              <td>
+                <span className="recommendation-card__info">
+                  <svg
+                    className="recommendation-card__info-icon-svg"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M12 5V3m0 18v-2M7.05 7.05 5.636 5.636m12.728 12.728L16.95 16.95M5 12H3m18 0h-2M7.05 16.95l-1.414 1.414M18.364 5.636 16.95 7.05M16 12a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z"
+                    />
+                  </svg>
+                  {item.days} días
+                </span>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <span className="recommendation-card__info">
+                  <i
+                    className="fa-solid fa-plane recommendation-card__info-icon"
+                    aria-hidden="true"
+                  />
+                  {item.departuresCount} salidas
+                </span>
+              </td>
+              <td>
+                <span className="recommendation-card__info">
+                  <i
+                    className="fa-regular fa-moon recommendation-card__info-icon"
+                    aria-hidden="true"
+                  />
+                  {item.nights} noches
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </article>
   );
