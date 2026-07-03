@@ -24,6 +24,10 @@ export interface RecommendationDeparture {
   returned_at: string;
   dbl_adt_cost: number;
   currency: string;
+  dbl_adt_base?: number;
+  dbl_adt_tax?: number;
+  dbl_adt_supplements?: number;
+  dbl_adt_suplements?: number;
 }
 export interface Promotions{
   uuid: string;
@@ -44,6 +48,10 @@ export interface RecommendationItem {
   filtered_departures: RecommendationDeparture[];
   currencies: string[];
   departures_count: number;
+  dbl_adt_base?: number;
+  dbl_adt_tax?: number;
+  dbl_adt_supplements?: number;
+  dbl_adt_suplements?: number;
 }
 
 export interface RecommendationsData {

@@ -30,6 +30,9 @@ export type RecommendationCard = {
   nights: number;
   has_promotions: boolean;
   promotions: Promotions[];
+  dblAdtBase?: number;
+  dblAdtTax?: number;
+  dblAdtSupplements?: number;
 };
 
 const EMPTY_RECOMMENDATIONS: RecommendationsData = {
@@ -209,6 +212,57 @@ function buildDiscountOffer(
   return percent > 0 ? `${percent}% Off` : undefined;
 }
 
+function resolveSupplements(
+  supplements?: number,
+  legacySupplements?: number,
+): number | undefined {
+  if (supplements != null) return supplements;
+  if (legacySupplements != null) return legacySupplements;
+  return undefined;
+}
+
+function resolvePriceBreakdown(item: RecommendationItem): {
+  dblAdtBase?: number;
+  dblAdtTax?: number;
+  dblAdtSupplements?: number;
+} {
+  const itemBase = item.dbl_adt_base;
+  const itemTax = item.dbl_adt_tax;
+  const itemSupplements = resolveSupplements(
+    item.dbl_adt_supplements,
+    item.dbl_adt_suplements,
+  );
+
+  if (
+    itemBase != null ||
+    itemTax != null ||
+    itemSupplements != null
+  ) {
+    return {
+      dblAdtBase: itemBase,
+      dblAdtTax: itemTax,
+      dblAdtSupplements: itemSupplements,
+    };
+  }
+
+  const cheapestDeparture = [...(item.filtered_departures ?? [])].sort(
+    (a, b) => a.dbl_adt_cost - b.dbl_adt_cost,
+  )[0];
+
+  if (!cheapestDeparture) {
+    return {};
+  }
+
+  return {
+    dblAdtBase: cheapestDeparture.dbl_adt_base,
+    dblAdtTax: cheapestDeparture.dbl_adt_tax,
+    dblAdtSupplements: resolveSupplements(
+      cheapestDeparture.dbl_adt_supplements,
+      cheapestDeparture.dbl_adt_suplements,
+    ),
+  };
+}
+
 export function mapRecommendationToCard(
   item: RecommendationItem,
   index = 0
@@ -218,6 +272,7 @@ export function mapRecommendationToCard(
   const hasDiscount = item.total_upto > item.total_from;
   const promotions = normalizePromotions(item.promotions);
   const hasPromotions = normalizeHasPromotions(item.has_promotions, promotions);
+  const priceBreakdown = resolvePriceBreakdown(item);
 
   return {
     id: item.clv || index,
@@ -237,6 +292,7 @@ export function mapRecommendationToCard(
     nights: item.nights,
     has_promotions: hasPromotions,
     promotions,
+    ...priceBreakdown,
   };
 }
 

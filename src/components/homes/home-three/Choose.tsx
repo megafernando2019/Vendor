@@ -164,7 +164,7 @@ const Choose = () => {
                   data-wow-duration=".9s"
                 >
                   <a
-                    href="contact.html"
+                    href="/faqs"
                     className="tg-btn tg-btn-switch-animation"
                   >
                     <Button text="Comenzar" />

@@ -1,5 +1,8 @@
 import React from "react";
-import type { StarRatingProps } from "@/src/interfaces/ui";
+import type { StarRatingProps } from "@/interfaces/ui";
+
+const FILLED_COLOR = "#facc15";
+const EMPTY_COLOR = "#d1d5db";
 
 const StarRating: React.FC<StarRatingProps> = ({
   rating,
@@ -9,42 +12,62 @@ const StarRating: React.FC<StarRatingProps> = ({
   const stars = [];
 
   for (let i = 1; i <= 5; i++) {
+    const starClasses = ["star-rating__star", starClassName]
+      .filter(Boolean)
+      .join(" ");
+
     if (rating >= i) {
-      stars.push(
-        <span key={i} className={starClassName} style={{ color: "#facc15" }}>
-          ★
-        </span>
-      );
-    } else if (rating >= i - 0.5) {
       stars.push(
         <span
           key={i}
-          className={`${starClassName} position-relative d-inline-block`}
-          style={{ color: "#facc15" }}
+          className={`${starClasses} star-rating__star--full`}
+          style={{ color: FILLED_COLOR }}
+          aria-hidden="true"
         >
-          <span style={{ color: "#d1d5db" }}>★</span>
-          <span
-            className="position-absolute top-2 start-0 overflow-hidden"
-            style={{ width: "50%", color: "#facc15" }}
-          >
-            ★
-          </span>
-        </span>
-      );
-    } else {
-      stars.push(
-        <span key={i} className={starClassName} style={{ color: "#d1d5db" }}>
           ★
-        </span>
+        </span>,
       );
+      continue;
     }
+
+    if (rating >= i - 0.5) {
+      stars.push(
+        <span
+          key={i}
+          className={`${starClasses} star-rating__star--half`}
+          style={
+            {
+              "--star-filled": FILLED_COLOR,
+              "--star-empty": EMPTY_COLOR,
+            } as React.CSSProperties
+          }
+          aria-hidden="true"
+        >
+          ★
+        </span>,
+      );
+      continue;
+    }
+
+    stars.push(
+      <span
+        key={i}
+        className={`${starClasses} star-rating__star--empty`}
+        style={{ color: EMPTY_COLOR }}
+        aria-hidden="true"
+      >
+        ★
+      </span>,
+    );
   }
 
   return (
     <div
-      className={`d-flex align-items-center justify-content-start gap-2 ${className}`.trim()}
+      className={`star-rating d-inline-flex align-items-center ${className}`.trim()}
+      role="img"
+      aria-label={`Calificación: ${rating} de 5`}
     >
-      <div className="d-flex">{stars}</div>
+      {stars}
     </div>
   );
 };

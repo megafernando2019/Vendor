@@ -76,7 +76,7 @@ const NabvarFormItems = ({
                   <span className="banner-form-two-navbar-link-icon">
                     {getNavMenuIcon(item.id)}
                   </span>
-                  <span className="tg-booking-title-value banner-form-two-navbar-link-text">
+                  <span className="tg-booking-title-value banner-form-two-navbar-link-text d-inline-block text-truncate">
                     {item.label}
                   </span>
                 </Link>

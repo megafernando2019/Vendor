@@ -14,6 +14,14 @@ const formatPrice = (amount: number, currency: string) => {
   return `${symbol}${amount.toLocaleString("es-MX")}`;
 };
 
+const formatBreakdownAmount = (
+  amount: number | undefined,
+  currency: string,
+) => {
+  if (amount == null) return "—";
+  return formatPrice(amount, currency);
+};
+
 const ActionMenuIcon = () => (
   <svg
     aria-hidden="true"
@@ -108,8 +116,18 @@ const RecommendationTourCard = ({
   const titleLinkRef = useRef<HTMLAnchorElement>(null);
   const actionButtonRef = useRef<HTMLButtonElement>(null);
   const portalMenuRef = useRef<HTMLUListElement>(null);
+  const pricePillRef = useRef<HTMLDivElement>(null);
+  const priceTooltipRef = useRef<HTMLDivElement>(null);
+  const hidePriceTooltipTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(
+    null,
+  );
   const [menuOpen, setMenuOpen] = useState(false);
+  const [priceTooltipOpen, setPriceTooltipOpen] = useState(false);
   const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
+  const [priceTooltipPosition, setPriceTooltipPosition] = useState({
+    top: 0,
+    left: 0,
+  });
 
   const updateMenuPosition = useCallback(() => {
     const button = actionButtonRef.current;
@@ -120,6 +138,46 @@ const RecommendationTourCard = ({
       top: rect.bottom + 8,
       left: rect.left + rect.width / 2,
     });
+  }, []);
+
+  const updatePriceTooltipPosition = useCallback(() => {
+    const pill = pricePillRef.current;
+    if (!pill) return;
+
+    const rect = pill.getBoundingClientRect();
+    setPriceTooltipPosition({
+      top: rect.top - 8,
+      left: rect.left + rect.width / 2,
+    });
+  }, []);
+
+  const openPriceTooltip = useCallback(() => {
+    if (hidePriceTooltipTimeoutRef.current) {
+      clearTimeout(hidePriceTooltipTimeoutRef.current);
+      hidePriceTooltipTimeoutRef.current = null;
+    }
+
+    requestAnimationFrame(updatePriceTooltipPosition);
+    setPriceTooltipOpen(true);
+  }, [updatePriceTooltipPosition]);
+
+  const closePriceTooltip = useCallback(() => {
+    if (hidePriceTooltipTimeoutRef.current) {
+      clearTimeout(hidePriceTooltipTimeoutRef.current);
+    }
+
+    hidePriceTooltipTimeoutRef.current = setTimeout(() => {
+      setPriceTooltipOpen(false);
+      hidePriceTooltipTimeoutRef.current = null;
+    }, 80);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (hidePriceTooltipTimeoutRef.current) {
+        clearTimeout(hidePriceTooltipTimeoutRef.current);
+      }
+    };
   }, []);
 
   useEffect(() => {
@@ -168,6 +226,22 @@ const RecommendationTourCard = ({
       document.removeEventListener("keydown", handleEscape);
     };
   }, [menuOpen]);
+
+  useEffect(() => {
+    if (!priceTooltipOpen) return;
+
+    updatePriceTooltipPosition();
+
+    const handleScrollOrResize = () => updatePriceTooltipPosition();
+
+    window.addEventListener("resize", handleScrollOrResize);
+    window.addEventListener("scroll", handleScrollOrResize, true);
+
+    return () => {
+      window.removeEventListener("resize", handleScrollOrResize);
+      window.removeEventListener("scroll", handleScrollOrResize, true);
+    };
+  }, [priceTooltipOpen, updatePriceTooltipPosition]);
 
   useEffect(() => {
     onActionMenuOpenChange?.(menuOpen);
@@ -236,10 +310,10 @@ const RecommendationTourCard = ({
 
   return (
     <article className="recommendation-card">
-      <div className="recommendation-card__media">
+      <div className="recommendation-card__media ">
         <Link
           href={`/tour-details?mt=${item.clv}`}
-          className="recommendation-card__image-link"
+          className="recommendation-card__image-link bg-image hover-zoom"
         >
           {item.thumb ? (
             <img
@@ -278,6 +352,7 @@ const RecommendationTourCard = ({
             aria-expanded={menuOpen}
             aria-haspopup="menu"
             onClick={() => {
+              setPriceTooltipOpen(false);
               setMenuOpen((prev) => {
                 const next = !prev;
                 if (next) {
@@ -340,12 +415,56 @@ const RecommendationTourCard = ({
             document.body,
           )}
 
-        <div className="recommendation-card__price-pill">
+        <div
+          ref={pricePillRef}
+          className="recommendation-card__price-pill"
+          onMouseEnter={openPriceTooltip}
+          onMouseLeave={closePriceTooltip}
+        >
           <span className="recommendation-card__price-label">Desde</span>
           <strong className="recommendation-card__price-value">
             {formatPrice(item.price, item.currency)} {item.currency}
           </strong>
         </div>
+
+        {priceTooltipOpen &&
+          typeof document !== "undefined" &&
+          createPortal(
+            <div
+              ref={priceTooltipRef}
+              className="recommendation-card__price-tooltip show"
+              style={{
+                top: priceTooltipPosition.top,
+                left: priceTooltipPosition.left,
+              }}
+              role="tooltip"
+              onMouseEnter={openPriceTooltip}
+              onMouseLeave={closePriceTooltip}
+            >
+              <p className="recommendation-card__price-tooltip-title">
+                Desde: {formatPrice(item.price, item.currency)} {item.currency}
+              </p>
+              <dl className="recommendation-card__price-tooltip-list">
+                <div className="recommendation-card__price-tooltip-row">
+                  <dt>Precio base:</dt>
+                  <dd>
+                    {formatBreakdownAmount(item.dblAdtBase, item.currency)}
+                  </dd>
+                </div>
+                <div className="recommendation-card__price-tooltip-row">
+                  <dt>Impuestos:</dt>
+                  <dd>{formatBreakdownAmount(item.dblAdtTax, item.currency)}</dd>
+                </div>
+                <div className="recommendation-card__price-tooltip-row">
+                  <dt>Suplemento:</dt>
+                  <dd>
+                    {formatBreakdownAmount(item.dblAdtSupplements, item.currency)}
+                  </dd>
+                </div>
+              </dl>
+            </div>,
+            document.body,
+          )}
 
         <span className="recommendation-card__media-curve" aria-hidden="true" />
       </div>
