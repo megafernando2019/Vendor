@@ -44,7 +44,7 @@ const RecommendationCarrousel = ({
   backgroundImage,
   includeBg = true,
   ratingLabel,
-  headerClassName = "mb-40",
+  headerClassName = "mb-40 w-full",
   titleColumnClassName = "col-lg-12",
   emptyMessage = "No hay recomendaciones disponibles.",
 }: RecommendationCarrouselProps) => {
@@ -56,7 +56,7 @@ const RecommendationCarrousel = ({
 
   const navigationId = useMemo(
     () => `recommendation-carousel-${sectionKey.replace(/_/g, "-")}`,
-    [sectionKey]
+    [sectionKey],
   );
 
   const swiperSettings = useMemo(
@@ -72,7 +72,7 @@ const RecommendationCarrousel = ({
       },
       breakpoints: SWIPER_BREAKPOINTS,
     }),
-    [navigationId, cards.length]
+    [navigationId, cards.length],
   );
 
   useEffect(() => {
@@ -129,37 +129,35 @@ const RecommendationCarrousel = ({
   }, []);
 
   return (
-    <div className="recommendation-carrousel-root">
+    <div className="recommendation-carrousel-root mt-50">
       <div className="container">
-        <div className="row align-items-start">
-          <div className={titleColumnClassName}>
-            <div className={`tg-location-section-title ${headerClassName}`}>
-              <h5 className="mb-15 mt-15 text-hortencia text-left text-purple text-morado-custom">
-                {subtitle}
-              </h5>
-              <h2 className="text-bold text-left text-dark fs-1">{title}</h2>
+        <div className="row">
+          <div className="tg-listing-5-slider-navigation text-end mb-50">
+            <div className={titleColumnClassName}>
+              <div className={`tg-location-section-title ${headerClassName}`}>
+                <h5 className="mb-15 mt-15 text-hortencia text-left text-purple text-morado-custom d-flex justify-content-start">
+                  {subtitle}
+                </h5>
+                <h2 className="text-bold text-left text-dark fs-1 d-flex justify-content-start">{title}</h2>
+              </div>
             </div>
+            <button
+              type="button"
+              className={`${navigationId}-prev tg-listing-5-slide-prev`}
+              aria-label="Anterior"
+            >
+              <i className="fa-solid fa-chevron-left" />
+            </button>
+            <button
+              type="button"
+              className={`${navigationId}-next tg-listing-5-slide-next`}
+              aria-label="Siguiente"
+            >
+              <i className="fa-solid fa-chevron-right" />
+            </button>
           </div>
-           <div className="tg-listing-5-slider-navigation text-end mb-50">
-              <button
-                type="button"
-                className={`${navigationId}-prev tg-listing-5-slide-prev`}
-                aria-label="Anterior"
-              >
-                <i className="fa-solid fa-chevron-left" />
-              </button>
-              <button
-                type="button"
-                className={`${navigationId}-next tg-listing-5-slide-next`}
-                aria-label="Siguiente"
-              >
-                <i className="fa-solid fa-chevron-right" />
-              </button>
-            </div>
-
         </div>
-        
- 
+
         {loading && (
           <div className="row">
             <div className="col-12 text-center py-5">
