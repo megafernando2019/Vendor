@@ -5445,10 +5445,9 @@ textarea {
   margin: 0 auto;
 }
 .tg-chose-3-thumb .main-thumb {
-  box-shadow: -10px 13px 20px 0 rgba(0, 0, 0, 0.1);
-  background: #f2f2f2;
+  
   transform: rotate(-4deg);
-  border: 8px solid var(--tg-common-white);
+  
   border-radius: 20px;
   max-width: 288px;
   position: relative;
