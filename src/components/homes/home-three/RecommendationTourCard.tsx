@@ -15,6 +15,7 @@ type RecommendationTourCardProps = {
   linkMode?: "tour-details" | "quote-wizard" | "search-disponibilidad";
   onSearchNavigate?: (clv: string) => void;
   searchNavigateDisabled?: boolean;
+  layout?: "grid" | "list";
 };
 
 const RecommendationTourCard = ({
@@ -26,6 +27,7 @@ const RecommendationTourCard = ({
   linkMode = "tour-details",
   onSearchNavigate,
   searchNavigateDisabled = false,
+  layout = "grid",
 }: RecommendationTourCardProps) => {
   const titleLinkRef = useRef<HTMLAnchorElement | HTMLButtonElement>(null);
 
@@ -65,7 +67,11 @@ const RecommendationTourCard = ({
   }, [item.title]);
 
   return (
-    <article className="recommendation-card">
+    <article
+      className={`recommendation-card${
+        layout === "list" ? " recommendation-card--list" : ""
+      }`}
+    >
       <RecommendationCardMedia
         item={item}
         onAddToWishlist={onAddToWishlist}

@@ -1,7 +1,15 @@
-const RecommendationTourCardSkeleton = () => {
+type RecommendationTourCardSkeletonProps = {
+  layout?: "grid" | "list";
+};
+
+const RecommendationTourCardSkeleton = ({
+  layout = "grid",
+}: RecommendationTourCardSkeletonProps) => {
   return (
     <article
-      className="recommendation-card recommendation-card--skeleton"
+      className={`recommendation-card recommendation-card--skeleton${
+        layout === "list" ? " recommendation-card--list" : ""
+      }`}
       aria-hidden="true"
     >
       <div className="recommendation-card__media">

@@ -96,7 +96,7 @@ const HomeThree = () => {
                   </Link>
                 </div>
                 <div className="col-md-4 rounded">
-                  <Link href="block-standard">
+                  <Link href="blog-standard">
                     <Image
                       src="/assets/img/blog/pages/viajando-x-mis-xv.png"
                       alt="viajando por mis xv"
