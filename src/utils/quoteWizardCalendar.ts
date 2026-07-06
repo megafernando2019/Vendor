@@ -1,7 +1,4 @@
-import type {
-  RecommendationDeparture,
-  ResultData,
-} from "@/interfaces/disponibilidad";
+import type { RecommendationDeparture } from "@/interfaces/disponibilidad";
 
 export type ProgramType = "selected" | "similar";
 
@@ -52,26 +49,6 @@ function monthKeyFromDate(date: Date): string {
 
 export function normalizeMtParam(value: string | number): string {
   return String(value).replace(/^MT/i, "").trim();
-}
-
-export function findTourByMt(
-  resultados: ResultData[],
-  mt: string,
-): ResultData | undefined {
-  const normalized = normalizeMtParam(mt);
-  return resultados.find((item) => normalizeMtParam(item.clv) === normalized);
-}
-
-export function findSimilarTour(
-  resultados: ResultData[],
-  mt: string,
-): ResultData | undefined {
-  const normalized = normalizeMtParam(mt);
-  return resultados.find(
-    (item) =>
-      normalizeMtParam(item.clv) !== normalized &&
-      (item.filtered_departures?.length ?? 0) > 0,
-  );
 }
 
 export function buildWizardCalendarData(
@@ -173,21 +150,29 @@ function getMondayBasedOffset(date: Date): number {
   return day === 0 ? 6 : day - 1;
 }
 
-export function buildCalendarCells(monthIndex: number, year: number) {
+export type CalendarCell = {
+  day: number | null;
+  key: string;
+};
+
+export function buildCalendarCells(monthIndex: number, year: number): CalendarCell[] {
   const firstDay = new Date(year, monthIndex, 1);
   const daysInMonth = new Date(year, monthIndex + 1, 0).getDate();
   const leadingEmpty = getMondayBasedOffset(firstDay);
-  const cells: (number | null)[] = [];
+  const monthKey = monthKeyFromDate(firstDay);
+  const cells: CalendarCell[] = [];
 
-  for (let i = 0; i < leadingEmpty; i += 1) {
-    cells.push(null);
+  for (let slot = 1; slot <= leadingEmpty; slot += 1) {
+    cells.push({ day: null, key: `${monthKey}-pad-start-${slot}` });
   }
   for (let day = 1; day <= daysInMonth; day += 1) {
-    cells.push(day);
+    cells.push({ day, key: `${monthKey}-day-${day}` });
   }
 
+  let trailingSlot = 1;
   while (cells.length % 7 !== 0) {
-    cells.push(null);
+    cells.push({ day: null, key: `${monthKey}-pad-end-${trailingSlot}` });
+    trailingSlot += 1;
   }
 
   return cells;

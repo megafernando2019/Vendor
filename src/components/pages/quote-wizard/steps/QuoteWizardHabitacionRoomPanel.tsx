@@ -75,6 +75,7 @@ const QuoteWizardHabitacionRoomPanel = ({
                 type="checkbox"
                 role="switch"
                 id="bed-layout-toggle"
+                aria-label="Alternar entre habitación doble y habitación Twin"
                 checked={bedLayout === "twin"}
                 onChange={(e) =>
                   onBedLayoutChange(e.target.checked ? "twin" : "matrimonial")

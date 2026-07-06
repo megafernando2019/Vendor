@@ -48,6 +48,7 @@ const QuoteWizardStepPanel = ({
     case "fecha":
       return (
         <QuoteWizardCalendar
+          key={tour.clv}
           tour={tour}
           similarClv={similarClv}
           itemSearch={itemSearch}

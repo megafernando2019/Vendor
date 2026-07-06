@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { getCotizarAction } from "@/app/actions/cotizar";
 import { useAppSelector } from "@/redux/hooks";
 import { usePersistBootstrapped } from "@/hooks/usePersistBootstrapped";
 import { normalizeMtParam } from "@/utils/quoteWizardCalendar";
@@ -34,13 +35,17 @@ const EMPTY_CALENDAR: WizardCalendarData = { months: [], dayPrices: {} };
 export function useQuoteWizardTour(mt: string, enabled: boolean) {
   const bootstrapped = usePersistBootstrapped();
   const { itemSearch } = useAppSelector((state) => state.search);
+  const searchParams = useMemo(
+    () => resolveQuoteWizardSearchParams(itemSearch),
+    [itemSearch],
+  );
   const [state, setState] = useState<QuoteWizardTourState>(() => ({
     mt: normalizeMtParam(mt),
     tour: null,
     calendar: EMPTY_CALENDAR,
     countries: "",
     additional: EMPTY_QUOTE_WIZARD_ADDITIONAL,
-    searchParams: resolveQuoteWizardSearchParams(itemSearch),
+    searchParams,
     loading: true,
     error: null,
     notFound: false,
@@ -50,7 +55,6 @@ export function useQuoteWizardTour(mt: string, enabled: boolean) {
     if (!enabled || !bootstrapped) return;
 
     const normalizedMt = normalizeMtParam(mt);
-    const searchParams = resolveQuoteWizardSearchParams(itemSearch);
     let cancelled = false;
 
     const loadTour = async () => {
@@ -64,27 +68,16 @@ export function useQuoteWizardTour(mt: string, enabled: boolean) {
       }));
 
       try {
-        const res = await fetch("/api/getcotizar", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          credentials: "include",
-          body: JSON.stringify({
-            clv: normalizedMt,
-            passengers: searchParams.passengers,
-            startRange: searchParams.startRange,
-            endRange: searchParams.endRange,
-          }),
+        const data = await getCotizarAction({
+          clv: normalizedMt,
+          passengers: searchParams.passengers,
+          startRange: searchParams.startRange,
+          endRange: searchParams.endRange,
         });
-
-        const data = (await res.json()) as {
-          success?: boolean;
-          message?: string;
-          data?: unknown;
-        };
 
         if (cancelled) return;
 
-        if (!res.ok || data.success === false) {
+        if (!data.success) {
           const message =
             typeof data.message === "string" && data.message.length > 0
               ? data.message
@@ -150,14 +143,7 @@ export function useQuoteWizardTour(mt: string, enabled: boolean) {
     return () => {
       cancelled = true;
     };
-  }, [
-    bootstrapped,
-    enabled,
-    itemSearch.endRange,
-    itemSearch.passengers,
-    itemSearch.startRange,
-    mt,
-  ]);
+  }, [bootstrapped, enabled, mt, searchParams]);
 
   return {
     ...state,

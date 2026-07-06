@@ -244,7 +244,7 @@ export function getInsuranceProviderLogo(key: string): string | null {
 }
 
 export function sortInsuranceProviderKeys(keys: string[]): string[] {
-  return [...keys].sort((a, b) => {
+  return keys.toSorted((a, b) => {
     const ai = INSURANCE_PROVIDER_ORDER.indexOf(a);
     const bi = INSURANCE_PROVIDER_ORDER.indexOf(b);
     if (ai === -1 && bi === -1) return a.localeCompare(b);
@@ -274,7 +274,7 @@ export function buildCoberturaLineas(
   }));
 }
 
-export function getAsistenciaCoberturaCount(item: AsistenciaSeleccionada): number {
+function getAsistenciaCoberturaCount(item: AsistenciaSeleccionada): number {
   return item.coberturas?.length ?? 1;
 }
 

@@ -63,8 +63,12 @@ body{
   }
 }
 
+:root {
+  --footer-purple: #10001b;
+}
+
 .bg-purple {
-  background-color: #10001b !important;
+  background-color: var(--footer-purple) !important;
 }
 #footer-rounded {
   display: block;
@@ -78,10 +82,15 @@ body{
   height: auto;
   line-height: 0;
   font-size: 0;
-  background-image: url("/assets/layout/footer-courve.webp");
-  background-repeat: no-repeat;
-  background-position: center top;
-  background-size: 100% auto;
+  background-color: var(--footer-purple);
+  -webkit-mask-image: url("/assets/layout/footer-courve.webp");
+  mask-image: url("/assets/layout/footer-courve.webp");
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center top;
+  mask-position: center top;
+  -webkit-mask-size: 100% auto;
+  mask-size: 100% auto;
 }
 
 #footer-rounded + footer.bg-purple {
@@ -2664,8 +2673,7 @@ ul.scrool-bar.scrool-height > li > span {
   font-size: 13px;
   font-weight: 700;
   line-height: 1.2;
-/*  border-radius: 0 999px 999px 0;*/
-
+  border-radius: 0 25px 25px 0;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
@@ -3646,11 +3654,25 @@ button.tg-booking-quantity-toggle {
 
 .tg-quote-wizard-detail-modal {
   z-index: 1055;
+  width: min(800px, calc(100vw - 2rem));
+  max-width: calc(100vw - 2rem);
+  max-height: calc(100vh - 2rem);
+  margin: auto;
+  padding: 0;
+  border: none;
+  background: transparent;
+  overflow: visible;
 }
 
-.tg-quote-wizard-detail-modal + .modal-backdrop {
-  z-index: 1050;
+.tg-quote-wizard-detail-modal::backdrop {
+  background-color: rgba(0, 0, 0, 0.5);
   cursor: pointer;
+}
+
+.tg-quote-wizard-detail-modal .modal-dialog {
+  margin: 0;
+  max-width: none;
+  width: 100%;
 }
 
 .tg-quote-wizard-detail-html {

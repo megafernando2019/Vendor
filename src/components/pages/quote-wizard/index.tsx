@@ -5,7 +5,7 @@ type QuoteWizardProps = {
 };
 
 const QuoteWizard = ({ mt }: QuoteWizardProps) => {
-  return <QuoteWizardContent mt={mt} />;
+  return <QuoteWizardContent key={mt} mt={mt} />;
 };
 
 export default QuoteWizard;

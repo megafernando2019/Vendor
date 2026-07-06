@@ -235,8 +235,8 @@ function sumPassengersFromHabitaciones(
   );
 }
 
-export function sortOpcionalRates<T extends { code: string }>(rates: T[]): T[] {
-  return [...rates].sort((a, b) => {
+function sortOpcionalRates<T extends { code: string }>(rates: T[]): T[] {
+  return rates.toSorted((a, b) => {
     const ai = RATE_SORT_ORDER.indexOf(a.code.toLowerCase());
     const bi = RATE_SORT_ORDER.indexOf(b.code.toLowerCase());
     if (ai === -1 && bi === -1) return a.code.localeCompare(b.code);
@@ -366,10 +366,12 @@ export function buildOpcionalSeleccionado(
 }
 
 export function getOpcionalCartLineSummaries(item: OpcionalSeleccionado): string[] {
-  return item.lineas
-    .filter((linea) => linea.quantity > 0)
-    .map(
-      (linea) =>
-        `${linea.code.toLowerCase()}: ${linea.quantity} X $${linea.unitPrice.toFixed(2)}`,
+  const summaries: string[] = [];
+  for (const linea of item.lineas) {
+    if (linea.quantity <= 0) continue;
+    summaries.push(
+      `${linea.code.toLowerCase()}: ${linea.quantity} X $${linea.unitPrice.toFixed(2)}`,
     );
+  }
+  return summaries;
 }

@@ -15,10 +15,22 @@ import {
   getRoomTabDisplay,
   ROOM_TAB_LABELS,
   tabToRoomType,
+  type CotizacionRulesData,
   type RoomTabLabel,
 } from "@/interfaces/cotizacion-components";
 
 type BedLayout = "matrimonial" | "twin";
+
+type TabSelection = {
+  rulesKey: string;
+  tab: RoomTabLabel;
+};
+
+type RuleSelection = {
+  rulesKey: string;
+  tab: RoomTabLabel;
+  index: number;
+};
 
 type UseQuoteWizardHabitacionesParams = {
   tour: QuoteWizardTour;
@@ -28,6 +40,13 @@ type UseQuoteWizardHabitacionesParams = {
   editingRoomId?: string | null;
   onEditingComplete?: () => void;
 };
+
+function findFirstAvailableTab(rules: CotizacionRulesData): RoomTabLabel {
+  const firstTab = ROOM_TAB_LABELS.find(
+    (tab) => getRoomRulesForTab(rules.roomRules, tab).length > 0,
+  );
+  return firstTab ?? "doble";
+}
 
 export function useQuoteWizardHabitaciones({
   tour,
@@ -98,17 +117,14 @@ export function useQuoteWizardHabitaciones({
     tour.clv,
   ]);
 
-  const [activeTab, setActiveTab] = useState<RoomTabLabel>("doble");
-  const [bedLayout, setBedLayout] = useState<BedLayout>("twin");
-  const [selectedRuleIndex, setSelectedRuleIndex] = useState(0);
+  const rulesKey = rules
+    ? `${rules.destinationId}:${effectiveDeparture?.blockadeUid ?? ""}`
+    : "";
 
-  useEffect(() => {
-    if (!rules) return;
-    const firstTab = ROOM_TAB_LABELS.find(
-      (tab) => getRoomRulesForTab(rules.roomRules, tab).length > 0,
-    );
-    if (firstTab && !editingRoomId) setActiveTab(firstTab);
-  }, [rules, editingRoomId]);
+  const firstAvailableTab = useMemo(
+    () => (rules ? findFirstAvailableTab(rules) : "doble"),
+    [rules],
+  );
 
   const editingRoom = useMemo(
     () =>
@@ -118,10 +134,8 @@ export function useQuoteWizardHabitaciones({
     [editingRoomId, habitacionesSeleccionadas],
   );
 
-  useEffect(() => {
-    if (!editingRoom || !rules) return;
-
-    setActiveTab(editingRoom.roomLabel);
+  const editingRuleIndex = useMemo(() => {
+    if (!editingRoom || !rules) return null;
     const tabRules = getRoomRulesForTab(rules.roomRules, editingRoom.roomLabel);
     const ruleIndex = tabRules.findIndex(
       (rule) =>
@@ -129,8 +143,17 @@ export function useQuoteWizardHabitaciones({
         (rule.mnrA ?? 0) === editingRoom.mnrA &&
         (rule.inf ?? 0) === editingRoom.inf,
     );
-    if (ruleIndex >= 0) setSelectedRuleIndex(ruleIndex);
+    return ruleIndex >= 0 ? ruleIndex : null;
   }, [editingRoom, rules]);
+
+  const [tabSelection, setTabSelection] = useState<TabSelection | null>(null);
+  const [ruleSelection, setRuleSelection] = useState<RuleSelection | null>(null);
+  const [bedLayout, setBedLayout] = useState<BedLayout>("twin");
+
+  const activeTab =
+    editingRoom?.roomLabel ??
+    (tabSelection?.rulesKey === rulesKey ? tabSelection.tab : null) ??
+    firstAvailableTab;
 
   const currency = rules?.currency ?? effectiveDeparture?.currency ?? "USD";
   const roomRules = useMemo(
@@ -138,11 +161,28 @@ export function useQuoteWizardHabitaciones({
     [rules, activeTab],
   );
 
+  const selectedRuleIndex =
+    editingRuleIndex ??
+    (ruleSelection?.rulesKey === rulesKey && ruleSelection.tab === activeTab
+      ? ruleSelection.index
+      : 0);
+
   const selectedRule = roomRules[selectedRuleIndex] ?? roomRules[0];
 
-  useEffect(() => {
-    setSelectedRuleIndex(0);
-  }, [activeTab]);
+  const setActiveTab = useCallback(
+    (tab: RoomTabLabel) => {
+      setTabSelection({ rulesKey, tab });
+      setRuleSelection(null);
+    },
+    [rulesKey],
+  );
+
+  const setSelectedRuleIndex = useCallback(
+    (index: number) => {
+      setRuleSelection({ rulesKey, tab: activeTab, index });
+    },
+    [activeTab, rulesKey],
+  );
 
   useEffect(() => {
     if (!rules || !effectiveDeparture || !selectedRule) return;

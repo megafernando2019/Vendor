@@ -10,7 +10,7 @@ export type QuoteWizardSearchParams = {
   endRange: string;
 };
 
-export function getQuoteWizardDefaultDateRange(): Pick<
+function getQuoteWizardDefaultDateRange(): Pick<
   QuoteWizardSearchParams,
   "startRange" | "endRange"
 > {

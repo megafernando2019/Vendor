@@ -41,12 +41,13 @@ const QuoteWizardDetailsSidebar = ({
         </div>
       </div>
 
-      <QuoteWizardDetailModal
-        open={activeDetail !== null}
-        title={activeConfig?.title ?? "Detalle"}
-        html={activeHtml}
-        onClose={() => setActiveDetail(null)}
-      />
+      {activeDetail !== null ? (
+        <QuoteWizardDetailModal
+          title={activeConfig?.title ?? "Detalle"}
+          html={activeHtml}
+          onClose={() => setActiveDetail(null)}
+        />
+      ) : null}
     </>
   );
 };

@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { addOpcional } from "@/redux/slices/cotizacionSlice";
 import type { OpcionalTour } from "@/interfaces/opcionales-cotizacion";
+import { getDeparturesToursAction } from "@/app/actions/departuresTours";
 import {
   buildOpcionalSeleccionado,
   buildQuantityOptions,
@@ -14,7 +15,6 @@ import {
   getVisibleOpcionalRates,
   hasOpcionalPassengers,
   opcionalQtyKey,
-  parseDeparturesToursResponse,
   syncOpcionalQuantities,
 } from "@/interfaces/opcionales-cotizacion";
 import TourThumbImage from "@/components/common/TourThumbImage";
@@ -188,37 +188,18 @@ const QuoteWizardOpcionales = ({
       setQuantities({});
 
       try {
-        const res = await fetch(
-          `/api/departuresTours?blockade_uid=${encodeURIComponent(selectedDeparture.departureUid)}`,
-          { credentials: "include" },
+        const data = await getDeparturesToursAction(
+          selectedDeparture.departureUid,
         );
-
-        const data = (await res.json()) as {
-          success?: boolean;
-          message?: string;
-          data?: unknown;
-        };
 
         if (cancelled) return;
 
-        if (!res.ok || data.success === false) {
+        if (!data.success) {
           setError(data.message ?? "No se pudieron cargar los opcionales");
           return;
         }
 
-        setTours(
-          Array.isArray(data.data)
-            ? data.data.every(
-                (item) =>
-                  item &&
-                  typeof item === "object" &&
-                  "imageUrl" in item &&
-                  "rates" in item,
-              )
-              ? (data.data as OpcionalTour[])
-              : parseDeparturesToursResponse(data.data)
-            : [],
-        );
+        setTours(data.data);
       } catch {
         if (!cancelled) {
           setError("Error de conexión al consultar opcionales");

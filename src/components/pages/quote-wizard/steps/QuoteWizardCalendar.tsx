@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import type { QuoteWizardTour } from "@/utils/quoteWizardCotizar";
 import type { QuoteWizardSearchParams } from "@/utils/quoteWizardSearchParams";
 import {
@@ -36,10 +36,6 @@ const QuoteWizardCalendar = ({
 }: QuoteWizardCalendarProps) => {
   const { months, dayPrices } = calendar;
   const [selectedMonthKey, setSelectedMonthKey] = useState("");
-
-  useEffect(() => {
-    setSelectedMonthKey("");
-  }, [tour.clv]);
 
   const effectiveMonthKey = selectedMonthKey || months[0]?.key || "";
 
@@ -152,30 +148,30 @@ const QuoteWizardCalendar = ({
                 </div>
               ))}
 
-              {calendarCells.map((day, index) => {
-                const priceInfo = day ? priceByDay.get(day) : undefined;
+              {calendarCells.map((cell) => {
+                const priceInfo = cell.day ? priceByDay.get(cell.day) : undefined;
                 const isSelected =
                   priceInfo !== undefined &&
                   selectedDeparture?.departureUid === priceInfo.departureUid;
 
                 return (
                   <button
-                    key={`${selectedMonth.key}-${index}`}
+                    key={cell.key}
                     type="button"
                     disabled={!priceInfo}
-                    onClick={() => handleDaySelect(day)}
+                    onClick={() => handleDaySelect(cell.day)}
                     className={`tg-quote-wizard-calendar-day btn p-0 ${
                       priceInfo ? "has-price" : "is-empty"
                     } ${isSelected ? "selected" : ""}`}
                     aria-label={
-                      day && priceInfo
-                        ? `${day} de ${selectedMonth.label}, ${formatDeparturePrice(priceInfo.price, priceInfo.currency)}`
+                      cell.day && priceInfo
+                        ? `${cell.day} de ${selectedMonth.label}, ${formatDeparturePrice(priceInfo.price, priceInfo.currency)}`
                         : undefined
                     }
                   >
-                    {day !== null && (
+                    {cell.day !== null && (
                       <>
-                        <span className="tg-quote-wizard-day-number">{day}</span>
+                        <span className="tg-quote-wizard-day-number">{cell.day}</span>
                         {priceInfo ? (
                           <span
                             className={`tg-quote-wizard-price-tag tg-quote-wizard-price-tag--${priceInfo.program}`}

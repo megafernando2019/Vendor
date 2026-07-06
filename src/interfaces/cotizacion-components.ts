@@ -75,7 +75,7 @@ export function getHabitacionQuantity(room: HabitacionCotizacion): number {
   return room.quantity && room.quantity > 0 ? room.quantity : 1;
 }
 
-export function getHabitacionUnitTotal(room: HabitacionCotizacion): number {
+function getHabitacionUnitTotal(room: HabitacionCotizacion): number {
   return room.total ?? room.costs?.grand_total ?? 0;
 }
 
@@ -126,14 +126,6 @@ export function getRoomRulesForTab(
 
 export function ruleKey(rule: RoomRule, index: number): string {
   return `${rule.adt ?? 0}-${rule.mnrA ?? 0}-${rule.inf ?? 0}-${index}`;
-}
-
-export function formatRuleSummary(rule: RoomRule): string {
-  const parts: string[] = [];
-  if (rule.adt) parts.push(`${rule.adt} ADT`);
-  if (rule.mnrA) parts.push(`${rule.mnrA} MNR`);
-  if (rule.inf) parts.push(`${rule.inf} INF`);
-  return parts.join(" + ") || "Sin pasajeros";
 }
 
 export type CotizacionSelectedDeparture = {

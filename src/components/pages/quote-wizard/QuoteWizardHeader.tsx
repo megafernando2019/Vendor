@@ -97,7 +97,7 @@ const QuoteWizardHeader = ({
               </span>
             </p>
             <p className="mb-1 small text-morado-custom">
-              Total:{" "}
+              Total:
               <span className="fw-bold fs-5">
                 {formatMxnAmount(totalMxn)}
               </span>

@@ -81,13 +81,9 @@ const QuoteWizardContent = ({ mt }: QuoteWizardContentProps) => {
   );
 
   useEffect(() => {
-    setSelectedDeparture(null);
-    setActiveStep("fecha");
-    setEditingRoomId(null);
-    setEditingAsistenciaId(null);
     dispatch(clearRulesCotizacion());
     dispatch(clearHabitaciones());
-  }, [mt, dispatch]);
+  }, [dispatch]);
 
   useEffect(() => {
     if (!tour) return;

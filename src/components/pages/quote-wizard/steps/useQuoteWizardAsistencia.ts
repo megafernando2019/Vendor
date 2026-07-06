@@ -1,10 +1,12 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "react-toastify";
+import { getInsurancesAction } from "@/app/actions/insurances";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { addAsistencia, removeAsistencia } from "@/redux/slices/cotizacionSlice";
 import { getHabitacionQuantity, type HabitacionCotizacion } from "@/interfaces/cotizacion-components";
 import type {
   AddonSeleccionado,
+  AsistenciaSeleccionada,
   InsuranceProvidersMap,
 } from "@/interfaces/seguros-cotizacion";
 import {
@@ -25,6 +27,52 @@ function getMaxCoveragesFromRooms(habitaciones: HabitacionCotizacion[]): number 
   }, 0);
   if (passengers <= 0) return 1;
   return Math.min(3, passengers);
+}
+
+type AsistenciaFormValues = {
+  selectedProviderKey: string | null;
+  selectedProductId: number | null;
+  cantidadCoberturas: number;
+  selectedAddonIds: number[];
+};
+
+type ScopedFormDraft = {
+  scopeKey: string;
+  values: AsistenciaFormValues;
+};
+
+const EMPTY_FORM: AsistenciaFormValues = {
+  selectedProviderKey: null,
+  selectedProductId: null,
+  cantidadCoberturas: 1,
+  selectedAddonIds: [],
+};
+
+function buildDefaultFormValues(
+  providers: InsuranceProvidersMap,
+  editingItem: AsistenciaSeleccionada | null,
+): AsistenciaFormValues | null {
+  if (editingItem && providers[editingItem.providerKey]) {
+    return {
+      selectedProviderKey: editingItem.providerKey,
+      selectedProductId: editingItem.productId,
+      cantidadCoberturas: editingItem.coberturas?.length ?? 1,
+      selectedAddonIds:
+        editingItem.addonsSeleccionados?.map((addon) => addon.id) ?? [],
+    };
+  }
+
+  const keys = sortInsuranceProviderKeys(Object.keys(providers));
+  if (keys.length === 0) return null;
+
+  const firstKey = keys[0];
+  const firstProduct = providers[firstKey]?.seguros[0];
+  return {
+    selectedProviderKey: firstKey,
+    selectedProductId: firstProduct?.id ?? null,
+    cantidadCoberturas: 1,
+    selectedAddonIds: [],
+  };
 }
 
 type UseQuoteWizardAsistenciaParams = {
@@ -60,23 +108,59 @@ export function useQuoteWizardAsistencia({
   const [providers, setProviders] = useState<InsuranceProvidersMap>({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [selectedProviderKey, setSelectedProviderKey] = useState<string | null>(
-    null,
-  );
-  const [cantidadCoberturas, setCantidadCoberturas] = useState(1);
-  const [selectedProductId, setSelectedProductId] = useState<number | null>(
-    null,
-  );
-  const [selectedAddonIds, setSelectedAddonIds] = useState<number[]>([]);
+  const [formDraft, setFormDraft] = useState<ScopedFormDraft | null>(null);
 
+  const departureKey = selectedDeparture?.departureUid ?? "none";
   const providerKeys = useMemo(
     () => sortInsuranceProviderKeys(Object.keys(providers)),
     [providers],
   );
 
+  const formScopeKey = useMemo(() => {
+    if (editingItem && providers[editingItem.providerKey]) {
+      return `edit:${departureKey}:${editingItem.id}`;
+    }
+    return `new:${departureKey}:${providerKeys.join(",")}`;
+  }, [departureKey, editingItem, providerKeys, providers]);
+
+  const bootstrapFormValues = useMemo(
+    () => buildDefaultFormValues(providers, editingItem),
+    [providers, editingItem],
+  );
+
+  const formValues =
+    formDraft?.scopeKey === formScopeKey
+      ? formDraft.values
+      : bootstrapFormValues ?? EMPTY_FORM;
+
+  const updateFormValues = useCallback(
+    (updater: (current: AsistenciaFormValues) => AsistenciaFormValues) => {
+      setFormDraft((prev) => {
+        const current =
+          prev?.scopeKey === formScopeKey ? prev.values : formValues;
+        return {
+          scopeKey: formScopeKey,
+          values: updater(current),
+        };
+      });
+    },
+    [formScopeKey, formValues],
+  );
+
+  const {
+    selectedProviderKey,
+    selectedProductId,
+    selectedAddonIds,
+  } = formValues;
+
   const maxCoberturas = useMemo(
     () => getMaxCoveragesFromRooms(habitacionesSeleccionadas),
     [habitacionesSeleccionadas],
+  );
+
+  const cantidadCoberturas = Math.min(
+    formValues.cantidadCoberturas,
+    maxCoberturas,
   );
 
   const selectedProvider = selectedProviderKey
@@ -123,22 +207,29 @@ export function useQuoteWizardAsistencia({
     );
   }, [selectedProvider, coberturaLineas, insuranceDays, selectedAddons]);
 
-  const resetForm = useCallback(() => {
-    setCantidadCoberturas(1);
-    setSelectedProductId(null);
-    setSelectedAddonIds([]);
-  }, []);
+  const resetFormFields = useCallback(() => {
+    updateFormValues(() => ({
+      selectedProviderKey: formValues.selectedProviderKey,
+      selectedProductId:
+        formValues.selectedProviderKey != null
+          ? (providers[formValues.selectedProviderKey]?.seguros[0]?.id ?? null)
+          : null,
+      cantidadCoberturas: 1,
+      selectedAddonIds: [],
+    }));
+  }, [formValues.selectedProviderKey, providers, updateFormValues]);
 
   const handleProviderSelect = useCallback(
     (key: string) => {
-      setSelectedProviderKey(key);
-      resetForm();
       const seguros = providers[key]?.seguros ?? [];
-      if (seguros.length > 0) {
-        setSelectedProductId(seguros[0].id);
-      }
+      updateFormValues(() => ({
+        selectedProviderKey: key,
+        selectedProductId: seguros[0]?.id ?? null,
+        cantidadCoberturas: 1,
+        selectedAddonIds: [],
+      }));
     },
-    [providers, resetForm],
+    [providers, updateFormValues],
   );
 
   useEffect(() => {
@@ -150,42 +241,19 @@ export function useQuoteWizardAsistencia({
       setLoading(true);
       setError(null);
       setProviders({});
-      setSelectedProviderKey(null);
-      resetForm();
+      setFormDraft(null);
 
       try {
-        const res = await fetch("/api/getInsurances", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          credentials: "include",
-          body: JSON.stringify({ mt, days: tour.days }),
-        });
-
-        const data = (await res.json()) as {
-          success?: boolean;
-          message?: string;
-          data?: InsuranceProvidersMap;
-        };
+        const data = await getInsurancesAction(mt, tour.days);
 
         if (cancelled) return;
 
-        if (!res.ok || data.success === false) {
+        if (!data.success) {
           setError(data.message ?? "No se pudieron cargar las asistencias");
           return;
         }
 
-        const map = data.data ?? {};
-        setProviders(map);
-
-        const keys = sortInsuranceProviderKeys(Object.keys(map));
-        if (keys.length > 0) {
-          const firstKey = keys[0];
-          setSelectedProviderKey(firstKey);
-          const firstProduct = map[firstKey]?.seguros[0];
-          if (firstProduct) {
-            setSelectedProductId(firstProduct.id);
-          }
-        }
+        setProviders(data.data);
       } catch {
         if (!cancelled) {
           setError("Error de conexión al consultar asistencias");
@@ -202,46 +270,46 @@ export function useQuoteWizardAsistencia({
     return () => {
       cancelled = true;
     };
-  }, [mt, tour.days, selectedDeparture, resetForm]);
+  }, [mt, tour.days, selectedDeparture]);
 
-  useEffect(() => {
-    if (!editingItem || Object.keys(providers).length === 0) return;
-    if (!providers[editingItem.providerKey]) return;
+  const setCantidadCoberturas = useCallback(
+    (value: number) => {
+      updateFormValues((current) => ({
+        ...current,
+        cantidadCoberturas: value,
+      }));
+    },
+    [updateFormValues],
+  );
 
-    setSelectedProviderKey(editingItem.providerKey);
-    setSelectedProductId(editingItem.productId);
-    setCantidadCoberturas(editingItem.coberturas?.length ?? 1);
-    setSelectedAddonIds(
-      editingItem.addonsSeleccionados?.map((addon) => addon.id) ?? [],
-    );
-  }, [editingItem, providers]);
+  const setSelectedProductId = useCallback(
+    (productId: number) => {
+      updateFormValues((current) => ({
+        ...current,
+        selectedProductId: productId,
+      }));
+    },
+    [updateFormValues],
+  );
 
-  useEffect(() => {
-    if (cantidadCoberturas > maxCoberturas) {
-      setCantidadCoberturas(maxCoberturas);
-    }
-  }, [cantidadCoberturas, maxCoberturas]);
-
-  const toggleAddon = useCallback((addonId: number) => {
-    setSelectedAddonIds((prev) =>
-      prev.includes(addonId)
-        ? prev.filter((id) => id !== addonId)
-        : [...prev, addonId],
-    );
-  }, []);
+  const toggleAddon = useCallback(
+    (addonId: number) => {
+      updateFormValues((current) => ({
+        ...current,
+        selectedAddonIds: current.selectedAddonIds.includes(addonId)
+          ? current.selectedAddonIds.filter((id) => id !== addonId)
+          : [...current.selectedAddonIds, addonId],
+      }));
+    },
+    [updateFormValues],
+  );
 
   const handleCancel = useCallback(() => {
-    resetForm();
-    if (selectedProviderKey) {
-      const seguros = providers[selectedProviderKey]?.seguros ?? [];
-      if (seguros.length > 0) {
-        setSelectedProductId(seguros[0].id);
-      }
-    }
+    resetFormFields();
     if (editingAsistenciaId) {
       onEditingComplete?.();
     }
-  }, [providers, resetForm, selectedProviderKey, editingAsistenciaId, onEditingComplete]);
+  }, [editingAsistenciaId, onEditingComplete, resetFormFields]);
 
   const handleAdd = useCallback(() => {
     if (!selectedProviderKey || !selectedProvider || !selectedProduct) {

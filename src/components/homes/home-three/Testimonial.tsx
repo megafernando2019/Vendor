@@ -125,7 +125,7 @@ const tabItems = [
 const Testimonial = () => {
   return (
     <div
-      className="tg-testimonial-section tg-listing-area pt-105 bg-testimonial"
+      className="tg-testimonial-section tg-listing-area pt-105 pb-100 bg-testimonial"
     >
       <div className="container">
         <div className="row justify-content-center">
