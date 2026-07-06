@@ -2,9 +2,27 @@ import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { REHYDRATE } from "redux-persist";
 import { TravelProgram, ProgramInfo } from "@/interfaces/disponibilidad";
 import { normalizePassengers } from "@/lib/searchValidation";
-import type { HabitacionCotizacion } from "@/interfaces/cotizacion-components";
+import { DEFAULT_DESTINATION } from "@/interfaces/search";
+import type {
+  CotizacionRulesData,
+  CotizacionSelectedDeparture,
+  HabitacionCotizacion,
+  HabitacionCosts,
+  RoomRule,
+  RoomTabLabel,
+  RoomTypeApi,
+} from "@/interfaces/cotizacion-components";
+import {
+  getHabitacionQuantity,
+  habitacionConfigKey,
+} from "@/interfaces/cotizacion-components";
 import type { AsistenciaSeleccionada } from "@/interfaces/seguros-cotizacion";
 import type { OpcionalSeleccionado } from "@/interfaces/opcionales-cotizacion";
+import {
+  departureDateForRulesApi,
+  parseRoomCostsResponse,
+  parseRulesCotizacionResponse,
+} from "@/utils/cotizacionRules";
 
 export const COTIZACION_HABITACIONES_KEY = "cotizacion_habitaciones";
 export const COTIZACION_ASISTENCIAS_KEY = "cotizacion_asistencias";
@@ -13,6 +31,13 @@ export const COTIZACION_OPCIONALES_KEY = "cotizacion_opcionales";
 type CotizacionState = {
   bloqueo: TravelProgram | null;
   programInfo: ProgramInfo | null;
+  selectedDeparture: CotizacionSelectedDeparture | null;
+  rules: CotizacionRulesData | null;
+  rulesLoading: boolean;
+  rulesError: string | null;
+  roomCostsPreview: HabitacionCosts | null;
+  roomCostsLoading: boolean;
+  roomCostsError: string | null;
   habitacionesSeleccionadas: HabitacionCotizacion[];
   asistenciasSeleccionadas: AsistenciaSeleccionada[];
   opcionalesSeleccionados: OpcionalSeleccionado[];
@@ -23,7 +48,12 @@ type CotizacionState = {
 function ensureHabitaciones(state: CotizacionState) {
   if (!Array.isArray(state.habitacionesSeleccionadas)) {
     state.habitacionesSeleccionadas = [];
+    return;
   }
+  state.habitacionesSeleccionadas = state.habitacionesSeleccionadas.map((room) => ({
+    ...room,
+    quantity: getHabitacionQuantity(room),
+  }));
 }
 
 function ensureAsistencias(state: CotizacionState) {
@@ -80,6 +110,13 @@ function syncOpcionalesLocalStorage(opcionales: OpcionalSeleccionado[]) {
 const initialState: CotizacionState = {
   bloqueo: null,
   programInfo: null,
+  selectedDeparture: null,
+  rules: null,
+  rulesLoading: false,
+  rulesError: null,
+  roomCostsPreview: null,
+  roomCostsLoading: false,
+  roomCostsError: null,
   habitacionesSeleccionadas: [],
   asistenciasSeleccionadas: [],
   opcionalesSeleccionados: [],
@@ -160,6 +197,104 @@ export const fetchCotizar = createAsyncThunk(
   }
 );
 
+export const fetchRulesCotizacion = createAsyncThunk(
+  "cotizacion/fetchRulesCotizacion",
+  async (
+    args: {
+      mt: string;
+      uid: string;
+      departuredAt: string;
+      currency: string;
+      price: number;
+    },
+    { rejectWithValue },
+  ) => {
+    try {
+      const date = departureDateForRulesApi(args.departuredAt);
+      const res = await fetch(
+        `/api/getRulesCotizacion/${encodeURIComponent(args.mt)}/${encodeURIComponent(args.uid)}/${encodeURIComponent(date)}`,
+        { credentials: "include" },
+      );
+      const data = (await res.json()) as {
+        success?: boolean;
+        message?: string;
+        data?: unknown;
+      };
+
+      if (!res.ok || data.success === false) {
+        return rejectWithValue(
+          data.message ?? "No se pudieron cargar las reglas de habitación",
+        );
+      }
+
+      const rules = parseRulesCotizacionResponse(data.data, args.currency);
+      if (!rules) {
+        return rejectWithValue("No se encontraron reglas para esta salida");
+      }
+
+      const selectedDeparture: CotizacionSelectedDeparture = {
+        mt: args.mt,
+        blockadeUid: args.uid,
+        departuredAt: args.departuredAt,
+        currency: args.currency,
+        price: args.price,
+      };
+
+      return { rules, selectedDeparture };
+    } catch {
+      return rejectWithValue("Error de conexión al consultar reglas");
+    }
+  },
+);
+
+export const fetchRoomCosts = createAsyncThunk(
+  "cotizacion/fetchRoomCosts",
+  async (
+    args: {
+      destinationId: number;
+      passengers: RoomRule;
+      roomType: RoomTypeApi;
+      blockadeUid: string;
+    },
+    { rejectWithValue },
+  ) => {
+    try {
+      const res = await fetch("/api/costsRooms", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+          destination_id: args.destinationId,
+          passengers: args.passengers,
+          room_type: args.roomType,
+          blockade_uid: args.blockadeUid,
+        }),
+      });
+
+      const data = (await res.json()) as {
+        success?: boolean;
+        message?: string;
+        data?: unknown;
+      };
+
+      if (!res.ok || data.success === false) {
+        return rejectWithValue(
+          data.message ?? "No se pudieron calcular los costos",
+        );
+      }
+
+      const costs = parseRoomCostsResponse(data.data);
+      if (!costs) {
+        return rejectWithValue("Respuesta de costos inválida");
+      }
+
+      return costs;
+    } catch {
+      return rejectWithValue("Error de conexión al consultar costos");
+    }
+  },
+);
+
 const cotizacionSlice = createSlice({
   name: "cotizacion",
   initialState,
@@ -167,6 +302,13 @@ const cotizacionSlice = createSlice({
     resetCotizacion(state) {
       state.bloqueo = null;
       state.programInfo = null;
+      state.selectedDeparture = null;
+      state.rules = null;
+      state.rulesLoading = false;
+      state.rulesError = null;
+      state.roomCostsPreview = null;
+      state.roomCostsLoading = false;
+      state.roomCostsError = null;
       state.habitacionesSeleccionadas = [];
       state.asistenciasSeleccionadas = [];
       state.opcionalesSeleccionados = [];
@@ -176,16 +318,85 @@ const cotizacionSlice = createSlice({
       syncAsistenciasLocalStorage([]);
       syncOpcionalesLocalStorage([]);
     },
+    clearRulesCotizacion(state) {
+      state.selectedDeparture = null;
+      state.rules = null;
+      state.rulesLoading = false;
+      state.rulesError = null;
+      state.roomCostsPreview = null;
+      state.roomCostsLoading = false;
+      state.roomCostsError = null;
+    },
+    setProgramInfo(state, action: PayloadAction<ProgramInfo>) {
+      state.programInfo = action.payload;
+    },
     addHabitacion(state, action: PayloadAction<HabitacionCotizacion>) {
       ensureHabitaciones(state);
-      state.habitacionesSeleccionadas.push(action.payload);
+      const incoming: HabitacionCotizacion = {
+        ...action.payload,
+        quantity: action.payload.quantity ?? 1,
+      };
+      const incomingKey = habitacionConfigKey(incoming);
+      const existing = state.habitacionesSeleccionadas.find(
+        (room) => habitacionConfigKey(room) === incomingKey,
+      );
+
+      if (existing) {
+        existing.quantity = getHabitacionQuantity(existing) + incoming.quantity!;
+        existing.costs = incoming.costs;
+        existing.total = incoming.total;
+        existing.roomLabel = incoming.roomLabel;
+      } else {
+        state.habitacionesSeleccionadas.push(incoming);
+      }
+
       syncHabitacionesLocalStorage(state.habitacionesSeleccionadas);
     },
     removeHabitacion(state, action: PayloadAction<string>) {
       ensureHabitaciones(state);
-      state.habitacionesSeleccionadas = state.habitacionesSeleccionadas.filter(
-        (h) => h.id !== action.payload
+      const room = state.habitacionesSeleccionadas.find(
+        (item) => item.id === action.payload,
       );
+      if (!room) return;
+
+      if (getHabitacionQuantity(room) > 1) {
+        room.quantity = getHabitacionQuantity(room) - 1;
+      } else {
+        state.habitacionesSeleccionadas = state.habitacionesSeleccionadas.filter(
+          (h) => h.id !== action.payload,
+        );
+      }
+
+      syncHabitacionesLocalStorage(state.habitacionesSeleccionadas);
+    },
+    updateHabitacion(state, action: PayloadAction<HabitacionCotizacion>) {
+      ensureHabitaciones(state);
+      const incoming: HabitacionCotizacion = {
+        ...action.payload,
+        quantity: getHabitacionQuantity(action.payload),
+      };
+      const index = state.habitacionesSeleccionadas.findIndex(
+        (h) => h.id === incoming.id,
+      );
+      if (index === -1) return;
+
+      const incomingKey = habitacionConfigKey(incoming);
+      const duplicate = state.habitacionesSeleccionadas.find(
+        (room, roomIndex) =>
+          roomIndex !== index && habitacionConfigKey(room) === incomingKey,
+      );
+
+      if (duplicate) {
+        duplicate.quantity =
+          getHabitacionQuantity(duplicate) + getHabitacionQuantity(incoming);
+        duplicate.costs = incoming.costs;
+        duplicate.total = incoming.total;
+        duplicate.roomLabel = incoming.roomLabel;
+        state.habitacionesSeleccionadas.splice(index, 1);
+      } else {
+        state.habitacionesSeleccionadas[index] = incoming;
+      }
+
       syncHabitacionesLocalStorage(state.habitacionesSeleccionadas);
     },
     clearHabitaciones(state) {
@@ -250,14 +461,56 @@ const cotizacionSlice = createSlice({
       .addCase(fetchCotizar.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
+      })
+      .addCase(fetchRulesCotizacion.pending, (state, action) => {
+        state.rulesLoading = true;
+        state.rulesError = null;
+        state.roomCostsPreview = null;
+        state.roomCostsError = null;
+        state.selectedDeparture = {
+          mt: action.meta.arg.mt,
+          blockadeUid: action.meta.arg.uid,
+          departuredAt: action.meta.arg.departuredAt,
+          currency: action.meta.arg.currency,
+          price: action.meta.arg.price,
+        };
+      })
+      .addCase(fetchRulesCotizacion.fulfilled, (state, action) => {
+        state.rulesLoading = false;
+        state.rules = action.payload.rules;
+        state.selectedDeparture = action.payload.selectedDeparture;
+        state.rulesError = null;
+        state.roomCostsPreview = null;
+      })
+      .addCase(fetchRulesCotizacion.rejected, (state, action) => {
+        state.rulesLoading = false;
+        state.rulesError = action.payload as string;
+        state.rules = null;
+        state.roomCostsPreview = null;
+      })
+      .addCase(fetchRoomCosts.pending, (state) => {
+        state.roomCostsLoading = true;
+        state.roomCostsError = null;
+      })
+      .addCase(fetchRoomCosts.fulfilled, (state, action) => {
+        state.roomCostsLoading = false;
+        state.roomCostsPreview = action.payload;
+      })
+      .addCase(fetchRoomCosts.rejected, (state, action) => {
+        state.roomCostsLoading = false;
+        state.roomCostsError = action.payload as string;
+        state.roomCostsPreview = null;
       });
   },
 });
 
 export const {
   resetCotizacion,
+  clearRulesCotizacion,
+  setProgramInfo,
   addHabitacion,
   removeHabitacion,
+  updateHabitacion,
   clearHabitaciones,
   addAsistencia,
   removeAsistencia,

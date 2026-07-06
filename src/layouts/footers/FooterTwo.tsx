@@ -1,13 +1,14 @@
 "use client"
 import Image from "next/image"
 import Link from "next/link"
+import { preventNativeFormSubmit } from "@/utils/preventNativeFormSubmit"
 
-import logo from "@/assets/img/logo/logo-white.png"
+import logo from "@/assets/img/logo/logo-white.webp"
 
 const FooterTwo = () => {
    return (
       <footer>
-         <div className="tg-footer-area tg-footer-su-wrapper tg-footer-su-2-wrapper pt-130 include-bg" style={{ backgroundImage: `url(/assets/img/footer/footer-3.jpg)` }}>
+         <div className="tg-footer-area tg-footer-su-wrapper tg-footer-su-2-wrapper pt-130 include-bg" style={{ backgroundImage: `url(/assets/img/footer/footer-3.webp)` }}>
             <div className="container">
                <div className="tg-footer-top mb-45">
                   <div className="row">
@@ -20,11 +21,11 @@ const FooterTwo = () => {
                               convallis mollis nullam congue sittle
                               rivers of Finland Quebec.</p>
                            <div className="tg-footer-form mb-30">
-                              <form onSubmit={(e) => e.preventDefault()}>
-                                 <input type="email" placeholder="Enter your mail" />
-                                 <button className="tg-footer-form-btn" type="submit">
+                              <form onSubmit={preventNativeFormSubmit}>
+                                 <input aria-label="Enter your mail" type="email" placeholder="Enter your mail" />
+                                 <button className="tg-footer-form-btn" type="submit" aria-label="Subscribe">
                                     <svg width="22" height="17" viewBox="0 0 22 17" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                       <path d="M1.52514 8.47486H20.4749M20.4749 8.47486L13.5 1.5M20.4749 8.47486L13.5 15.4497" stroke="white" strokeWidth="1.77778" strokeLinecap="round" strokeLinejoin="round" />
+                                       <path d="M1.53 8.47H20.47M20.47 8.47L13.5 1.5M20.47 8.47L13.5 15.45" stroke="white" strokeWidth="1.77778" strokeLinecap="round" strokeLinejoin="round" />
                                     </svg>
                                  </button>
                               </form>
@@ -70,8 +71,8 @@ const FooterTwo = () => {
                                  <Link className="d-flex" href="https://www.google.com/maps/@41.6758525,-86.2531698,18.17z">
                                     <span className="mr-15">
                                        <svg width="20" height="24" viewBox="0 0 20 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                          <path d="M19.0013 10.0608C19.0013 16.8486 10.3346 22.6668 10.3346 22.6668C10.3346 22.6668 1.66797 16.8486 1.66797 10.0608C1.66797 7.74615 2.58106 5.52634 4.20638 3.88965C5.83169 2.25297 8.03609 1.3335 10.3346 1.3335C12.6332 1.3335 14.8376 2.25297 16.4629 3.88965C18.0882 5.52634 19.0013 7.74615 19.0013 10.0608Z" stroke="white" strokeWidth="1.73333" strokeLinecap="round" strokeLinejoin="round" />
-                                          <path d="M10.3346 12.9699C11.9301 12.9699 13.2235 11.6674 13.2235 10.0608C13.2235 8.45412 11.9301 7.15168 10.3346 7.15168C8.73915 7.15168 7.44575 8.45412 7.44575 10.0608C7.44575 11.6674 8.73915 12.9699 10.3346 12.9699Z" stroke="white" strokeWidth="1.73333" strokeLinecap="round" strokeLinejoin="round" />
+                                          <path d="M19 10.06C19 16.85 10.33 22.67 10.33 22.67C10.33 22.67 1.67 16.85 1.67 10.06C1.67 7.75 2.58 5.53 4.21 3.89C5.83 2.25 8.04 1.33 10.33 1.33C12.63 1.33 14.84 2.25 16.46 3.89C18.09 5.53 19 7.75 19 10.06Z" stroke="white" strokeWidth="1.73333" strokeLinecap="round" strokeLinejoin="round" />
+                                          <path d="M10.33 12.97C11.93 12.97 13.22 11.67 13.22 10.06C13.22 8.45 11.93 7.15 10.33 7.15C8.74 7.15 7.45 8.45 7.45 10.06C7.45 11.67 8.74 12.97 10.33 12.97Z" stroke="white" strokeWidth="1.73333" strokeLinecap="round" strokeLinejoin="round" />
                                        </svg>
                                     </span>
                                     58 Street Commercial Road<br /> Fratton, Australia
@@ -88,7 +89,7 @@ const FooterTwo = () => {
                               <li className="d-flex">
                                  <span className="mr-15">
                                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                       <path d="M11.9987 5.60006V12.0001L16.2654 14.1334M22.6654 12.0002C22.6654 17.8912 17.8897 22.6668 11.9987 22.6668C6.10766 22.6668 1.33203 17.8912 1.33203 12.0002C1.33203 6.10912 6.10766 1.3335 11.9987 1.3335C17.8897 1.3335 22.6654 6.10912 22.6654 12.0002Z" stroke="white" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                                       <path d="M12 5.60V12L16.27 14.13M22.67 12C22.67 17.89 17.89 22.67 12 22.67C6.11 22.67 1.33 17.89 1.33 12C1.33 6.11 6.11 1.33 12 1.33C17.89 1.33 22.67 6.11 22.67 12Z" stroke="white" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
                                     </svg>
                                  </span>
                                  <p className="mb-0">

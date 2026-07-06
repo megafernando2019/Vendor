@@ -2,7 +2,7 @@ import Image from "next/image"
 import Link from "next/link"
 import Button from "@/components/common/Button"
 
-import ads from "@/assets/img/blog/sidebar/ads.jpg"
+import ads from "@/assets/img/blog/sidebar/ads.webp"
 
 const Ads = () => {
    return (

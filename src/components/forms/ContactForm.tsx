@@ -47,19 +47,19 @@ const ContactForm = () => {
       <form ref={form} onSubmit={handleSubmit(sendEmail)} id="contact-form">
          <div className="row">
             <div className="col-lg-6 mb-25">
-               <input className="input" type="text" {...register("user_name")} placeholder="Name" />
+               <input aria-label="Name" className="input" type="text" {...register("user_name")} placeholder="Name" />
                <p className="form_error">{errors.user_name?.message}</p>
             </div>
             <div className="col-lg-6 mb-25">
-               <input className="input" type="email" {...register("user_email")} placeholder="E-mail" />
+               <input aria-label="E-mail" className="input" type="email" {...register("user_email")} placeholder="E-mail" />
                <p className="form_error">{errors.user_email?.message}</p>
             </div>
             <div className="col-lg-12 mb-25">
-               <input className="input" type="text" {...register("web")} placeholder="Website" />
+               <input aria-label="Website" className="input" type="text" {...register("web")} placeholder="Website" />
                <p className="form_error">{errors.web?.message}</p>
             </div>
             <div className="col-lg-12">
-               <textarea className="textarea mb-5" {...register("message")} placeholder="Comments"></textarea>
+               <textarea aria-label="Comments" className="textarea mb-5" {...register("message")} placeholder="Comments"></textarea>
                <p className="form_error">{errors.message?.message}</p>
                <div className="review-checkbox d-flex align-items-center mb-25">
                   <input name="checkbox" className="tg-checkbox" type="checkbox" id="australia" />

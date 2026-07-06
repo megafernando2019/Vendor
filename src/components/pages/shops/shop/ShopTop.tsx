@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Product, selectProducts } from "@/redux/features/productSlice";
 import NiceSelect from "@/ui/NiceSelect";
-import {useState } from "react";
-import { useSelector } from "react-redux";
+import {useSelector } from "react-redux";
 
 interface ProductTopProps {
    startOffset: number;
@@ -20,11 +19,8 @@ const ShopTop = ({ startOffset, endOffset, totalItems, setProducts, }: ProductTo
 
    const allProducts = useSelector(selectProducts);
    const filteredAllProduct = allProducts
-   const [selected, setSelected] = useState('');
 
    const niceSelectHandler = (item: Option) => {
-      setSelected(item.value);
-   
       let sortedProducts = [...filteredAllProduct];
    
       switch (item.value) {
@@ -73,12 +69,12 @@ const ShopTop = ({ startOffset, endOffset, totalItems, setProducts, }: ProductTo
                         defaultCurrent={0}
                         onChange={niceSelectHandler}
                         name=""
-                        placeholder="" />
+                        placeholder=""  ariaLabel="Sort by" />
                   </div>
                   <div className="d-none d-sm-block">
                      <div className="tg-listing-box-view ml-10 d-flex">
                         <div className="list-switch-item">
-                           <button className="grid-view active">
+                           <button type="button" className="grid-view active" aria-label="Grid view">
                               <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                  <path d="M8 1H1V8H8V1Z" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
                                  <path d="M19 1H12V8H19V1Z" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
@@ -88,7 +84,7 @@ const ShopTop = ({ startOffset, endOffset, totalItems, setProducts, }: ProductTo
                            </button>
                         </div>
                         <div className="list-switch-item ml-5">
-                           <button className="list-view grids">
+                           <button type="button" className="list-view grids" aria-label="List view">
                               <svg width="20" height="14" viewBox="0 0 20 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                                  <path d="M6 1H19M6 7H19M6 13H19M1 1H1.01M1 7H1.01M1 13H1.01" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                               </svg>

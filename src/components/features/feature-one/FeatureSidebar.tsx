@@ -2,16 +2,79 @@
 "use client"
 import shop_data from "@/data/ShopData";
 import { selectProducts } from "@/redux/features/productSlice";
-import { useEffect, useState } from "react";
+import { useReducer } from "react";
 import { useSelector } from "react-redux";
 import { Rating } from 'react-simple-star-rating';
 import PriceRange from "./PriceRange";
+import { FilterSidebarListItem } from "@/components/common/FilterSidebarListItem";
 
 interface FilterCriteria {
   category: string;
   amenities: string;
   language: string;
   rating: number | null;
+  searchQuery: string;
+}
+
+type SidebarFilterState = FilterCriteria & {
+  priceValue: [number, number];
+};
+
+type SidebarFilterAction =
+  | { type: 'toggleCategory'; category: string }
+  | { type: 'toggleAmenities'; amenities: string }
+  | { type: 'toggleLanguage'; language: string }
+  | { type: 'toggleRating'; rating: number }
+  | { type: 'setSearchQuery'; searchQuery: string }
+  | { type: 'setPriceValue'; priceValue: number[] }
+  | { type: 'reset'; maxPrice: number };
+
+const createInitialFilterState = (maxPrice: number): SidebarFilterState => ({
+  category: '',
+  amenities: '',
+  language: '',
+  rating: null,
+  searchQuery: '',
+  priceValue: [0, maxPrice],
+});
+
+function sidebarFilterReducer(
+  state: SidebarFilterState,
+  action: SidebarFilterAction,
+): SidebarFilterState {
+  switch (action.type) {
+    case 'toggleCategory':
+      return {
+        ...state,
+        category: state.category === action.category ? '' : action.category,
+      };
+    case 'toggleAmenities':
+      return {
+        ...state,
+        amenities: state.amenities === action.amenities ? '' : action.amenities,
+      };
+    case 'toggleLanguage':
+      return {
+        ...state,
+        language: state.language === action.language ? '' : action.language,
+      };
+    case 'toggleRating':
+      return {
+        ...state,
+        rating: state.rating === action.rating ? null : action.rating,
+      };
+    case 'setSearchQuery':
+      return { ...state, searchQuery: action.searchQuery };
+    case 'setPriceValue':
+      return {
+        ...state,
+        priceValue: [action.priceValue[0], action.priceValue[1]],
+      };
+    case 'reset':
+      return createInitialFilterState(action.maxPrice);
+    default:
+      return state;
+  }
 }
 
 interface FeatureSidebarProps {
@@ -19,15 +82,18 @@ interface FeatureSidebarProps {
 }
 
 const FeatureSidebar = ({ setProducts }: FeatureSidebarProps) => {
-  
   const allProducts = useSelector(selectProducts);
   const filterdProduct = allProducts.filter(product => product.page === 'shop_1');
 
-  const [categorySelected, setCategorySelected] = useState('');
-  const [amenitiesSelected, setAmenitiesSelected] = useState('');
-  const [languageSelected, setLanguageSelected] = useState('');
-  const [ratingSelected, setRatingSelected] = useState<number | null>(null);
-  const [searchQuery, setSearchQuery] = useState('');
+  const maxPrice = shop_data.reduce((max, item) => {
+    return item.price > max ? item.price : max;
+  }, 0);
+
+  const [filter, dispatch] = useReducer(
+    sidebarFilterReducer,
+    maxPrice,
+    createInitialFilterState,
+  );
 
   const categoryFilter = filterdProduct.map(product => product.category);
   const amenitiesFilter = filterdProduct.map(product => product.amenities);
@@ -37,40 +103,13 @@ const FeatureSidebar = ({ setProducts }: FeatureSidebarProps) => {
   const allAmenities = ['All Amenities', ...new Set(amenitiesFilter)];
   const allLanguage = ['All Language', ...new Set(languageFilter)];
 
-  // Handle category selection
-  const handleCategory = (category: string) => {
-    setCategorySelected(prevCategory => prevCategory === category ? '' : category);
-    filterProducts({ category: category === categorySelected ? '' : category, amenities: amenitiesSelected, language: languageSelected, rating: ratingSelected });
-  };
-
-  // Handle amenities selection
-  const handleAmenities = (amenities: string) => {
-    setAmenitiesSelected(prevAmenities => prevAmenities === amenities ? '' : amenities);
-    filterProducts({ category: categorySelected, amenities: amenities === amenitiesSelected ? '' : amenities, language: languageSelected, rating: ratingSelected });
-  };
-
-  // Handle language selection
-  const handleLanguage = (language: string) => {
-    setLanguageSelected(prevLanguage => prevLanguage === language ? '' : language);
-    filterProducts({ category: categorySelected, amenities: amenitiesSelected, language: language === languageSelected ? '' : language, rating: ratingSelected });
-  };
-
-  // Handle rating selection
-  const handleRating = (rating: number) => {
-    setRatingSelected(prevRating => prevRating === rating ? null : rating);
-    filterProducts({ category: categorySelected, amenities: amenitiesSelected, language: languageSelected, rating: rating === ratingSelected ? null : rating });
-  };
-
-  // Handle search
-  const handleSearch = (query: string) => {
-    const filtered = allProducts.filter(product =>
-      product.title.toLowerCase().includes(query.toLowerCase())
-    );
-    setProducts(filtered);
-  };
-
-
-  const filterProducts = ({ category, amenities, language, rating }: FilterCriteria) => {
+  const filterProducts = ({
+    category,
+    amenities,
+    language,
+    rating,
+    searchQuery,
+  }: FilterCriteria) => {
     let filteredProducts = allProducts;
 
     if (searchQuery.trim()) {
@@ -98,21 +137,54 @@ const FeatureSidebar = ({ setProducts }: FeatureSidebarProps) => {
     setProducts(filteredProducts);
   };
 
-  // handle Price
-  const maxPrice = shop_data.reduce((max, item) => {
-    return item.price > max ? item.price : max;
-  }, 0);
-
-  const [priceValue, setPriceValue] = useState([0, maxPrice]);
-
-  useEffect(() => {
-    const filterPrice = shop_data.filter((j) => j.price >= priceValue[0] && j.price <= priceValue[1]);
+  const applyPriceFilter = (priceValue: number[]) => {
+    const filterPrice = shop_data.filter(
+      (item) => item.price >= priceValue[0] && item.price <= priceValue[1],
+    );
     setProducts(filterPrice);
-  }, [priceValue, setProducts]);
+  };
+
+  const handleCategory = (category: string) => {
+    const next = sidebarFilterReducer(filter, { type: 'toggleCategory', category });
+    dispatch({ type: 'toggleCategory', category });
+    filterProducts(next);
+  };
+
+  const handleAmenities = (amenities: string) => {
+    const next = sidebarFilterReducer(filter, { type: 'toggleAmenities', amenities });
+    dispatch({ type: 'toggleAmenities', amenities });
+    filterProducts(next);
+  };
+
+  const handleLanguage = (language: string) => {
+    const next = sidebarFilterReducer(filter, { type: 'toggleLanguage', language });
+    dispatch({ type: 'toggleLanguage', language });
+    filterProducts(next);
+  };
+
+  const handleRating = (rating: number) => {
+    const next = sidebarFilterReducer(filter, { type: 'toggleRating', rating });
+    dispatch({ type: 'toggleRating', rating });
+    filterProducts(next);
+  };
 
   const handleChanges = (val: number[]) => {
-    setPriceValue(val)
-  }
+    dispatch({ type: 'setPriceValue', priceValue: val });
+    applyPriceFilter(val);
+  };
+
+  const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const filtered = allProducts.filter(product =>
+      product.title.toLowerCase().includes(filter.searchQuery.toLowerCase())
+    );
+    setProducts(filtered);
+  };
+
+  const handleResetAll = () => {
+    dispatch({ type: 'reset', maxPrice });
+    setProducts(filterdProduct);
+  };
 
   return (
     <div className="col-xl-3 col-lg-4 order-last order-lg-first">
@@ -120,24 +192,25 @@ const FeatureSidebar = ({ setProducts }: FeatureSidebarProps) => {
         <div className="tg-filter-item">
           <div className="d-flex justify-content-between align-items-center mb-10">
             <h4 className="tg-filter-title mb-0">Search</h4>
-            <a className="tg-filter-reset" href="#">Reset All</a>
+            <button type="button" className="tg-filter-reset" onClick={handleResetAll}>
+              Reset All
+            </button>
           </div>
           <div className="tg-filter-search-form">
-            <form onSubmit={(e) => {
-              e.preventDefault();
-              handleSearch(searchQuery);
-            }} className="p-relative">
-              <input
+            <form onSubmit={handleFormSubmit} className="p-relative">
+              <input aria-label="Search Hotel"
                 className="input"
                 type="text"
                 placeholder="Search Hotel"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                value={filter.searchQuery}
+                onChange={(e) =>
+                  dispatch({ type: 'setSearchQuery', searchQuery: e.target.value })
+                }
               />
-              <button className="buttons" type="submit">
+              <button className="buttons" type="submit" aria-label="Search">
                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <g clipPath="url(#clip0_397_1228)">
-                    <path d="M13.2218 13.2222L10.5188 10.5192M12.1959 6.48705C12.1959 9.6402 9.63977 12.1963 6.48662 12.1963C3.33348 12.1963 0.777344 9.6402 0.777344 6.48705C0.777344 3.3339 3.33348 0.777771 6.48662 0.777771C9.63977 0.777771 12.1959 3.3339 12.1959 6.48705Z" stroke="#353844" strokeWidth="1.575" strokeLinecap="round" strokeLinejoin="round" />
+                    <path d="M13.22 13.22L10.52 10.52M12.20 6.49C12.20 9.64 9.64 12.20 6.49 12.20C3.33 12.20 0.78 9.64 0.78 6.49C0.78 3.33 3.33 0.78 6.49 0.78C9.64 0.78 12.20 3.33 12.20 6.49Z" stroke="#353844" strokeWidth="1.575" strokeLinecap="round" strokeLinejoin="round" />
                   </g>
                   <defs>
                     <clipPath id="clip0_397_1228">
@@ -150,87 +223,82 @@ const FeatureSidebar = ({ setProducts }: FeatureSidebarProps) => {
           </div>
           <span className="tg-filter-border mt-30 mb-25"></span>
 
-          {/* category */}
           <h4 className="tg-filter-title mb-15">Property Type</h4>
           <div className="tg-filter-list">
             <ul>
               {allCategory.map((category, i) => (
-                <li key={i} onClick={() => handleCategory(category)}>
+                <FilterSidebarListItem key={category} onSelect={() => handleCategory(category)}>
                   <div className="checkbox d-flex">
-                    <input className="tg-checkbox" type="checkbox" checked={category === categorySelected} readOnly id={`cat_${i}`} />
-                    <label htmlFor={`cat_${i}`} onClick={() => handleCategory(category)} className="tg-label">{category}</label>
+                    <input className="tg-checkbox" type="checkbox" checked={category === filter.category} readOnly id={`cat_${i}`} aria-label={category} />
+                    <label htmlFor={`cat_${i}`} className="tg-label">{category}</label>
                   </div>
-                </li>
+                </FilterSidebarListItem>
               ))}
             </ul>
           </div>
           <span className="tg-filter-border mt-25 mb-25"></span>
 
-          {/* price range */}
           <div className="tg-filter-price-input">
             <h4 className="tg-filter-title mb-20">Price By Filter</h4>
             <PriceRange
               MAX={maxPrice}
               MIN={0}
               STEP={1}
-              values={priceValue}
+              values={filter.priceValue}
               handleChanges={handleChanges}
             />
             <div className="d-flex align-items-center mt-15">
-              <span className="input-range" onChange={() => handleChanges}>
-                ${priceValue[0]} - ${priceValue[1]}
+              <span className="input-range">
+                ${filter.priceValue[0]} - ${filter.priceValue[1]}
               </span>
             </div>
           </div>
           <span className="tg-filter-border mt-25 mb-25"></span>
 
-          {/* amenitiess */}
           <h4 className="tg-filter-title mb-15">Amenities</h4>
           <div className="tg-filter-list">
             <ul>
               {allAmenities.map((amenities, i) => (
-                <li key={i} onClick={() => handleAmenities(amenities)}>
+                <FilterSidebarListItem key={amenities} onSelect={() => handleAmenities(amenities)}>
                   <div className="checkbox d-flex">
-                    <input className="tg-checkbox" type="checkbox" checked={amenities === amenitiesSelected} readOnly id={`amenities_${i}`} />
-                    <label className="tg-label" htmlFor={`amenities_${i}`} onClick={() => handleAmenities(amenities)}>{amenities}</label>
+                    <input className="tg-checkbox" type="checkbox" checked={amenities === filter.amenities} readOnly id={`amenities_${i}`} aria-label={amenities} />
+                    <label className="tg-label" htmlFor={`amenities_${i}`}>{amenities}</label>
                   </div>
-                </li>
+                </FilterSidebarListItem>
               ))}
             </ul>
           </div>
           <span className="tg-filter-border mt-25 mb-25"></span>
 
-          {/* rating */}
           <h4 className="tg-filter-title mb-15">Top Reviews</h4>
           <div className="tg-filter-list">
             <ul>
               {[5, 4, 3, 2, 1].map((rating, i) => (
-                <li key={i} onClick={() => handleRating(rating)}>
+                <FilterSidebarListItem key={rating} onSelect={() => handleRating(rating)}>
                   <div className="checkbox d-flex">
-                    <input className="tg-checkbox" type="checkbox" checked={rating === ratingSelected} readOnly id={`rating_${i}`} />
-                    <label htmlFor={`rating_${i}`} onClick={() => handleRating(rating)}>
+                    <input className="tg-checkbox" type="checkbox" checked={rating === filter.rating} readOnly id={`rating_${i}`} aria-label={`${rating} stars`} />
+                    <label htmlFor={`rating_${i}`}>
                       <div className="tg-filter-review">
                         <Rating initialValue={rating} size={18} readonly />
                       </div>
                     </label>
                   </div>
-                </li>
+                </FilterSidebarListItem>
               ))}
             </ul>
           </div>
           <span className="tg-filter-border mt-25 mb-25"></span>
 
-          {/* language */}
           <h4 className="tg-filter-title mb-15">Language</h4>
           <div className="tg-filter-list">
             <ul>
               {allLanguage.map((language, i) => (
-                <li key={i} onClick={() => handleLanguage(language)}>
+                <FilterSidebarListItem key={language} onSelect={() => handleLanguage(language)}>
                   <div className="checkbox d-flex">
-                    <input className="tg-checkbox" type="checkbox" checked={language === languageSelected} readOnly id={`language_${i}`} />
-                    <label className="tg-label" htmlFor={`language_${i}`} onClick={() => handleLanguage(language)}>{language}</label>
+                    <input className="tg-checkbox" type="checkbox" checked={language === filter.language} readOnly id={`language_${i}`} aria-label={language} />
+                    <label className="tg-label" htmlFor={`language_${i}`}>{language}</label>
                   </div>
-                </li>
+                </FilterSidebarListItem>
               ))}
             </ul>
           </div>

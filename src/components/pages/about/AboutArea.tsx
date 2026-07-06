@@ -2,13 +2,13 @@ import Image from "next/image"
 import Button from "@/components/common/Button"
 import Link from "next/link"
 
-import shape_1 from "@/assets/img/about/details/shape.png"
-import shape_2 from "@/assets/img/about/details/shape-2.png"
-import shape_3 from "@/assets/img/chose/chose-3/circle-text.png"
-import shape_4 from "@/assets/img/chose/chose-3/star.png"
-import thumb_1 from "@/assets/img/about/details/thumb-1.jpg"
-import thumb_2 from "@/assets/img/about/details/thumb-3.jpg"
-import thumb_3 from "@/assets/img/about/details/thumb-2.jpg"
+import shape_1 from "@/assets/img/about/details/shape.webp"
+import shape_2 from "@/assets/img/about/details/shape-2.webp"
+import shape_3 from "@/assets/img/chose/chose-3/circle-text.webp"
+import shape_4 from "@/assets/img/chose/chose-3/star.webp"
+import thumb_1 from "@/assets/img/about/details/thumb-1.webp"
+import thumb_2 from "@/assets/img/about/details/thumb-3.webp"
+import thumb_3 from "@/assets/img/about/details/thumb-2.webp"
 
 const AboutArea = () => {
    return (

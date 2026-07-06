@@ -4,13 +4,22 @@ import { Autoplay } from 'swiper/modules';
 import Image, { StaticImageData } from "next/image"
 import Link from 'next/link';
 
-import logo_1 from "@/assets/img/brand/logo-1.png"
-import logo_2 from "@/assets/img/brand/logo-2.png"
-import logo_3 from "@/assets/img/brand/logo-3.png"
-import logo_4 from "@/assets/img/brand/logo-4.png"
-import logo_5 from "@/assets/img/brand/logo-5.png"
+import logo_1 from "@/assets/img/brand/logo-1.webp"
+import logo_2 from "@/assets/img/brand/logo-2.webp"
+import logo_3 from "@/assets/img/brand/logo-3.webp"
+import logo_4 from "@/assets/img/brand/logo-4.webp"
+import logo_5 from "@/assets/img/brand/logo-5.webp"
 
-const brand_logo: StaticImageData[] = [logo_1, logo_2, logo_3, logo_4, logo_5, logo_3, logo_4, logo_5];
+const brand_logo: { id: string; logo: StaticImageData }[] = [
+   { id: "brand-1", logo: logo_1 },
+   { id: "brand-2", logo: logo_2 },
+   { id: "brand-3", logo: logo_3 },
+   { id: "brand-4", logo: logo_4 },
+   { id: "brand-5", logo: logo_5 },
+   { id: "brand-6", logo: logo_3 },
+   { id: "brand-7", logo: logo_4 },
+   { id: "brand-8", logo: logo_5 },
+];
 
 const setting = {
    loop: true,
@@ -35,8 +44,8 @@ const Brand = () => {
                   <div className="swiper-container tg-brand-slide fix">
                      <div className="swiper-wrapper slide-transtion">
                         <Swiper {...setting} modules={[Autoplay]} className="swiper-container tg-brand-slide fix">
-                           {brand_logo.map((logo, i) => (
-                              <SwiperSlide key={i} className="swiper-slide">
+                           {brand_logo.map(({ id, logo }) => (
+                              <SwiperSlide key={id} className="swiper-slide">
                                  <div className="tg-brand-items">
                                     <Link href="#"><Image src={logo} alt="logo" /></Link>
                                  </div>

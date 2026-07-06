@@ -26,8 +26,8 @@ const NavMenu = () => {
                         <>
                             {menu.sub_menus && (
                                 <ul className="sub-menu">
-                                    {menu.sub_menus.map((sub_m, i) => (
-                                        <li key={i}>
+                                    {menu.sub_menus.map((sub_m) => (
+                                        <li key={sub_m.link}>
                                             <Link href={sub_m.link} className={`${sub_m.link && isSubMenuItemActive(sub_m.link) ? "active" : ""}`}>
                                                 {sub_m.title}
                                             </Link>

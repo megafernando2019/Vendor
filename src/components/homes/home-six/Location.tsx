@@ -3,7 +3,7 @@ import Link from 'next/link'
 import Button from '@/components/common/Button'
 import location_data from '@/data/LocationData'
 
-import location_1 from "@/assets/img/location/shape-2.png"
+import location_1 from "@/assets/img/location/shape-2.webp"
 
 const Location = () => {
    return (
@@ -26,7 +26,7 @@ const Location = () => {
                </div>
             </div>
             <div className="row">
-               {location_data.filter((items) => items.page === "home_6").map((item) => (
+               {location_data.flatMap((item) => item.page !== "home_6" ? [] : [
                   <div key={item.id} className="col-lg-3 col-md-6 col-sm-6 wow fadeInUp" data-wow-delay=".3s" data-wow-duration=".9s">
                      <div className="bg-white tg-round-25 p-relative z-index-1">
                         <div className="tg-location-wrap p-relative mb-30">
@@ -42,7 +42,7 @@ const Location = () => {
                         </div>
                      </div>
                   </div>
-               ))}
+               ])}
             </div>
          </div>
       </div>

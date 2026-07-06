@@ -4,7 +4,7 @@ import Link from "next/link"
 
 const Blog = () => {
    return (
-      <div className="tg-blog-area pt-130 pb-110 include-bg p-relative z-index-1" style={{ backgroundImage: `url(/assets/img/blog/blog-4/blog.jpg)` }}>
+      <div className="tg-blog-area pt-130 pb-110 include-bg p-relative z-index-1" style={{ backgroundImage: `url(/assets/img/blog/blog-4/blog.webp)` }}>
          <div className="container">
             <div className="row">
                <div className="col-lg-12">
@@ -15,7 +15,7 @@ const Blog = () => {
                         to step out of your comfort zonetravel</p>
                   </div>
                </div>
-               {blog_data.filter((items) => items.page === "home_1").map((item) => (
+               {blog_data.flatMap((item) => item.page !== "home_1" ? [] : [
                   <div key={item.id} className="col-xl-4 col-lg-6 col-md-6 wow fadeInLeft" data-wow-delay=".4s" data-wow-duration=".9s">
                      <div className="tg-blog-item tg-blog-2-item mb-25">
                         <div className="tg-blog-thumb p-relative fix mb-25">
@@ -32,7 +32,7 @@ const Blog = () => {
                         </div>
                      </div>
                   </div>
-               ))}
+               ])}
                <div className="col-12 wow fadeInUp" data-wow-delay=".4s" data-wow-duration=".9s">
                   <div className="tg-blog-bottom text-center pt-15">
                      <p>Want to see our Recent News & Updates. <a href="blog-grid.html">Click here to View More</a></p>

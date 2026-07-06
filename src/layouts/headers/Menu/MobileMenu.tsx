@@ -9,7 +9,6 @@ import { useState } from "react";
 const MobileMenu = () => {
    const currentRoute = usePathname();
    const [navTitle, setNavTitle] = useState("");
-   const [subNavTitle, setSubNavTitle] = useState("");
 
    const isMenuItemActive = (menuLink: string) => {
       return currentRoute === menuLink;
@@ -22,12 +21,6 @@ const MobileMenu = () => {
    // Open or close the parent menu
    const openMobileMenu = (menu: any) => {
       setNavTitle((prev: any) => (prev === menu ? "" : menu));
-      setSubNavTitle("");
-   };
-
-   // Open or close the submenu
-   const openMobileSubMenu = (sub_m: any) => {
-      setSubNavTitle((prev: any) => (prev === sub_m ? "" : sub_m));
    };
 
    return (
@@ -43,18 +36,22 @@ const MobileMenu = () => {
                      {menu.sub_menus && (
                         <>
                            <ul className="sub-menu" style={{ display: navTitle === menu.title ? "block" : "none" }}>
-                              {menu.sub_menus.map((sub_m, i) => (
-                                 <li key={i}>
+                              {menu.sub_menus.map((sub_m) => (
+                                 <li key={sub_m.link}>
                                     <Link href={sub_m.link} className={`${sub_m.link && isSubMenuItemActive(sub_m.link) ? "active" : ""}`}>
                                        {sub_m.title}
                                     </Link>
                                  </li>
                               ))}
                            </ul>
-                           <div className={`dropdown-btn ${navTitle === menu.title ? "open" : ""}`}
-                              onClick={() => openMobileMenu(menu.title)}>
+                           <button
+                              type="button"
+                              className={`dropdown-btn ${navTitle === menu.title ? "open" : ""}`}
+                              onClick={() => openMobileMenu(menu.title)}
+                              aria-label={`Toggle ${menu.title} submenu`}
+                           >
                               <span className="plus-line"></span>
-                           </div>
+                           </button>
                         </>
                      )}
                   </>

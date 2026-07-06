@@ -1,8 +1,8 @@
 import NiceSelect from "@/ui/NiceSelect"
 
-const CheckoutForm = () => {
+const noopSelectHandler = () => { };
 
-   const selectHandler = () => { };
+const CheckoutForm = () => {
 
    return (
       <div className="col-xl-9 col-lg-8">
@@ -11,17 +11,17 @@ const CheckoutForm = () => {
             <div className="row gx-24">
                <div className="col-lg-6 col-md-6">
                   <div className="tg-checkout-form-input mb-25">
-                     <input className="input" type="text" placeholder="First Name" />
+                     <input aria-label="First Name" className="input" type="text" placeholder="First Name" />
                   </div>
                </div>
                <div className="col-lg-6 col-md-6">
                   <div className="tg-checkout-form-input mb-25">
-                     <input className="input" type="text" placeholder="Last Name" />
+                     <input aria-label="Last Name" className="input" type="text" placeholder="Last Name" />
                   </div>
                </div>
                <div className="col-lg-12">
                   <div className="tg-checkout-form-input mb-25">
-                     <input className="input" type="text" placeholder="Company Name" />
+                     <input aria-label="Company Name" className="input" type="text" placeholder="Company Name" />
                   </div>
                </div>
                <div className="col-lg-12">
@@ -37,19 +37,19 @@ const CheckoutForm = () => {
                            { value: "06", text: "Bangladesh" },
                         ]}
                         defaultCurrent={0}
-                        onChange={selectHandler}
+                        onChange={noopSelectHandler}
                         name=""
-                        placeholder="" />
+                        placeholder=""  ariaLabel="Sort by" />
                   </div>
                </div>
                <div className="col-lg-12">
                   <div className="tg-checkout-form-input mb-25">
-                     <input className="input" type="text" placeholder="House number and street name" />
+                     <input aria-label="House number and street name" className="input" type="text" placeholder="House number and street name" />
                   </div>
                </div>
                <div className="col-lg-12">
                   <div className="tg-checkout-form-input mb-25">
-                     <input className="input" type="text" placeholder="Apartment, Suite, unit, etc (Optional)" />
+                     <input aria-label="Apartment, Suite, unit, etc (Optional)" className="input" type="text" placeholder="Apartment, Suite, unit, etc (Optional)" />
                   </div>
                </div>
                <div className="col-lg-12">
@@ -64,35 +64,35 @@ const CheckoutForm = () => {
                            { value: "05", text: "Dnipropetrovshchyna" },
                         ]}
                         defaultCurrent={0}
-                        onChange={selectHandler}
+                        onChange={noopSelectHandler}
                         name=""
-                        placeholder="" />
+                        placeholder=""  ariaLabel="Sort by" />
                   </div>
                </div>
                <div className="col-lg-12">
                   <div className="tg-checkout-form-input mb-25">
-                     <input className="input" type="text" placeholder="State" />
+                     <input aria-label="State" className="input" type="text" placeholder="State" />
                   </div>
                </div>
                <div className="col-lg-12">
                   <div className="tg-checkout-form-input mb-25">
-                     <input className="input" type="text" placeholder="Zip Code" />
+                     <input aria-label="Zip Code" className="input" type="text" placeholder="Zip Code" />
                   </div>
                </div>
                <div className="col-lg-12">
                   <div className="tg-checkout-form-input mb-25">
-                     <input className="input" type="tel" placeholder="Phone" />
+                     <input aria-label="Phone" className="input" type="tel" placeholder="Phone" />
                   </div>
                </div>
                <div className="col-lg-12">
                   <div className="tg-checkout-form-input mb-40">
-                     <input className="input" type="email" placeholder="E-mail Address" />
+                     <input aria-label="E-mail Address" className="input" type="email" placeholder="E-mail Address" />
                   </div>
                </div>
                <div className="col-lg-12">
                   <div className="tg-checkout-form-input mb-25">
                      <h2 className="tg-checkout-form-title tg-checkout-form-title-2 mb-15">Additional Information</h2>
-                     <textarea className="input textarea" placeholder="Order Note (Optional) "></textarea>
+                     <textarea aria-label="Order Note (Optional) " className="input textarea" placeholder="Order Note (Optional) "></textarea>
                   </div>
                </div>
             </div>

@@ -5,12 +5,18 @@ import { Navigation, Controller } from "swiper/modules";
 import Image, { StaticImageData } from "next/image"
 import { JSX, useState } from "react"
 
-import avatar_1 from "@/assets/img/testimonial/tes-4/tes-1.png"
-import avatar_2 from "@/assets/img/testimonial/tes-4/tes-2.png"
-import avatar_3 from "@/assets/img/testimonial/tes-4/tes-3.png"
-import avatar_4 from "@/assets/img/testimonial/tes-4/tes-4.png"
+import avatar_1 from "@/assets/img/testimonial/tes-4/tes-1.webp"
+import avatar_2 from "@/assets/img/testimonial/tes-4/tes-2.webp"
+import avatar_3 from "@/assets/img/testimonial/tes-4/tes-3.webp"
+import avatar_4 from "@/assets/img/testimonial/tes-4/tes-4.webp"
 
-const avatar_data: StaticImageData[] = [avatar_1, avatar_2, avatar_3, avatar_4, avatar_2,];
+const avatar_data: { id: string; img: StaticImageData }[] = [
+   { id: "avatar-1", img: avatar_1 },
+   { id: "avatar-2", img: avatar_2 },
+   { id: "avatar-3", img: avatar_3 },
+   { id: "avatar-4", img: avatar_4 },
+   { id: "avatar-5", img: avatar_2 },
+];
 
 interface DataType {
    id: number;
@@ -96,7 +102,7 @@ const Testimonial = () => {
                         <div className="tg-testimonial-qoute-wrap text-center mb-25">
                            <span>
                               <svg width="60" height="44" viewBox="0 0 60 44" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                 <path d="M4.28571 44H17.1429L25.7143 26.4V0H0V26.4H12.8571L4.28571 44ZM38.5714 44H51.4286L60 26.4V0H34.2857V26.4H47.1429L38.5714 44Z" fill="#E8E8E8" />
+                                 <path d="M4.29 44H17.14L25.71 26.4V0H0V26.4H12.86L4.29 44ZM38.57 44H51.43L60 26.4V0H34.29V26.4H47.14L38.57 44Z" fill="#E8E8E8" />
                               </svg>
                            </span>
                         </div>
@@ -105,8 +111,8 @@ const Testimonial = () => {
                               modules={[Navigation, Controller]}
                               onSwiper={setThumbSwiper}
                               controller={{ control: contentSwiper }} className="swiper-container tg-testimonial-4-thumb-active mb-25 fix p-relative">
-                              {avatar_data.map((img, i) => (
-                                 <SwiperSlide key={i} className="swiper-slide">
+                              {avatar_data.map(({ id, img }) => (
+                                 <SwiperSlide key={id} className="swiper-slide">
                                     <div className="tg-testimonial-4-slider-thumb">
                                        <Image src={img} alt="" />
                                     </div>
@@ -136,8 +142,8 @@ const Testimonial = () => {
                            </SwiperSlide>
                         ))}
                         <div className="tg-testimonial-4-slider-navigation">
-                           <button className="tg-testimonial-4-slide-next"><i className="fa-solid fa-arrow-right-long"></i></button>
-                           <button className="tg-testimonial-4-slide-prev"><i className="fa-solid fa-arrow-left-long"></i></button>
+                           <button type="button" className="tg-testimonial-4-slide-next" aria-label="Next testimonial"><i className="fa-solid fa-arrow-right-long"></i></button>
+                           <button type="button" className="tg-testimonial-4-slide-prev" aria-label="Previous testimonial"><i className="fa-solid fa-arrow-left-long"></i></button>
                         </div>
                      </Swiper>
                   </div>

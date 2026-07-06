@@ -12,8 +12,8 @@ import CartIconTwo from "@/svg/CartIconTwo";
 import HeaderCart from "./Menu/HeaderCart";
 import TotalCart from "./Menu/TotalCart";
 
-import logo_1 from "@/assets/img/logo/logo-white.png";
-import logo_2 from "@/assets/img/logo/logo-green.png";
+import logo_1 from "@/assets/img/logo/logo-white.webp";
+import logo_2 from "@/assets/img/logo/logo-green.webp";
 
 const HeaderFive = () => {
 
@@ -42,11 +42,11 @@ const HeaderFive = () => {
                               </div>
                            </nav>
                            <div className="tg-menu-right-action tg-menu-right-action-3 d-flex align-items-center">
-                              <button onClick={() => setIsSearch(true)} className="search-button search-open-btn">
+                              <button type="button" onClick={() => setIsSearch(true)} className="search-button search-open-btn">
                                  <SearchIcon />
                               </button>
                               <div className="tg-header-cart p-relative d-none d-xl-block">
-                                 <button className="cart-button">
+                                 <button type="button" className="cart-button">
                                     <span>
                                        <CartIconTwo />
                                     </span>
@@ -55,12 +55,12 @@ const HeaderFive = () => {
                                  <HeaderCart />
                               </div>
                               <div className="tg-header-menu-bar lh-1 p-relative ml-10">
-                                 <button onClick={() => setSidebar(true)} className="tgmenu-offcanvas-open-btn menu-tigger d-none d-xl-block">
+                                 <button type="button" onClick={() => setSidebar(true)} className="tgmenu-offcanvas-open-btn menu-tigger d-none d-xl-block" aria-label="Open sidebar">
                                     <span></span>
                                     <span></span>
                                     <span></span>
                                  </button>
-                                 <button onClick={() => setOffCanvas(true)} className="tgmenu-offcanvas-open-btn mobile-nav-toggler d-block d-xl-none">
+                                 <button type="button" onClick={() => setOffCanvas(true)} className="tgmenu-offcanvas-open-btn mobile-nav-toggler d-block d-xl-none" aria-label="Open menu">
                                     <span></span>
                                     <span></span>
                                     <span></span>

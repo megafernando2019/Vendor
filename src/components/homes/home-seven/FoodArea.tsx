@@ -15,7 +15,7 @@ const FoodArea = () => {
                </div>
             </div>
             <div className="row gx-30 row-cols-xl-5 row-cols-lg-3 row-cols-md-3 row-cols-sm-2 row-cols-1 justify-content-center align-items-center">
-               {location_data.filter((items) => items.page === "home_7").map((item) => (
+               {location_data.flatMap((item) => item.page !== "home_7" ? [] : [
                   <div key={item.id} className="col wow fadeInUp" data-wow-delay=".3s" data-wow-duration="1s">
                      <div className="tg-foods-wrap text-center mb-30">
                         <div className="fix tg-foods-thumb mb-15">
@@ -24,7 +24,7 @@ const FoodArea = () => {
                         <h3 className="w-100 tg-foods-title"><Link href="#">{item.title} <span>({item.total})</span></Link></h3>
                      </div>
                   </div>
-               ))}
+               ])}
             </div>
          </div>
       </div>

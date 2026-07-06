@@ -1,15 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 import { selectProducts } from "@/redux/features/productSlice";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import Image, { StaticImageData } from "next/image";
 import Link from "next/link";
+import { FilterSidebarListItem } from "@/components/common/FilterSidebarListItem";
 
-import img_1 from "@/assets/img/shop/sm-product-1.jpg"
-import img_2 from "@/assets/img/shop/sm-product-2.jpg"
-import img_3 from "@/assets/img/shop/sm-product-3.jpg"
-import img_4 from "@/assets/img/shop/sm-product.jpg"
+import img_1 from "@/assets/img/shop/sm-product-1.webp"
+import img_2 from "@/assets/img/shop/sm-product-2.webp"
+import img_3 from "@/assets/img/shop/sm-product-3.webp"
+import img_4 from "@/assets/img/shop/sm-product.webp"
 
 interface DataType {
   id: number;
@@ -58,7 +59,7 @@ const ShopSidebar = ({ setProducts }: FeatureSidebarProps) => {
   const allProducts = useSelector(selectProducts);
   const filterdProduct = allProducts.filter(product => product.page === 'shop_5');
 
-  const [categorySelected, setCategorySelected] = useState('');
+  const categorySelectedRef = useRef('');
   const [searchQuery, setSearchQuery] = useState('');
 
   const categoryFilter = filterdProduct.map(product => product.category);
@@ -66,8 +67,9 @@ const ShopSidebar = ({ setProducts }: FeatureSidebarProps) => {
 
   // Handle category selection
   const handleCategory = (category: string) => {
-    setCategorySelected(prevCategory => prevCategory === category ? '' : category);
-    filterProducts({ category: category === categorySelected ? '' : category });
+    const nextCategory = categorySelectedRef.current === category ? '' : category;
+    categorySelectedRef.current = nextCategory;
+    filterProducts({ category: nextCategory });
   };
 
   // Handle search
@@ -95,27 +97,30 @@ const ShopSidebar = ({ setProducts }: FeatureSidebarProps) => {
     setProducts(filteredProducts);
   };
 
+  const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    handleSearch(searchQuery);
+  };
+
   return (
     <div className="col-xl-3 col-lg-4">
       <div className="tg-shop-sidebar top-sticky mb-50">
         <div className="tg-blog-sidebar-search tg-blog-sidebar-box mb-40">
           <h5 className="tg-blog-sidebar-title mb-15">Search</h5>
           <div className="tg-blog-sidebar-form">
-            <form onSubmit={(e) => {
-              e.preventDefault();
-              handleSearch(searchQuery);
-            }} className="p-relative">
+            <form onSubmit={handleFormSubmit} className="p-relative">
               <input
                 className="input"
-                type="text"
+                type="search"
                 placeholder="Type here . . ."
+                aria-label="Search products"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
-              <button>
+              <button type="submit" aria-label="Search">
                 <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <g clipPath="url(#clip0_497_1336)">
-                    <path d="M17 17L13.5247 13.5247M15.681 8.3405C15.681 12.3945 12.3945 15.681 8.3405 15.681C4.28645 15.681 1 12.3945 1 8.3405C1 4.28645 4.28645 1 8.3405 1C12.3945 1 15.681 4.28645 15.681 8.3405Z" stroke="#560CE3" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                    <path d="M17 17L13.52 13.52M15.681 8.34C15.681 12.39 12.39 15.681 8.34 15.681C4.29 15.681 1 12.39 1 8.34C1 4.29 4.29 1 8.34 1C12.39 1 15.681 4.29 15.681 8.34Z" stroke="#560CE3" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
                   </g>
                   <defs>
                     <clipPath id="clip0_497_1336">
@@ -137,10 +142,14 @@ const ShopSidebar = ({ setProducts }: FeatureSidebarProps) => {
                   : filterdProduct.filter(product => product.category === category).length;
 
                 return (
-                  <li key={i} onClick={() => handleCategory(category)}>
+                  <FilterSidebarListItem
+                    key={category}
+                    variant="category"
+                    onSelect={() => handleCategory(category)}
+                  >
                     <span>{category}</span>
                     <span>({categoryCount})</span>
-                  </li>
+                  </FilterSidebarListItem>
                 );
               })}
             </ul>

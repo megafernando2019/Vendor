@@ -8,7 +8,7 @@ const Ads = () => {
             <div className="container">
                <div className="row">
                   <div className="col-lg-4 col-md-6 mb-30">
-                     <div className="tg-ads-wrap include-bg fix" style={{ backgroundImage: `url(/assets/img/ads/destination-1.jpg)` }}>
+                     <div className="tg-ads-wrap include-bg fix" style={{ backgroundImage: `url(/assets/img/ads/destination-1.webp)` }}>
                         <div className="row">
                            <div className="col-xl-6 col-4"></div>
                            <div className="col-xl-6 col-8">
@@ -29,7 +29,7 @@ const Ads = () => {
                      </div>
                   </div>
                   <div className="col-lg-4 col-md-6 mb-30">
-                     <div className="tg-ads-wrap-2 include-bg fix" style={{ backgroundImage: `url(/assets/img/ads/destination-2.jpg)` }}>
+                     <div className="tg-ads-wrap-2 include-bg fix" style={{ backgroundImage: `url(/assets/img/ads/destination-2.webp)` }}>
                         <div className="tg-ads-content-2 text-center">
                            <h5 className="mb-0">Strike The Deal With<br />Used Payments</h5>
                            <div className="tg-ads-discount-inner d-flex align-items-center justify-content-center">
@@ -44,7 +44,7 @@ const Ads = () => {
                      </div>
                   </div>
                   <div className="col-lg-4 col-md-6 mb-30">
-                     <div className="tg-ads-wrap-3 include-bg fix" style={{ backgroundImage: `url(/assets/img/ads/destination-3.jpg)` }}>
+                     <div className="tg-ads-wrap-3 include-bg fix" style={{ backgroundImage: `url(/assets/img/ads/destination-3.webp)` }}>
                         <div className="tg-ads-content-2">
                            <div className="tg-ads-discount-inner mb-5">
                               <h2 className="mb-0">25%</h2>

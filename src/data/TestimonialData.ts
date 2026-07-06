@@ -1,7 +1,7 @@
 import { StaticImageData } from "next/image";
-import avatar_1 from "@/assets/img/testimonial/avatar.png";
-import avatar_2 from "@/assets/img/testimonial/avatar-2.png";
-import avatar_3 from "@/assets/img/testimonial/avatar-3.png";
+import avatar_1 from "@/assets/img/testimonial/avatar.webp";
+import avatar_2 from "@/assets/img/testimonial/avatar-2.webp";
+import avatar_3 from "@/assets/img/testimonial/avatar-3.webp";
 
 interface DataType {
   id: number;

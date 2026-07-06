@@ -32,6 +32,7 @@ type SearchState = {
   pagination: PaginationMeta | null;
   uuid: string | null;
   loading: boolean;
+  loadingMore: boolean;
   error: string | null;
 };
 
@@ -63,6 +64,7 @@ const initialState: SearchState = {
   pagination: null,
   uuid: null,
   loading: false,
+  loadingMore: false,
   error: null,
 };
 
@@ -121,9 +123,28 @@ export const fetchBusqueda = createAsyncThunk<
   }
 },
 {
-  condition: (itemSearch) => prepareItemSearch(itemSearch).ok,
+  condition: (itemSearch, { getState }) => {
+    const prepared = prepareItemSearch(itemSearch);
+    if (!prepared.ok) return false;
+
+    const searchState = (getState() as { search: SearchState }).search;
+    if (searchState.loading || searchState.loadingMore) return false;
+
+    if (itemSearch.page > 1) {
+      const { pagination } = searchState;
+      if (!pagination) return false;
+      if (pagination.page >= pagination.total_pages) return false;
+    }
+
+    return true;
+  },
 }
 );
+
+export function hasMoreSearchPages(pagination: PaginationMeta | null): boolean {
+  if (!pagination) return false;
+  return pagination.page < pagination.total_pages;
+}
 
 const searchSlice = createSlice({
   name: "search",
@@ -142,19 +163,26 @@ const searchSlice = createSlice({
       state.uuid = null;
       state.error = null;
       state.loading = false;
+      state.loadingMore = false;
     },
     clearSearchLoading(state) {
       state.loading = false;
+      state.loadingMore = false;
     },
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchBusqueda.pending, (state) => {
-        state.loading = true;
+      .addCase(fetchBusqueda.pending, (state, action) => {
+        if (action.meta.arg.page > 1) {
+          state.loadingMore = true;
+        } else {
+          state.loading = true;
+        }
         state.error = null;
       })
       .addCase(fetchBusqueda.fulfilled, (state, action) => {
         state.loading = false;
+        state.loadingMore = false;
         const requestedPage = action.meta.arg.page;
         if (requestedPage <= 1) {
           state.resultados = action.payload.data;
@@ -177,6 +205,7 @@ const searchSlice = createSlice({
       })
       .addCase(fetchBusqueda.rejected, (state, action) => {
         state.loading = false;
+        state.loadingMore = false;
         const requestedPage = action.meta.arg.page;
         if (requestedPage > 1 && state.pagination) {
           state.pagination.total_pages = state.pagination.page;
@@ -186,14 +215,28 @@ const searchSlice = createSlice({
       .addMatcher(
         (action): action is RehydrateAction => action.type === REHYDRATE,
         (state, action) => {
+          const persistedSearch = (
+            action.payload as RehydratedSearchPayload | undefined
+          )?.search;
+          if (!persistedSearch) return;
+
           state.loading = false;
+          state.loadingMore = false;
           state.error = null;
-          const persistedSearch = (action.payload as RehydratedSearchPayload | undefined)
-            ?.search;
-          if (persistedSearch?.itemSearch) {
+
+          if (persistedSearch.itemSearch) {
             state.itemSearch = applySearchDefaults(persistedSearch.itemSearch);
           }
-        }
+          if (Array.isArray(persistedSearch.resultados)) {
+            state.resultados = persistedSearch.resultados;
+          }
+          if (persistedSearch.pagination !== undefined) {
+            state.pagination = persistedSearch.pagination;
+          }
+          if (persistedSearch.uuid !== undefined) {
+            state.uuid = persistedSearch.uuid;
+          }
+        },
       );
   },
 });

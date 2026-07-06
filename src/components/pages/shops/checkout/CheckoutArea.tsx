@@ -1,18 +1,16 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import CheckoutForm from "./CheckoutForm"
 import UseCartInfo from "@/hooks/UseCartInfo";
 import { useSelector } from "react-redux";
+import { preventNativeFormSubmit } from "@/utils/preventNativeFormSubmit";
+import { useIsClient } from "@/hooks/useIsClient";
 
 const CheckoutArea = () => {
 
-   const [isHydrated, setIsHydrated] = useState(false);
-
-   useEffect(() => {
-      setIsHydrated(true);
-   }, []);
+   const isHydrated = useIsClient();
 
    const productItem = useSelector((state: any) => state.cart.cart);
    const { total } = UseCartInfo();
@@ -23,7 +21,7 @@ const CheckoutArea = () => {
    return (
       <section className="checkout-area pb-100 pt-125">
          <div className="container">
-            <form onSubmit={(e) => e.preventDefault()}>
+            <form onSubmit={preventNativeFormSubmit}>
                <div className="row">
                   <CheckoutForm />
                   <div className="col-xl-3 col-lg-4">

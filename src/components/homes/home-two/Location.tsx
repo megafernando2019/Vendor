@@ -15,7 +15,7 @@ const Location = () => {
                </div>
             </div>
             <div className="row gx-30">
-               {location_data.filter((items) => items.page === "home_2").map((item) => (
+               {location_data.flatMap((item) => item.page !== "home_2" ? [] : [
                   <div key={item.id} className={`${item.class} col-lg-4 col-md-6 mb-30`}>
                      <div className="tg-location-3-wrap tg-location-su-wrap p-relative tg-round-25 wow fadeInUp" data-wow-delay=".3s" data-wow-duration=".9s">
                         <div className="tg-location-thumb tg-round-25">
@@ -27,13 +27,13 @@ const Location = () => {
                            </div>
                            <Link className="icons" href="/tour-grid-1">
                               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                 <path d="M2 13.0969L13.0969 2M13.0969 2H2M13.0969 2V13.0969" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                 <path d="M2 13.10L13.10 2M13.10 2H2M13.10 2V13.10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                               </svg>
                            </Link>
                         </div>
                      </div>
                   </div>
-               ))}
+               ])}
             </div>
          </div>
       </div>

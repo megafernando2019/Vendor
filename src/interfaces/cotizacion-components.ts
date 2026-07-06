@@ -66,15 +66,44 @@ export interface HabitacionCotizacion {
   destinationId: number;
   blockadeUid: string;
   costs: HabitacionCosts;
+  /** Total unitario USD de una habitación */
   total: number;
+  quantity?: number;
 }
 
-export const ROOM_TAB_DISPLAY: Record<RoomTabLabel, string> = {
+export function getHabitacionQuantity(room: HabitacionCotizacion): number {
+  return room.quantity && room.quantity > 0 ? room.quantity : 1;
+}
+
+export function getHabitacionUnitTotal(room: HabitacionCotizacion): number {
+  return room.total ?? room.costs?.grand_total ?? 0;
+}
+
+export function getHabitacionLineTotal(room: HabitacionCotizacion): number {
+  return getHabitacionUnitTotal(room) * getHabitacionQuantity(room);
+}
+
+export function habitacionConfigKey(
+  room: Pick<
+    HabitacionCotizacion,
+    "roomType" | "adt" | "mnrA" | "inf" | "blockadeUid"
+  >,
+): string {
+  return `${room.roomType}|${room.adt}|${room.mnrA}|${room.inf}|${room.blockadeUid}`;
+}
+
+const ROOM_TAB_DISPLAY: Record<RoomTabLabel, string> = {
   sencilla: "Sencilla",
   doble: "Doble",
   triple: "Triple",
   cuadruple: "Cuádruple",
 };
+
+export const ROOM_TAB_LABELS: RoomTabLabel[] = [
+  "sencilla",
+  "doble",
+  "triple",
+];
 
 export function tabToRoomType(tab: RoomTabLabel): RoomTypeApi {
   if (tab === "sencilla") return "sgl";
@@ -83,7 +112,47 @@ export function tabToRoomType(tab: RoomTabLabel): RoomTypeApi {
   return "tpl";
 }
 
-export const COTIZACION_RAPIDA_OPCIONES = [
+export function getRoomTabDisplay(tab: RoomTabLabel): string {
+  return ROOM_TAB_DISPLAY[tab];
+}
+
+export function getRoomRulesForTab(
+  rules: RoomRules,
+  tab: RoomTabLabel,
+): RoomRule[] {
+  const roomType = tabToRoomType(tab);
+  return rules[roomType] ?? [];
+}
+
+export function ruleKey(rule: RoomRule, index: number): string {
+  return `${rule.adt ?? 0}-${rule.mnrA ?? 0}-${rule.inf ?? 0}-${index}`;
+}
+
+export function formatRuleSummary(rule: RoomRule): string {
+  const parts: string[] = [];
+  if (rule.adt) parts.push(`${rule.adt} ADT`);
+  if (rule.mnrA) parts.push(`${rule.mnrA} MNR`);
+  if (rule.inf) parts.push(`${rule.inf} INF`);
+  return parts.join(" + ") || "Sin pasajeros";
+}
+
+export type CotizacionSelectedDeparture = {
+  mt: string;
+  blockadeUid: string;
+  departuredAt: string;
+  currency: string;
+  price: number;
+};
+
+export type CotizacionRulesData = {
+  destinationId: number;
+  roomRules: RoomRules;
+  rulesText: RulesText;
+  routesImages: RoutesImages;
+  currency: string;
+};
+
+const COTIZACION_RAPIDA_OPCIONES = [
   "2 ADT",
   "2 ADT + 1MNR",
   "2 ADT + Asistencias Full",

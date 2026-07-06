@@ -1,8 +1,8 @@
 import ShopDetailsForm from "@/components/forms/ShopDetailsForm"
 import Image from "next/image"
 
-import avatar_1 from "@/assets/img/tour-details/avatar.png"
-import avatar_2 from "@/assets/img/tour-details/avatr.png"
+import avatar_1 from "@/assets/img/tour-details/avatar.webp"
+import avatar_2 from "@/assets/img/tour-details/avatr.webp"
 
 const Review = () => {
    return (
@@ -38,7 +38,7 @@ const Review = () => {
                                  <p className="text-capitalize lh-28 mb-10">Castle in one day is next to impossible. Designed specifically for trave areli areafol
                                     time in London, this tour allou to check off a range of southern  day is next together
                                     impossible. Designed speciEngland.</p>
-                                 <a className="tg-tour-about-cus-reply" href="#">Reply</a>
+                                 <button type="button" className="tg-tour-about-cus-reply">Reply</button>
                               </div>
                            </div>
                            <div className="tg-tour-about-border mb-40"></div>
@@ -62,7 +62,7 @@ const Review = () => {
                                  <p className="text-capitalize lh-28 mb-10">Castle in one day is next to impossible. Designed specifically for trave areli areafol
                                     time in London, this tour allou to check off a range of southern  day is next together
                                     impossible. Designed speciEngland.</p>
-                                 <a className="tg-tour-about-cus-reply" href="#">Reply</a>
+                                 <button type="button" className="tg-tour-about-cus-reply">Reply</button>
                               </div>
                            </div>
                         </li>
@@ -74,8 +74,8 @@ const Review = () => {
                      <div className="tg-tour-about-rating-category mb-20">
                         <ul>
                            <li>
-                              <label>Ratings :</label>
-                              <div className="rating-icon">
+                              <span className="tg-tour-about-rating-category-label">Ratings :</span>
+                              <div className="rating-icon" role="img" aria-label="5 out of 5 stars">
                                  <i className="fa-sharp fa-solid fa-star"></i>
                                  <i className="fa-sharp fa-solid fa-star"></i>
                                  <i className="fa-sharp fa-solid fa-star"></i>

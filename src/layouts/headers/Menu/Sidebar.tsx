@@ -1,4 +1,4 @@
-import logo from "@/assets/img/logo/logo-green.png"
+import logo from "@/assets/img/logo/logo-green.webp"
 import Image from "next/image"
 import Link from "next/link"
 
@@ -12,7 +12,7 @@ const Sidebar = ({ sidebar, setSidebar }: SidebarProps) => {
       <>
          <div className={`offCanvas__info ${sidebar ? "active" : ""}`}>
             <div className="offCanvas__close-icon menu-close">
-               <button onClick={() => setSidebar(false)}><i className="fa-sharp fa-regular fa-xmark"></i></button>
+               <button type="button" onClick={() => setSidebar(false)} aria-label="Close sidebar"><i className="fa-sharp fa-regular fa-xmark"></i></button>
             </div>
             <div className="offCanvas__logo mb-30">
                <Link href="/"><Image src={logo} alt="Logo" /></Link>
@@ -40,7 +40,7 @@ const Sidebar = ({ sidebar, setSidebar }: SidebarProps) => {
                <Link href="/"><i className="fab fa-instagram"></i></Link>
             </div>
          </div>
-         <div onClick={() => setSidebar(false)} className={`offCanvas__overly ${sidebar ? "active" : ""}`}></div>
+         <button type="button" onClick={() => setSidebar(false)} className={`offCanvas__overly ${sidebar ? "active" : ""}`} aria-label="Close sidebar" />
       </>
    )
 }

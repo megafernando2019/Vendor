@@ -1,10 +1,10 @@
 import Image from "next/image"
 import Link from "next/link"
 
-import shape from "@/assets/img/about/details/shape.png"
-import img_1 from "@/assets/img/cta/phone.png"
-import icon_1 from "@/assets/img/cta/google.png"
-import icon_2 from "@/assets/img/cta/app.png"
+import shape from "@/assets/img/about/details/shape.webp"
+import img_1 from "@/assets/img/cta/phone.webp"
+import icon_1 from "@/assets/img/cta/google.webp"
+import icon_2 from "@/assets/img/cta/app.webp"
 
 const Cta = () => {
    return (
@@ -13,7 +13,7 @@ const Cta = () => {
          <div className="container">
             <div className="row">
                <div className="col-12">
-                  <div className="tg-cta-wrap include-bg" style={{ backgroundImage: `url(/assets/img/cta/banner.jpg)` }}>
+                  <div className="tg-cta-wrap include-bg" style={{ backgroundImage: `url(/assets/img/cta/banner.webp)` }}>
                      <div className="row align-items-end">
                         <div className="col-lg-3 d-none d-lg-block">
                            <div className="tg-cta-thumb pt-50 ml-60">

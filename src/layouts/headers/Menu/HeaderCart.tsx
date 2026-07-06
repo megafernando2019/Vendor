@@ -5,18 +5,14 @@ import Image from "next/image"
 import UseCartInfo from '@/hooks/UseCartInfo';
 import { useDispatch, useSelector } from "react-redux";
 import { remove_cart_product } from '@/redux/features/cartSlice';
-import { useEffect, useState } from "react";
+import { useIsClient } from "@/hooks/useIsClient";
 
 const HeaderCart = () => {
 
-   const [mounted, setMounted] = useState(false);
+   const mounted = useIsClient();
    const productItem = useSelector((state: any) => state.cart.cart);
    const dispatch = useDispatch();
    const { total } = UseCartInfo();
-
-   useEffect(() => {
-      setMounted(true);
-   }, []);
 
    if (!mounted) return null;
 
@@ -33,8 +29,8 @@ const HeaderCart = () => {
             </div>
          ) : (
             <>
-               {productItem.map((item: any, i: any) => (
-                  <div key={i} className="cart-content-wrap d-flex align-items-center justify-content-between">
+               {productItem.map((item: any) => (
+                  <div key={item.id} className="cart-content-wrap d-flex align-items-center justify-content-between">
                      <div className="cart-img-info d-flex align-items-center">
                         <div className="cart-thumb">
                            <Link href="/shop-details">
@@ -46,9 +42,9 @@ const HeaderCart = () => {
                            <span> ${item.price} <del>${item.delete_price}</del></span>
                         </div>
                      </div>
-                     <div onClick={() => dispatch(remove_cart_product(item))} className="cart-del-icon">
+                     <button type="button" onClick={() => dispatch(remove_cart_product(item))} className="cart-del-icon" aria-label="Remove item">
                         <span><i className="fa-light fa-trash-can"></i></span>
-                     </div>
+                     </button>
                   </div>
                ))}
                <div className="cart-total-price d-flex align-items-center justify-content-between">

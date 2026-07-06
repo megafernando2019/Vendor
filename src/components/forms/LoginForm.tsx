@@ -1,22 +1,18 @@
 "use client"
 import Link from "next/link"
-import { useState, useRef, useEffect } from "react";
+import { useRef, useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from "next/navigation";
 import { persistor } from "@/src/redux/store";
 import { clearPreLoginStorage } from "@/src/utils/clearPreLoginStorage";
 
-function getSafeCallbackUrl(url: string | null): string {
-  if (!url || !url.startsWith("/") || url.startsWith("//")) {
-    return "/";
-  }
-  return url;
-}
+type LoginFormProps = {
+  redirectTo: string;
+};
 
-export default function LoginForm() {
-  const router = useRouter();
-  const [credentials, setCredentials] = useState({
+export default function LoginForm({ redirectTo }: LoginFormProps) {  const router = useRouter();
+  const credentialsRef = useRef({
     email: '',
     password: ''
   });
@@ -28,10 +24,10 @@ export default function LoginForm() {
   }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setCredentials({
-      ...credentials,
+    credentialsRef.current = {
+      ...credentialsRef.current,
       [e.target.name]: e.target.value
-    });
+    };
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -45,8 +41,8 @@ export default function LoginForm() {
         headers: { "Content-Type": "application/json" },
         credentials: "include",
         body: JSON.stringify({
-          email: credentials.email,
-          password: credentials.password,
+          email: credentialsRef.current.email,
+          password: credentialsRef.current.password,
         }),
       });
 
@@ -64,10 +60,7 @@ export default function LoginForm() {
 
       if (res.ok && data?.success) {
         toast.success("Bienvenido");
-        const callbackUrl = new URLSearchParams(window.location.search).get(
-          "callbackUrl"
-        );
-        router.push(getSafeCallbackUrl(callbackUrl));
+        router.push(redirectTo);
         return;
       }
 
@@ -91,6 +84,7 @@ export default function LoginForm() {
               name="email"
               id="email"
               placeholder="E-mail"
+              aria-label="E-mail"
             />
           </div>
           <div className="col-lg-12 mb-25">
@@ -101,6 +95,7 @@ export default function LoginForm() {
               name="password"
               id="password"
               placeholder="Password"
+              aria-label="Password"
             />
           </div>
           <div className="col-lg-12">

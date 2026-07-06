@@ -14,6 +14,7 @@ type NiceSelectProps = {
    className?: string;
    onChange: (item: Option, name: string) => void;
    name: string;
+   ariaLabel?: string;
 }
 
 const NiceSelect: FC<NiceSelectProps> = ({
@@ -23,6 +24,7 @@ const NiceSelect: FC<NiceSelectProps> = ({
    className,
    onChange,
    name,
+   ariaLabel = "Select option",
 }) => {
    const [open, setOpen] = useState(false);
    const [current, setCurrent] = useState<Option>(options[defaultCurrent]);
@@ -41,23 +43,28 @@ const NiceSelect: FC<NiceSelectProps> = ({
 
    return (
       <div
-         className={`nice-select form-select-lg ${className || ""} ${open ? "open" : ""}`}
-         role="button"
-         tabIndex={0}
-         onClick={() => setOpen((prev) => !prev)}
-         onKeyDown={(e) => e}
          ref={ref}
+         className={`nice-select form-select-lg ${className || ""} ${open ? "open" : ""}`}
       >
-         <span className="current">{current?.text || placeholder}</span>
+         <button
+            type="button"
+            className="nice-select-trigger"
+            aria-label={ariaLabel}
+            aria-haspopup="listbox"
+            aria-expanded={open}
+            onClick={() => setOpen((prev) => !prev)}
+         >
+            <span className="current">{current?.text || placeholder}</span>
+         </button>
          <ul
             className="list"
             role="menubar"
             onClick={(e) => e.stopPropagation()}
             onKeyDown={(e) => e.stopPropagation()}
          >
-            {options?.map((item, i) => (
+            {options?.map((item) => (
                <li
-                  key={i}
+                  key={item.value}
                   data-value={item.value}
                   className={`option ${item.value === current?.value ? "selected focus" : ""
                      }`}
@@ -75,5 +82,3 @@ const NiceSelect: FC<NiceSelectProps> = ({
 };
 
 export default NiceSelect;
-
-

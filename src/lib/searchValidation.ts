@@ -20,7 +20,7 @@ export function isSearchReady(item: ItemSearch): boolean {
   return hasDestination || hasSearch;
 }
 
-export function searchValidationMessage(item: ItemSearch): string | null {
+function searchValidationMessage(item: ItemSearch): string | null {
   if (isSearchReady(item)) return null;
   return "Selecciona un destino o escribe un término de búsqueda.";
 }
@@ -34,7 +34,7 @@ export function formatPassengersLabel(count: number): string {
   return n === 1 ? "1 Pasajero" : `${n} Pasajeros`;
 }
 
-export function getDefaultSearchDateRange(): {
+function getDefaultSearchDateRange(): {
   startRange: string;
   endRange: string;
 } {
@@ -64,7 +64,7 @@ export function applySearchDefaults(item: ItemSearch): ItemSearch {
   };
 }
 
-export function normalizeItemSearch(item: ItemSearch): ItemSearch {
+function normalizeItemSearch(item: ItemSearch): ItemSearch {
   const passengers = normalizePassengers(item.passengers);
   const startRange = item.startRange?.trim() ?? "";
   const endRange = item.endRange?.trim() ?? "";

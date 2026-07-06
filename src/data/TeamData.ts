@@ -8,31 +8,31 @@ interface DataType {
 const team_data: DataType[] = [
    {
       id: 1,
-      thum: "/assets/img/galeria/nuevos.jpg",
+      thum: "/assets/img/galeria/nuevos.webp",
       title: "Esther Howard",
       designation: "Consulting"
    },
    {
       id: 2,
-      thum: "/assets/img/galeria/comisiones.jpg",
+      thum: "/assets/img/galeria/comisiones.webp",
       title: "Jane Cooper",
       designation: "Consulting"
    },
    {
       id: 3,
-      thum: "/assets/img/galeria/landing.png",
+      thum: "/assets/img/galeria/landing.webp",
       title: "Kristin Watson",
       designation: "Consulting"
    },
    {
       id: 4,
-      thum:  "/assets/img/galeria/megasale.jpg",
+      thum:  "/assets/img/galeria/megasale.webp",
       title: "Darrell Steward",
       designation: "Consulting"
    },
    {
       id: 5,
-      thum:  "/assets/img/galeria/asistencias.jpg",
+      thum:  "/assets/img/galeria/asistencias.webp",
       title: "Devon Lane",
       designation: "Consulting"
    }

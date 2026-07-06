@@ -2,7 +2,7 @@ import Image from "next/image"
 import Link from "next/link"
 import Button from "@/components/common/Button"
 
-import shape from "@/assets/img/banner/banner-2/shape-2.png"
+import shape from "@/assets/img/banner/banner-2/shape-2.webp"
 
 const CtaTwo = () => {
    return (
@@ -24,11 +24,11 @@ const CtaTwo = () => {
                      </div>
                   </div>
                   <div className="col-lg-8">
-                     <div className="tg-banner-3-big-content banner-3 text-center include-bg" style={{ backgroundImage: `url(/assets/img/banner/banner-2/thumb.jpg)` }}>
+                     <div className="tg-banner-3-big-content banner-3 text-center include-bg" style={{ backgroundImage: `url(/assets/img/banner/banner-2/thumb.webp)` }}>
                         <h2>Let’s Discover</h2>
                         <span className="d-none d-sm-block">
                            <svg width="322" height="23" viewBox="0 0 322 23" fill="none" xmlns="http://www.w3.org/2000/svg">
-                              <path d="M2.5 15C25.5 12.6667 84.9106 17 108 17C186 17 266 32 320 2" stroke="currentColor" strokeWidth="4" strokeLinecap="round" />
+                              <path d="M2.5 15C25.5 12.67 84.91 17 108 17C186 17 266 32 320 2" stroke="currentColor" strokeWidth="4" strokeLinecap="round" />
                            </svg>
                         </span>
                         <h2>The Whole World !</h2>

@@ -1,22 +1,22 @@
 import { StaticImageData } from "next/image";
 
-import blog_1 from "@/assets/img/blog/blog-2/blog-1.jpg"
-import blog_2 from "@/assets/img/blog/blog-2/blog-2.jpg"
-import blog_3 from "@/assets/img/blog/blog-2/blog-3.jpg"
+import blog_1 from "@/assets/img/blog/blog-2/blog-1.webp"
+import blog_2 from "@/assets/img/blog/blog-2/blog-2.webp"
+import blog_3 from "@/assets/img/blog/blog-2/blog-3.webp"
 
-import blog2_1 from "@/assets/img/blog/grid/grid.jpg"
-import blog2_2 from "@/assets/img/blog/grid/grid-2.jpg"
-import blog2_3 from "@/assets/img/blog/grid/grid-3.jpg"
-import blog2_4 from "@/assets/img/blog/grid/grid-4.jpg"
-import blog2_5 from "@/assets/img/blog/grid/grid-5.jpg"
-import blog2_6 from "@/assets/img/blog/grid/grid-6.jpg"
-import blog2_7 from "@/assets/img/blog/grid/grid-7.jpg"
-import blog2_8 from "@/assets/img/blog/grid/grid-8.jpg"
+import blog2_1 from "@/assets/img/blog/grid/grid.webp"
+import blog2_2 from "@/assets/img/blog/grid/grid-2.webp"
+import blog2_3 from "@/assets/img/blog/grid/grid-3.webp"
+import blog2_4 from "@/assets/img/blog/grid/grid-4.webp"
+import blog2_5 from "@/assets/img/blog/grid/grid-5.webp"
+import blog2_6 from "@/assets/img/blog/grid/grid-6.webp"
+import blog2_7 from "@/assets/img/blog/grid/grid-7.webp"
+import blog2_8 from "@/assets/img/blog/grid/grid-8.webp"
 
-import blog3_1 from "@/assets/img/blog/sidebar/standard.jpg"
-import blog3_2 from "@/assets/img/blog/sidebar/standard-3.jpg"
-import blog3_3 from "@/assets/img/blog/sidebar/standard-4.jpg"
-import blog3_4 from "@/assets/img/blog/sidebar/standard-2.jpg"
+import blog3_1 from "@/assets/img/blog/sidebar/standard.webp"
+import blog3_2 from "@/assets/img/blog/sidebar/standard-3.webp"
+import blog3_3 from "@/assets/img/blog/sidebar/standard-4.webp"
+import blog3_4 from "@/assets/img/blog/sidebar/standard-2.webp"
 
 interface DataType {
    id: number;

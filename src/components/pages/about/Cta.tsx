@@ -3,7 +3,7 @@ import Link from "next/link"
 
 const Cta = () => {
    return (
-      <div className="tg-banner-area tg-grey-bg tg-banner-4-spacing" style={{ backgroundImage: `url(/assets/img/banner/banner-4/banner-4.png)` }}>
+      <div className="tg-banner-area tg-grey-bg tg-banner-4-spacing" style={{ backgroundImage: `url(/assets/img/banner/banner-4/banner-4.webp)` }}>
          <div className="container">
             <div className="col-lg-12">
                <div className="tg-banner-2-content tg-banner-4-content tg-banner-6-content text-center">

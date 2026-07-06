@@ -5,13 +5,22 @@ import Image, { StaticImageData } from "next/image"
 import Link from "next/link"
 import BannerFormTwo from '@/components/common/banner-form/BannerFormTwo';
 
-import logo_1 from "@/assets/img/brand/su/logo.png"
-import logo_2 from "@/assets/img/brand/su/logo-2.png"
-import logo_3 from "@/assets/img/brand/su/logo-3.png"
-import logo_4 from "@/assets/img/brand/su/logo-4.png"
-import logo_5 from "@/assets/img/brand/su/logo-5.png"
+import logo_1 from "@/assets/img/brand/su/logo.webp"
+import logo_2 from "@/assets/img/brand/su/logo-2.webp"
+import logo_3 from "@/assets/img/brand/su/logo-3.webp"
+import logo_4 from "@/assets/img/brand/su/logo-4.webp"
+import logo_5 from "@/assets/img/brand/su/logo-5.webp"
 
-const brand_logo: StaticImageData[] = [logo_1, logo_2, logo_3, logo_4, logo_5, logo_3, logo_4, logo_5];
+const brand_logo: { id: string; logo: StaticImageData }[] = [
+  { id: "brand-1", logo: logo_1 },
+  { id: "brand-2", logo: logo_2 },
+  { id: "brand-3", logo: logo_3 },
+  { id: "brand-4", logo: logo_4 },
+  { id: "brand-5", logo: logo_5 },
+  { id: "brand-6", logo: logo_3 },
+  { id: "brand-7", logo: logo_4 },
+  { id: "brand-8", logo: logo_5 },
+];
 
 const setting = {
   loop: true,
@@ -29,7 +38,7 @@ const setting = {
 
 const Banner = () => {
   return (
-    <div className="tg-hero-area tg-hero-tu-2-wrapper include-bg" style={{ backgroundImage: `url(/assets/img/hero/tu-2/bg.jpg)` }}>
+    <div className="tg-hero-area tg-hero-tu-2-wrapper include-bg" style={{ backgroundImage: `url(/assets/img/hero/tu-2/bg.webp)` }}>
       <div className="container">
         <div className="row">
           <div className="col-lg-12">
@@ -46,8 +55,8 @@ const Banner = () => {
           <div className="col-12">
             <div className="tg-brand-wrap">
               <Swiper {...setting} modules={[Autoplay]} className="swiper-container tg-brand-slide fix">
-                {brand_logo.map((logo, i) => (
-                  <SwiperSlide key={i} className="swiper-slide">
+                {brand_logo.map(({ id, logo }) => (
+                  <SwiperSlide key={id} className="swiper-slide">
                     <div className="tg-brand-items">
                       <Link href="#"><Image src={logo} alt="logo" /></Link>
                     </div>

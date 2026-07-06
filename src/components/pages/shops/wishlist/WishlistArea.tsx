@@ -6,6 +6,7 @@ import { useDispatch } from "react-redux";
 import { addToCart } from '@/redux/features/cartSlice';
 import UseWishlistInfo from '@/hooks/UseWishlistInfo';
 import { removeFromWishlist } from "@/redux/features/wishlistSlice";
+import { preventNativeFormSubmit } from "@/utils/preventNativeFormSubmit";
 
 const WishlistArea = () => {
   const { wishlistItems } = UseWishlistInfo();
@@ -26,7 +27,7 @@ const WishlistArea = () => {
                 </div>
               </div>
             ) : (
-              <form onClick={(e) => e.preventDefault()}>
+              <form onSubmit={preventNativeFormSubmit}>
                 <div className="row gutter-y-30 gx-5">
                   <div className="tg-cart-table-content table-responsive mb-30">
                     <table className="table">
@@ -39,8 +40,8 @@ const WishlistArea = () => {
                         </tr>
                       </thead>
                       <tbody>
-                        {wishlistItems.map((item: any, i: any) =>
-                          <tr key={i}>
+                        {wishlistItems.map((item: any) =>
+                          <tr key={item.id}>
                             <td className="product-thumbnail">
                               <Link className="thumb" href="/shop-details">
                                 <Image src={item.thumb} alt="" />
@@ -51,10 +52,10 @@ const WishlistArea = () => {
                               <span className="amount">${item.price}.00</span>
                             </td>
                             <td className="product-add-to-cart">
-                              <button onClick={() => dispatch(addToCart(item))} className="tg-btn">Add To Cart</button>
+                              <button type="button" onClick={() => dispatch(addToCart(item))} className="tg-btn">Add To Cart</button>
                             </td>
                             <td className="product-remove">
-                              <a onClick={() => dispatch(removeFromWishlist(item))} style={{ cursor: "pointer" }}><i className="fa fa-times"></i></a>
+                              <button type="button" onClick={() => dispatch(removeFromWishlist(item))} style={{ cursor: "pointer" }} aria-label="Remove from wishlist"><i className="fa fa-times"></i></button>
                             </td>
                           </tr>
                         )}

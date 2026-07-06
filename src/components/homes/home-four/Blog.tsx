@@ -2,8 +2,8 @@ import Image from "next/image"
 import blog_data from "@/data/BlogData"
 import Link from "next/link"
 
-import shape_1 from "@/assets/img/blog/blog-2/shape-2.png"
-import shape_2 from "@/assets/img/blog/blog-2/shape.png"
+import shape_1 from "@/assets/img/blog/blog-2/shape-2.webp"
+import shape_2 from "@/assets/img/blog/blog-2/shape.webp"
 
 const Blog = () => {
    return (
@@ -20,7 +20,7 @@ const Blog = () => {
                         to step out of your comfort zonetravel</p>
                   </div>
                </div>
-               {blog_data.filter((items) => items.page === "home_1").map((item) => (
+               {blog_data.flatMap((item) => item.page !== "home_1" ? [] : [
                   <div key={item.id} className="col-xl-4 col-lg-6 col-md-6 wow fadeInLeft" data-wow-delay=".4s" data-wow-duration=".9s">
                      <div className="tg-blog-item tg-blog-2-item mb-25">
                         <div className="tg-blog-thumb p-relative fix mb-20">
@@ -37,7 +37,7 @@ const Blog = () => {
                         </div>
                      </div>
                   </div>
-               ))}
+               ])}
                <div className="col-12 wow fadeInUp" data-wow-delay=".4s" data-wow-duration=".9s">
                   <div className="tg-blog-bottom text-center pt-15">
                      <p>Want to see our Recent News & Updates. <a href="blog-grid.html">Click here to View More</a></p>

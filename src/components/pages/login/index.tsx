@@ -1,11 +1,15 @@
 import LoginArea from "./LoginArea"
 import FooterFive from "@/layouts/footers/FooterFive"
 
-const Login = () => {
+type LoginProps = {
+  redirectTo: string;
+};
+
+const Login = ({ redirectTo }: LoginProps) => {
    return (
       <>
          <main>
-            <LoginArea />
+            <LoginArea redirectTo={redirectTo} />
          </main>
          <FooterFive />
       </>

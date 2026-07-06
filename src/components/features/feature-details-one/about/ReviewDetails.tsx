@@ -1,8 +1,8 @@
 import Image from "next/image"
 import Link from "next/link"
 
-import review_1 from "@/assets/img/tour-details/avatar.png"
-import review_2 from "@/assets/img/tour-details/avatr.png"
+import review_1 from "@/assets/img/tour-details/avatar.webp"
+import review_2 from "@/assets/img/tour-details/avatr.webp"
 
 const ReviewDetails = () => {
    return (

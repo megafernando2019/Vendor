@@ -2,10 +2,11 @@
 "use client"
 import shop_data from "@/data/ShopData";
 import { selectProducts } from "@/redux/features/productSlice";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useSelector } from "react-redux";
 import { Rating } from 'react-simple-star-rating';
 import PriceRange from "./PriceRange";
+import { FilterSidebarListItem } from "@/components/common/FilterSidebarListItem";
 import DestinationForm from "./DestinationForm";
 
 interface FilterCriteria {
@@ -91,13 +92,12 @@ const FeatureSidebar = ({ setProducts }: FeatureSidebarProps) => {
 
   const [priceValue, setPriceValue] = useState([0, maxPrice]);
 
-  useEffect(() => {
-    const filterPrice = shop_data.filter((j) => j.price >= priceValue[0] && j.price <= priceValue[1]);
-    setProducts(filterPrice);
-  }, [priceValue, setProducts]);
-
   const handleChanges = (val: number[]) => {
-    setPriceValue(val)
+    setPriceValue(val);
+    const filterPrice = shop_data.filter(
+      (item) => item.price >= val[0] && item.price <= val[1],
+    );
+    setProducts(filterPrice);
   }
 
   return (
@@ -131,12 +131,12 @@ const FeatureSidebar = ({ setProducts }: FeatureSidebarProps) => {
           <div className="tg-filter-list">
             <ul>
               {allDuration.map((duration, i) => (
-                <li key={i} onClick={() => handleDuration(duration)}>
+                <FilterSidebarListItem key={duration} onSelect={() => handleDuration(duration)}>
                   <div className="checkbox d-flex">
-                    <input className="tg-checkbox" type="checkbox" checked={duration === durationSelected} readOnly id={`duration_${i}`} />
-                    <label className="tg-label" htmlFor={`duration_${i}`} onClick={() => handleDuration(duration)}>{duration}</label>
+                    <input className="tg-checkbox" type="checkbox" checked={duration === durationSelected} readOnly id={`duration_${i}`} aria-label={duration} />
+                    <label className="tg-label" htmlFor={`duration_${i}`}>{duration}</label>
                   </div>
-                </li>
+                </FilterSidebarListItem>
               ))}
             </ul>
           </div>
@@ -147,12 +147,12 @@ const FeatureSidebar = ({ setProducts }: FeatureSidebarProps) => {
           <div className="tg-filter-list">
             <ul>
               {allAmenities.map((amenities, i) => (
-                <li key={i} onClick={() => handleAmenities(amenities)}>
+                <FilterSidebarListItem key={amenities} onSelect={() => handleAmenities(amenities)}>
                   <div className="checkbox d-flex">
-                    <input className="tg-checkbox" type="checkbox" checked={amenities === amenitiesSelected} readOnly id={`amenities_${i}`} />
-                    <label className="tg-label" htmlFor={`amenities_${i}`} onClick={() => handleAmenities(amenities)}>{amenities}</label>
+                    <input className="tg-checkbox" type="checkbox" checked={amenities === amenitiesSelected} readOnly id={`amenities_${i}`} aria-label={amenities} />
+                    <label className="tg-label" htmlFor={`amenities_${i}`}>{amenities}</label>
                   </div>
-                </li>
+                </FilterSidebarListItem>
               ))}
             </ul>
           </div>
@@ -163,16 +163,16 @@ const FeatureSidebar = ({ setProducts }: FeatureSidebarProps) => {
           <div className="tg-filter-list">
             <ul>
               {[5, 4, 3, 2, 1].map((rating, i) => (
-                <li key={i} onClick={() => handleRating(rating)}>
+                <FilterSidebarListItem key={rating} onSelect={() => handleRating(rating)}>
                   <div className="checkbox d-flex">
-                    <input className="tg-checkbox" type="checkbox" checked={rating === ratingSelected} readOnly id={`rating_${i}`} />
-                    <label htmlFor={`rating_${i}`} onClick={() => handleRating(rating)}>
+                    <input className="tg-checkbox" type="checkbox" checked={rating === ratingSelected} readOnly id={`rating_${i}`} aria-label={`${rating} stars`} />
+                    <label htmlFor={`rating_${i}`}>
                       <div className="tg-filter-review">
                         <Rating initialValue={rating} size={18} readonly />
                       </div>
                     </label>
                   </div>
-                </li>
+                </FilterSidebarListItem>
               ))}
             </ul>
           </div>
@@ -183,12 +183,12 @@ const FeatureSidebar = ({ setProducts }: FeatureSidebarProps) => {
           <div className="tg-filter-list">
             <ul>
               {allLanguage.map((language, i) => (
-                <li key={i} onClick={() => handleLanguage(language)}>
+                <FilterSidebarListItem key={language} onSelect={() => handleLanguage(language)}>
                   <div className="checkbox d-flex">
-                    <input className="tg-checkbox" type="checkbox" checked={language === languageSelected} readOnly id={`language_${i}`} />
-                    <label className="tg-label" htmlFor={`language_${i}`} onClick={() => handleLanguage(language)}>{language}</label>
+                    <input className="tg-checkbox" type="checkbox" checked={language === languageSelected} readOnly id={`language_${i}`} aria-label={language} />
+                    <label className="tg-label" htmlFor={`language_${i}`}>{language}</label>
                   </div>
-                </li>
+                </FilterSidebarListItem>
               ))}
             </ul>
           </div>

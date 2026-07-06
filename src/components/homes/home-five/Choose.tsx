@@ -3,12 +3,12 @@ import Button from "@/components/common/Button"
 import Choose5 from "@/svg/home-one/Choose5"
 import Choose4 from "@/svg/home-one/Choose4"
 
-import img_1 from "@/assets/img/chose/chose-3/bridge.png"
-import img_2 from "@/assets/img/chose/chose-3/map.png"
-import img_3 from "@/assets/img/chose/chose-3/circle-text.png"
-import img_4 from "@/assets/img/chose/chose-3/star.png"
-import img_5 from "@/assets/img/chose/chose-3/thumb-2.jpg"
-import img_6 from "@/assets/img/chose/chose-3/thumb-1.jpg"
+import img_1 from "@/assets/img/chose/chose-3/bridge.webp"
+import img_2 from "@/assets/img/chose/chose-3/map.webp"
+import img_3 from "@/assets/img/chose/chose-3/circle-text.webp"
+import img_4 from "@/assets/img/chose/chose-3/star.webp"
+import img_5 from "@/assets/img/chose/chose-3/thumb-2.webp"
+import img_6 from "@/assets/img/chose/chose-3/thumb-1.webp"
 
 const Choose = () => {
    return (

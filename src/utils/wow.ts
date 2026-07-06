@@ -78,7 +78,7 @@ export function getWowInstance(): Promise<WowInstance | null> {
   return wowInitPromise;
 }
 
-export function syncWow(element?: Element) {
+function syncWow(element?: Element) {
   if (wowInstance) {
     wowInstance.sync(element);
     return;

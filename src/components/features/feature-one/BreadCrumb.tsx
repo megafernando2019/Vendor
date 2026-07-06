@@ -1,8 +1,8 @@
 import Image from "next/image"
 import BannerFormTwo from "@/components/common/banner-form/BannerFormTwo"
 
-import shape_1 from "@/assets/img/booking/shape.png"
-import shape_2 from "@/assets/img/booking/shape-2.png"
+import shape_1 from "@/assets/img/booking/shape.webp"
+import shape_2 from "@/assets/img/booking/shape-2.webp"
 
 const BreadCrumb = () => {
    return (

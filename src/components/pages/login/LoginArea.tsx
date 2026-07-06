@@ -1,6 +1,10 @@
 import LoginForm from "@/components/forms/LoginForm"
 
-const LoginArea = () => {
+type LoginAreaProps = {
+   redirectTo: string;
+};
+
+const LoginArea = ({ redirectTo }: LoginAreaProps) => {
    return (
       <div className="tg-login-area pt-130 pb-130">
          <div className="container">
@@ -13,7 +17,7 @@ const LoginArea = () => {
                      </div>
                      <div className="tg-login-form">
                         <div className="tg-tour-about-review-form">
-                           <LoginForm />
+                           <LoginForm redirectTo={redirectTo} />
                         </div>
                      </div>
                   </div>

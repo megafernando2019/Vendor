@@ -13,12 +13,14 @@ const progressData: ProgressItem[] = [
 ];
 
 const TeamProgress = () => {
-   const [progressValues, setProgressValues] = useState<number[]>(progressData.map(() => 0));
+   const [progressValues, setProgressValues] = useState<number[]>(() =>
+      progressData.map(() => 0),
+   );
 
    useEffect(() => {
       const timeout = setTimeout(() => {
          setProgressValues(progressData.map(item => item.value));
-      }, 100); // Delay to allow CSS transition
+      }, 100);
 
       return () => clearTimeout(timeout);
    }, []);
@@ -26,22 +28,18 @@ const TeamProgress = () => {
    return (
       <div className="tg-team-progress-wrap fix mb-15">
          {progressData.map((item, index) => (
-            <div key={index} className="tg-team-single-progress mb-20">
+            <div key={item.title} className="tg-team-single-progress mb-20">
                <h5 className="tg-team-progress-title">{item.title}</h5>
                <div className="tg-team-progress">
-                  <div
+                  <progress
                      className="progress-bar"
-                     style={{
-                        width: `${progressValues[index]}%`,
-                        transition: 'width 2s ease-in-out',
-                     }}
-                     role="progressbar"
-                     aria-valuenow={progressValues[index]}
-                     aria-valuemin={0}
-                     aria-valuemax={100}
-                  >
-                     <span>{progressValues[index]}%</span>
-                  </div>
+                     value={progressValues[index]}
+                     max={100}
+                     aria-label={`${item.title}: ${progressValues[index]}%`}
+                  />
+                  <span className="progress-bar-label" aria-hidden="true">
+                     {progressValues[index]}%
+                  </span>
                </div>
             </div>
          ))}

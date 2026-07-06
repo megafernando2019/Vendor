@@ -33,7 +33,7 @@ const process_data: DataType[] = [
 
 const Process = () => {
    return (
-      <div className="tp-process-area include-bg pb-90 pt-120" style={{ backgroundImage: `url(/assets/img/process/bg.jpg)` }}>
+      <div className="tp-process-area include-bg pb-90 pt-120" style={{ backgroundImage: `url(/assets/img/process/bg.webp)` }}>
          <div className="container">
             <div className="row align-items-center">
                <div className="col-lg-6">

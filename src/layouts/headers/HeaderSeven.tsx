@@ -11,8 +11,8 @@ import UserIcon from "@/svg/UserIcon";
 import HeaderCart from "./Menu/HeaderCart";
 import TotalCart from "./Menu/TotalCart";
 
-import logo_1 from "@/assets/img/logo/logo-white.png";
-import logo_2 from "@/assets/img/logo/logo-green.png";
+import logo_1 from "@/assets/img/logo/logo-white.webp";
+import logo_2 from "@/assets/img/logo/logo-green.webp";
 
 const HeaderSeven = () => {
 
@@ -42,7 +42,7 @@ const HeaderSeven = () => {
                      <div className="col-lg-4 col-7">
                         <div className="tg-menu-right-action d-flex align-items-center justify-content-end">
                            <div className="tg-header-cart p-relative d-none d-xl-block">
-                              <button className="cart-button">
+                              <button type="button" className="cart-button">
                                  <span>
                                     <CartIcon />
                                  </span>
@@ -60,12 +60,12 @@ const HeaderSeven = () => {
                            </div>
                            <div className="tg-header-menu-bar lh-1 p-relative ml-20 pl-20">
                               <span className="tg-header-border d-none d-xl-block"></span>
-                              <button onClick={() => setSidebar(true)} className="tgmenu-offcanvas-open-btn menu-tigger d-none d-xl-block">
+                              <button type="button" onClick={() => setSidebar(true)} className="tgmenu-offcanvas-open-btn menu-tigger d-none d-xl-block" aria-label="Open sidebar">
                                  <span></span>
                                  <span></span>
                                  <span></span>
                               </button>
-                              <button onClick={() => setOffCanvas(true)} className="tgmenu-offcanvas-open-btn mobile-nav-toggler d-block d-xl-none">
+                              <button type="button" onClick={() => setOffCanvas(true)} className="tgmenu-offcanvas-open-btn mobile-nav-toggler d-block d-xl-none" aria-label="Open menu">
                                  <span></span>
                                  <span></span>
                                  <span></span>

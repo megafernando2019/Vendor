@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { departuresToursCotizacion } from "@/src/services/cotizacion";
+import { parseDeparturesToursResponse } from "@/src/interfaces/opcionales-cotizacion";
 
 export async function GET(req: Request) {
   const cookieStore = await cookies();
@@ -25,10 +26,19 @@ export async function GET(req: Request) {
 
   try {
     const res = await departuresToursCotizacion(token, blockadeUid);
+    const payload = (res as { data?: unknown }).data ?? res.data;
+    const tours = parseDeparturesToursResponse(payload);
 
-    if (res.status === 200 && Array.isArray(res.data)) {
+    if (res.status === 200 && tours.length > 0) {
       return NextResponse.json(
-        { success: true, data: res.data, message: res.message },
+        { success: true, data: tours, message: res.message },
+        { status: 200 }
+      );
+    }
+
+    if (res.status === 200) {
+      return NextResponse.json(
+        { success: true, data: [], message: res.message ?? "Sin opcionales" },
         { status: 200 }
       );
     }

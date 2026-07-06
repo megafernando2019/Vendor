@@ -1,9 +1,9 @@
 import Image, { StaticImageData } from "next/image"
 import Link from "next/link"
 
-import blog_1 from "@/assets/img/blog/blog-1.jpg"
-import blog_2 from "@/assets/img/blog/blog-2.jpg"
-import blog_3 from "@/assets/img/blog/blog-3.jpg"
+import blog_1 from "@/assets/img/blog/blog-1.webp"
+import blog_2 from "@/assets/img/blog/blog-2.webp"
+import blog_3 from "@/assets/img/blog/blog-3.webp"
 
 interface DataType {
    id: number;

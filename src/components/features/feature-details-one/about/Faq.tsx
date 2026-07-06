@@ -1,5 +1,5 @@
 "use client"
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 interface FaqData {
    id: number;
@@ -42,16 +42,12 @@ const faq_data: FaqData[] = [
 
 const Faq = () => {
 
-   const [faqData, setFaqData] = useState<FaqData[]>([]);
-
-   useEffect(() => {
-      const filtered = faq_data;
-      const updatedData = faq_data.map((item) => ({
+   const [faqData, setFaqData] = useState<FaqData[]>(() =>
+      faq_data.map((item) => ({
          ...item,
-         showAnswer: item.id === filtered[0]?.id
-      }));
-      setFaqData(updatedData);
-   }, []);
+         showAnswer: item.id === faq_data[0]?.id,
+      })),
+   );
 
    const toggleAnswer = (faqId: number) => {
       setFaqData((prevFaqData) =>

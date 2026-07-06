@@ -21,7 +21,7 @@ const Blog = ({ style }: PropTypes) => {
                </div>
             </div>
             <div className="row">
-               {blog_data.filter((items) => items.page === "home_1").map((item) => (
+               {blog_data.flatMap((item) => item.page !== "home_1" ? [] : [
                   <div key={item.id} className="col-xl-4 col-lg-6 col-md-6 wow fadeInLeft" data-wow-delay=".4s" data-wow-duration=".9s">
                      <div className="tg-blog-item tg-blog-2-item mb-25">
                         <div className="tg-blog-thumb p-relative fix mb-25">
@@ -37,7 +37,7 @@ const Blog = ({ style }: PropTypes) => {
                         </div>
                      </div>
                   </div>
-               ))}
+               ])}
             </div>
          </div>
       </div>

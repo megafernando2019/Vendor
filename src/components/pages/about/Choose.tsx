@@ -4,7 +4,7 @@ import Choose8 from "@/svg/home-one/Choose8";
 import Image from "next/image";
 import { JSX } from "react";
 
-import shape from "@/assets/img/banner/banner-2/shape.png"
+import shape from "@/assets/img/banner/banner-2/shape.webp"
 
 interface DataType {
    id: number;

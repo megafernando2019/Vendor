@@ -36,7 +36,7 @@ const HeaderSearch = ({ isSearch, setIsSearch }: MobileSidebarProps) => {
                 <div className="search__form">
                   <form onSubmit={handleSubmit}>
                     <div className="search__input">
-                      <input
+                      <input aria-label="Type keywords here"
                         type="text"
                         placeholder="Type keywords here"
                         value={searchValue}
@@ -44,7 +44,7 @@ const HeaderSearch = ({ isSearch, setIsSearch }: MobileSidebarProps) => {
                         className="search-input-field"
                       />
                       <span className="search-focus-border"></span>
-                      <button>
+                      <button type="submit">
                         <SearchIcon />
                       </button>
                     </div>
@@ -55,7 +55,7 @@ const HeaderSearch = ({ isSearch, setIsSearch }: MobileSidebarProps) => {
           </div>
         </div>
       </div>
-      <div onClick={() => setIsSearch(false)} className={`search-popup-overlay ${isSearch ? "search-popup-overlay-open" : ""}`}></div>
+      <button type="button" onClick={() => setIsSearch(false)} className={`search-popup-overlay ${isSearch ? "search-popup-overlay-open" : ""}`} aria-label="Close search" />
     </>
   )
 }

@@ -5,10 +5,10 @@ import {
   COTIZACION_OPCIONALES_KEY,
 } from "@/src/redux/slices/cotizacionSlice";
 
-export const PERSIST_APP_KEY = "persist:app";
-export const TOTALES_KEY = "totales";
+const PERSIST_APP_KEY = "persist:app";
+const TOTALES_KEY = "totales";
 
-export const PRE_LOGIN_STORAGE_KEYS = [
+const PRE_LOGIN_STORAGE_KEYS = [
   COTIZACION_ASISTENCIAS_KEY,
   COTIZACION_DETALLE_KEY,
   COTIZACION_HABITACIONES_KEY,

@@ -3,8 +3,8 @@ import TeamProgress from "./TeamProgress"
 import TeamContact from "./TeamContact"
 import Link from "next/link"
 
-import team_1 from "@/assets/img/banner/banner-2/shape.png"
-import team_2 from "@/assets/img/team/details.jpg"
+import team_1 from "@/assets/img/banner/banner-2/shape.webp"
+import team_2 from "@/assets/img/team/details.webp"
 
 const TeamDetailsArea = () => {
    return (

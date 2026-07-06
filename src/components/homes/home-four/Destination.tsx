@@ -1,10 +1,10 @@
 import Image, { StaticImageData } from "next/image";
 
-import thumb_1 from "@/assets/img/destination/des.jpg"
-import thumb_2 from "@/assets/img/destination/des-2.jpg"
-import thumb_3 from "@/assets/img/destination/des-3.jpg"
-import thumb_4 from "@/assets/img/destination/des-4.jpg"
-import shape from "@/assets/img/listing/listing-2/shape.png"
+import thumb_1 from "@/assets/img/destination/des.webp"
+import thumb_2 from "@/assets/img/destination/des-2.webp"
+import thumb_3 from "@/assets/img/destination/des-3.webp"
+import thumb_4 from "@/assets/img/destination/des-4.webp"
+import shape from "@/assets/img/listing/listing-2/shape.webp"
 import Link from "next/link";
 
 interface DataType {
@@ -68,8 +68,8 @@ const Destination = () => {
                               <Link href="/map-listing">{item.country}</Link>
                            </div>
                            <div className="tg-destination-tag">
-                              {item.tag.map((tag, i) => (
-                                 <span key={i}>{tag}</span>
+                              {item.tag.map((tag) => (
+                                 <span key={tag}>{tag}</span>
                               ))}
                            </div>
                         </div>

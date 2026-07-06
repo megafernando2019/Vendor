@@ -10,11 +10,13 @@ import Testimonial from "./Testimonial";
 
 import dynamic from "next/dynamic";
 
-import FooterThree from "@/layouts/footers/FooterThree";
+import FooterThree from "@/components/common/FooterThree";
 
 import WowSection from "@/components/common/WowSection";
 
 import useWow from "@/hooks/useWow";
+
+import Image from "next/image";
 
 const RecommendationCarrousel = dynamic(
   () => import("./RecommendationCarrousel"),
@@ -52,7 +54,7 @@ const HomeThree = () => {
               sectionKey="top_10"
               subtitle="Los tours más populares y mejor valorados"
               title="TOP 10"
-              backgroundImage="/assets/img/Top-10/Top-10.png"
+              backgroundImage="/assets/img/Top-10/Top-10.webp"
             />
           </WowSection>
 
@@ -61,19 +63,53 @@ const HomeThree = () => {
               sectionKey="cruceros"
               subtitle="Viajes con crucero incluido"
               title="CRUCEROS"
-              backgroundImage="/assets/img/cruceros/Cruceros.png"
+              backgroundImage="/assets/img/cruceros/Cruceros.webp"
             />
           </WowSection>
 
           <WowSection animation="fadeInLeft" delay=".2s" duration=".9s">
             <Choose />
           </WowSection>
+          <WowSection animation="fadeInLeft" delay=".2s" duration=".9s">
+<div className="container">
+ <div className="row d-flex justify-content-between">
+              <div className="col-md-4">
+                <Image
+                  src="/assets/img/blog/pages/promociones-exclusivas.png"
+                  alt="promociones exclusivas"
+                  className="img-fluid"
+                  width={350}
+                  height={350}
+                />
+              </div>
+              <div className="col-md-4">
+                <Image
+                  src="/assets/img/blog/pages/protege-a-tus-pasajeros.png"
+                  alt="protege a tus pasajeros"
+                 className="img-fluid"
+                  width={350}
+                  height={350}
+                />
+              </div>
+              <div className="col-md-4">
+                <Image
+                  src="/assets/img/blog/pages/viajando-x-mis-xv.png"
+                  alt="viajando por mis xv"
+   className="img-fluid"
+                  width={350}
+                  height={350}
+                />
+              </div>
+            </div>
+</div>
+           
+          </WowSection>
 
           <RecommendationCarrousel
             sectionKey="ofertas"
             subtitle="Promociones y precios especiales"
             title="OFERTAS"
-            backgroundImage="/assets/img/ofertas/Ofertas.png"
+            backgroundImage="/assets/img/ofertas/Ofertas.webp"
             includeBg={false}
             headerClassName=""
             titleColumnClassName="col-lg-12 py-20"

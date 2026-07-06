@@ -5,7 +5,7 @@ import Image from "next/image"
 import location_data from "@/data/LocationData"
 import Link from "next/link"
 
-import shape_1 from "@/assets/img/location/shape-2.png"
+import shape_1 from "@/assets/img/location/shape-2.webp"
 
 const setting = {
    slidesPerView: 4,
@@ -50,15 +50,15 @@ const Location = () => {
                </div>
                <div className="col-lg-3">
                   <div className="tg-listing-5-slider-navigation text-end mb-50 wow fadeInUp" data-wow-delay=".4s" data-wow-duration="1s">
-                     <button className="tg-listing-5-slide-prev"><i className="fa-solid fa-arrow-left-long"></i></button>
-                     <button className="tg-listing-5-slide-next"><i className="fa-solid fa-arrow-right-long"></i></button>
+                     <button type="button" className="tg-listing-5-slide-prev" aria-label="Previous slide"><i className="fa-solid fa-arrow-left-long"></i></button>
+                     <button type="button" className="tg-listing-5-slide-next" aria-label="Next slide"><i className="fa-solid fa-arrow-right-long"></i></button>
                   </div>
                </div>
             </div>
             <div className="row">
                <div className="col-12">
                   <Swiper {...setting} modules={[Autoplay, Navigation]} className="swiper-container tg-location-5-slider p-relative fix">
-                     {location_data.filter((items) => items.page === "home_7_2").map((item) => (
+                     {location_data.flatMap((item) => item.page !== "home_7_2" ? [] : [
                         <SwiperSlide key={item.id} className="swiper-slide">
                            <div className="tg-location-5-wrap p-relative">
                               <div className="tg-location-5-thumb bg-white p-relative rounded-circale">
@@ -73,7 +73,7 @@ const Location = () => {
                               </div>
                            </div>
                         </SwiperSlide>
-                     ))}
+                     ])}
                   </Swiper>
                </div>
             </div>

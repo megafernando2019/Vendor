@@ -2,9 +2,9 @@ import Image from "next/image"
 import team_data from "@/data/TeamData"
 import Link from "next/link"
 
-import shape_1 from "@/assets/img/about/details/shape.png"
-import shape_2 from "@/assets/img/banner/banner-2/shape.png"
-import shape_3 from "@/assets/img/listing/listing-2/shape.png"
+import shape_1 from "@/assets/img/about/details/shape.webp"
+import shape_2 from "@/assets/img/banner/banner-2/shape.webp"
+import shape_3 from "@/assets/img/listing/listing-2/shape.webp"
 
 const TeamArea = () => {
    return (

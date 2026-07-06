@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useEffect, useMemo, useRef, useState, useCallback } from "react";
+import { useMemo, useRef, useCallback } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Navigation } from "swiper/modules";
 import type { Swiper as SwiperType } from "swiper";
@@ -9,10 +9,11 @@ import { useDispatch } from "react-redux";
 import { addToWishlist } from "@/redux/features/wishlistSlice";
 import {
   mapRecommendationItemsToCards,
-  normalizeRecommendationsData,
   type RecommendationCard,
   type RecommendationSectionKey,
 } from "@/utils/recommendations";
+import { useRecommendationsQuery } from "@/hooks/useRecommendationsQuery";
+import { useSearchDisponibilidad } from "@/hooks/useSearchDisponibilidad";
 import RecommendationTourCard from "./RecommendationTourCard";
 
 const MAX_SLIDES_PER_VIEW = 4;
@@ -50,9 +51,27 @@ const RecommendationCarrousel = ({
 }: RecommendationCarrouselProps) => {
   const dispatch = useDispatch();
   const swiperRef = useRef<SwiperType | null>(null);
-  const [cards, setCards] = useState<RecommendationCard[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { searchByKeyword, searching } = useSearchDisponibilidad();
+  const recommendationsQuery = useRecommendationsQuery();
+
+  const { cards, loading, error } = useMemo(() => {
+    if (recommendationsQuery.status === "loading") {
+      return { cards: [] as RecommendationCard[], loading: true, error: null };
+    }
+
+    if (recommendationsQuery.status === "error") {
+      return {
+        cards: [] as RecommendationCard[],
+        loading: false,
+        error: recommendationsQuery.error,
+      };
+    }
+
+    const items = recommendationsQuery.data[sectionKey] ?? [];
+    const { cards: mappedCards } = mapRecommendationItemsToCards(items);
+
+    return { cards: mappedCards, loading: false, error: null };
+  }, [recommendationsQuery, sectionKey]);
 
   const navigationId = useMemo(
     () => `recommendation-carousel-${sectionKey.replace(/_/g, "-")}`,
@@ -74,43 +93,6 @@ const RecommendationCarrousel = ({
     }),
     [navigationId, cards.length],
   );
-
-  useEffect(() => {
-    let cancelled = false;
-
-    const loadRecommendations = async () => {
-      try {
-        const res = await fetch("/api/getRecommendations");
-        const json = await res.json();
-
-        if (cancelled) return;
-
-        if (!res.ok || !json.success) {
-          setError(json.message ?? "No se pudieron cargar las recomendaciones");
-          return;
-        }
-
-        const normalized = normalizeRecommendationsData(json.data ?? json);
-        const items = normalized[sectionKey] ?? [];
-        const { cards: mappedCards } = mapRecommendationItemsToCards(items);
-        setCards(mappedCards);
-      } catch {
-        if (!cancelled) {
-          setError("Error al consultar recomendaciones");
-        }
-      } finally {
-        if (!cancelled) {
-          setLoading(false);
-        }
-      }
-    };
-
-    loadRecommendations();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [sectionKey]);
 
   const handleAddToWishlist = (item: RecommendationCard) => {
     dispatch(addToWishlist(item as any));
@@ -201,6 +183,9 @@ const RecommendationCarrousel = ({
                         ratingLabel={ratingLabel}
                         onAddToWishlist={handleAddToWishlist}
                         onActionMenuOpenChange={handleActionMenuOpenChange}
+                        linkMode="search-disponibilidad"
+                        onSearchNavigate={searchByKeyword}
+                        searchNavigateDisabled={searching}
                       />
                     </SwiperSlide>
                   ))}

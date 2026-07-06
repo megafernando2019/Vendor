@@ -42,15 +42,18 @@ const EMPTY_RECOMMENDATIONS: RecommendationsData = {
   ofertas: [],
 };
 
-function normalizeCountries(countries: unknown): string[] {
+export function normalizeCountries(countries: unknown): string[] {
   if (Array.isArray(countries)) {
-    return countries.map(String).filter(Boolean);
+    return countries.flatMap((country) => {
+      const value = String(country);
+      return value ? [value] : [];
+    });
   }
   if (typeof countries === "string" && countries.trim()) {
-    return countries
-      .split(" - ")
-      .map((country) => country.trim())
-      .filter(Boolean);
+    return countries.split(" - ").flatMap((country) => {
+      const value = country.trim();
+      return value ? [value] : [];
+    });
   }
   return [];
 }
@@ -104,18 +107,27 @@ export function normalizeRecommendationsData(raw: unknown): RecommendationsData 
 function normalizePromotions(value: unknown): Promotions[] {
   if (!Array.isArray(value)) return [];
 
-  return value
-    .filter(
-      (promotion): promotion is Promotions & { title?: string } =>
-        Boolean(promotion) &&
-        typeof promotion === "object" &&
-        ("name" in promotion || "title" in promotion),
-    )
-    .map((promotion) => ({
+  const result: Promotions[] = [];
+  for (const promotion of value) {
+    if (
+      !promotion ||
+      typeof promotion !== "object" ||
+      !("name" in promotion || "title" in promotion)
+    ) {
+      continue;
+    }
+
+    const normalized = {
       uuid: String(promotion.uuid ?? promotion.name ?? promotion.title ?? ""),
       name: String(promotion.name ?? promotion.title ?? ""),
-    }))
-    .filter((promotion) => promotion.name.trim().length > 0);
+    };
+
+    if (normalized.name.trim().length > 0) {
+      result.push(normalized);
+    }
+  }
+
+  return result;
 }
 
 function normalizeHasPromotions(
@@ -128,7 +140,7 @@ function normalizeHasPromotions(
   return false;
 }
 
-export function mapRecommendationToResultData(
+function mapRecommendationToResultData(
   item: RecommendationItem
 ): ResultData {
   const promotions = normalizePromotions(item.promotions);
@@ -153,7 +165,7 @@ export function mapRecommendationToResultData(
     multimedias: item.multimedias ?? [],
   };
 }
-export const RECOMMENDATION_SECTIONS: {
+const RECOMMENDATION_SECTIONS: {
   key: keyof RecommendationsData;
   titulo: string;
   descripcion: string;
@@ -180,7 +192,7 @@ export const RECOMMENDATION_SECTIONS: {
   },
 ];
 
-export function getRecommendationSectionMeta(key: keyof RecommendationsData) {
+function getRecommendationSectionMeta(key: keyof RecommendationsData) {
   return RECOMMENDATION_SECTIONS.find((s) => s.key === key);
 }
 
@@ -245,7 +257,7 @@ function resolvePriceBreakdown(item: RecommendationItem): {
     };
   }
 
-  const cheapestDeparture = [...(item.filtered_departures ?? [])].sort(
+  const cheapestDeparture = (item.filtered_departures ?? []).toSorted(
     (a, b) => a.dbl_adt_cost - b.dbl_adt_cost,
   )[0];
 
@@ -263,7 +275,7 @@ function resolvePriceBreakdown(item: RecommendationItem): {
   };
 }
 
-export function mapRecommendationToCard(
+function mapRecommendationToCard(
   item: RecommendationItem,
   index = 0
 ): RecommendationCard {
@@ -296,7 +308,36 @@ export function mapRecommendationToCard(
   };
 }
 
-export function buildCountryFilterGroups(
+function mapResultDataToCard(
+  item: ResultData,
+  index = 0,
+): RecommendationCard {
+  return mapRecommendationToCard(
+    {
+      clv: item.clv,
+      destination_name: item.destination_name,
+      name: item.name,
+      days: item.days,
+      nights: item.nights,
+      countries: item.countries,
+      total_from: item.total_from,
+      total_upto: item.total_upto,
+      has_promotions: item.has_promotions,
+      promotions: item.promotions,
+      multimedias: item.multimedias,
+      filtered_departures: item.filtered_departures ?? [],
+      currencies: item.currencies,
+      departures_count: item.departures_count,
+    },
+    index,
+  );
+}
+
+export function mapResultDataToCards(items: ResultData[]): RecommendationCard[] {
+  return items.map((item, index) => mapResultDataToCard(item, index));
+}
+
+function buildCountryFilterGroups(
   items: RecommendationItem[]
 ): RecommendationGroupTab[] {
   const groups = new Map<string, string>();
@@ -330,7 +371,7 @@ export function mapRecommendationItemsToCards(items: RecommendationItem[]): {
 }
 
 /** @deprecated Use mapRecommendationItemsToCards */
-export function mapTop10Recommendations(items: RecommendationItem[]): {
+function mapTop10Recommendations(items: RecommendationItem[]): {
   cards: RecommendationCard[];
   groups: RecommendationGroupTab[];
 } {

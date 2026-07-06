@@ -1,114 +1,10 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
-import { createPortal } from "react-dom";
-import Flatpickr from "react-flatpickr";
-import Image from "next/image";
-import { format } from "date-fns";
-import { useRouter } from "next/navigation";
-import { toast } from "react-toastify";
-import { useAppDispatch } from "@/redux/hooks";
-import {
-  fetchBusqueda,
-  setItemSearch,
-  type ItemSearch,
-} from "@/redux/slices/searchSlice";
-import { resetView } from "@/redux/slices/viewSlice";
-import { useDelayedPanelItems } from "@/hooks/useDelayedPanelItems";
-import { useMediaQuery } from "@/hooks/useMediaQuery";
 
-const MOBILE_SEARCH_MQ = "(max-width: 574px)";
+import SearchFormExpandablePanel from "./SearchFormExpandablePanel";
+import SearchFormPortals from "./SearchFormPortals";
+import { useSearchFormItems } from "./useSearchFormItems";
 
-const destinoOptions = [
-  { value: "3", label: "Europa", icon: "/assets/img/icons/Europa.png" },
-  {
-    value: "7",
-    label: "Medio Oriente",
-    icon: "/assets/img/icons/MedioOriente.png",
-  },
-  { value: "11", label: "Asia", icon: "/assets/img/icons/Asia.png" },
-  { value: "5", label: "Canada", icon: "/assets/img/icons/Canada.png" },
-  {
-    value: "6",
-    label: "Estados Unidos",
-    icon: "/assets/img/icons/EstadoUnidos.png",
-  },
-  { value: "8", label: "México", icon: "/assets/img/icons/Mexico.png" },
-  {
-    value: "10",
-    label: "Centro América",
-    icon: "/assets/img/icons/Centroamerica.png",
-  },
-  { value: "9", label: "Sudamerica", icon: "/assets/img/icons/Sudamerica.png" },
-  { value: "12", label: "Caribe", icon: "/assets/img/icons/caribe.png" },
-];
-
-const pasajerosOptions = [
-  { value: "1", label: "1 Pasajero", icon: "/assets/img/icons/Pasajeros.png" },
-  { value: "2", label: "2 Pasajeros", icon: "/assets/img/icons/Pasajeros.png" },
-  { value: "3", label: "3 Pasajeros", icon: "/assets/img/icons/Pasajeros.png" },
-  { value: "4", label: "4 Pasajeros", icon: "/assets/img/icons/Pasajeros.png" },
-  { value: "5", label: "5 Pasajeros", icon: "/assets/img/icons/Pasajeros.png" },
-  { value: "6", label: "6 Pasajeros", icon: "/assets/img/icons/Pasajeros.png" },
-  { value: "7", label: "7 Pasajeros", icon: "/assets/img/icons/Pasajeros.png" },
-  { value: "8", label: "8 Pasajeros", icon: "/assets/img/icons/Pasajeros.png" },
-];
-
-const DEFAULT_DESTINO_ID = "3";
-const DEFAULT_PASAJEROS_ID = "2";
-const SEARCH_PAGE = 1;
-const SEARCH_LIMIT = 20;
-const API_DATE_FORMAT = "yyyy-MM-dd";
-
-export type SearchFormData = {
-  destinoId: string;
-  pasajerosId: string;
-  fechaInicio: string;
-  fechaFin: string;
-  keyword: string;
-};
-
-const getDefaultDateRange = (): Date[] => {
-  const start = new Date();
-  start.setHours(0, 0, 0, 0);
-  const end = new Date(start);
-  end.setFullYear(end.getFullYear() + 1);
-  return [start, end];
-};
-
-const formatFormDate = (date: Date): string => {
-  const day = String(date.getDate()).padStart(2, "0");
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const year = date.getFullYear();
-  return `${day}/${month}/${year}`;
-};
-
-const buildSearchFormData = (
-  destinoId: string,
-  pasajerosId: string,
-  dates: Date[],
-  keyword: string,
-): SearchFormData => ({
-  destinoId,
-  pasajerosId,
-  fechaInicio: dates[0] ? formatFormDate(dates[0]) : "",
-  fechaFin: dates[1] ? formatFormDate(dates[1]) : "",
-  keyword,
-});
-
-const buildBusquedaPayload = (
-  destinoId: string,
-  pasajerosId: string,
-  dates: Date[],
-  keyword: string,
-): ItemSearch => ({
-  destination: Number(destinoId),
-  passengers: Number(pasajerosId),
-  startRange: dates[0] ? format(dates[0], API_DATE_FORMAT) : "",
-  endRange: dates[1] ? format(dates[1], API_DATE_FORMAT) : "",
-  search: keyword.trim(),
-  page: SEARCH_PAGE,
-  limit: SEARCH_LIMIT,
-});
+export type { SearchFormData } from "./searchFormItemsUtils";
 
 interface FormItemsProps {
   searchOpen: boolean;
@@ -116,465 +12,48 @@ interface FormItemsProps {
 }
 
 const SearchFormItems = ({ searchOpen, onToggle }: FormItemsProps) => {
-  const formFieldsVisible = useDelayedPanelItems(searchOpen);
-  const isMobileSearchUI = useMediaQuery(MOBILE_SEARCH_MQ);
-  const dispatch = useAppDispatch();
-  const router = useRouter();
-  const [location, setLocation] = useState(false);
-  const [passengers, setPassengers] = useState(false);
-  const [selectedDestinoId, setSelectedDestinoId] =
-    useState(DEFAULT_DESTINO_ID);
-  const [selectedPasajerosId, setSelectedPasajerosId] =
-    useState(DEFAULT_PASAJEROS_ID);
-  const [dateRange, setDateRange] = useState<Date[]>(getDefaultDateRange);
-  const [keyword, setKeyword] = useState("");
-  const [keywordEditing, setKeywordEditing] = useState(false);
-  const [keywordSheetOpen, setKeywordSheetOpen] = useState(false);
-  const [mounted, setMounted] = useState(false);
-  const [formData, setFormData] = useState<SearchFormData>(() =>
-    buildSearchFormData(
-      DEFAULT_DESTINO_ID,
-      DEFAULT_PASAJEROS_ID,
-      getDefaultDateRange(),
-      "",
-    ),
-  );
-
-  const locationRef = useRef<HTMLDivElement>(null);
-  const passengersRef = useRef<HTMLDivElement>(null);
-  const keywordInputRef = useRef<HTMLInputElement>(null);
-  const keywordSheetInputRef = useRef<HTMLInputElement>(null);
-  const flatpickrRef = useRef<any>(null);
-
-  const closeKeywordSheet = (saveValue = true) => {
-    if (saveValue && keywordSheetInputRef.current) {
-      setKeyword(keywordSheetInputRef.current.value.trim());
-    }
-    setKeywordSheetOpen(false);
-  };
-
-  const openKeywordSheet = () => {
-    setLocation(false);
-    setPassengers(false);
-    setKeywordEditing(false);
-    setKeywordSheetOpen(true);
-  };
-
-  const handleKeywordTriggerClick = () => {
-    setLocation(false);
-    setPassengers(false);
-
-    if (isMobileSearchUI) {
-      openKeywordSheet();
-      return;
-    }
-
-    if (!keywordEditing) {
-      setKeywordEditing(true);
-    }
-  };
-
-  const submitSearch = async (keywordOverride?: string) => {
-    setLocation(false);
-    setPassengers(false);
-
-    const currentKeyword =
-      keywordOverride ??
-      (keywordEditing && keywordInputRef.current
-        ? keywordInputRef.current.value.trim()
-        : keyword);
-
-    setKeyword(currentKeyword);
-    setKeywordEditing(false);
-
-    if (dateRange.length < 2) {
-      toast.warn("Selecciona un rango de fechas completo", {
-        position: "top-center",
-      });
-      return;
-    }
-
-    const payload = buildBusquedaPayload(
-      selectedDestinoId,
-      selectedPasajerosId,
-      dateRange,
-      currentKeyword,
-    );
-
-    try {
-      dispatch(setItemSearch(payload));
-      await dispatch(fetchBusqueda(payload)).unwrap();
-      dispatch(resetView());
-      router.push("/disponibilidad");
-    } catch (error) {
-      const message =
-        typeof error === "string" && error.length > 0
-          ? error
-          : "No se pudo completar la búsqueda";
-      toast.error(message, { position: "top-center" });
-    }
-  };
-
-  const handleSearchButtonClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-
-    if (!searchOpen) {
-      onToggle();
-      return;
-    }
-
-    submitSearch();
-  };
-
-  useEffect(() => {
-    if (!formFieldsVisible) {
-      setLocation(false);
-      setPassengers(false);
-      setKeywordEditing(false);
-      setKeywordSheetOpen(false);
-    }
-  }, [formFieldsVisible]);
-
-  const closeMobilePickers = () => {
-    setLocation(false);
-    setPassengers(false);
-  };
-
-  const mobilePickerOpen =
-    isMobileSearchUI && mounted && (location || passengers);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  useEffect(() => {
-    const shouldLockScroll =
-      keywordSheetOpen || (isMobileSearchUI && (location || passengers));
-
-    document.body.style.overflow = shouldLockScroll ? "hidden" : "";
-
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [keywordSheetOpen, isMobileSearchUI, location, passengers]);
-
-  useEffect(() => {
-    if (!keywordSheetOpen) return;
-
-    const frameId = window.requestAnimationFrame(() => {
-      keywordSheetInputRef.current?.focus();
-    });
-
-    return () => window.cancelAnimationFrame(frameId);
-  }, [keywordSheetOpen]);
-
-  useEffect(() => {
-    const handleEscape = (event: KeyboardEvent) => {
-      if (event.key !== "Escape") return;
-
-      if (keywordSheetOpen) {
-        closeKeywordSheet(true);
-        return;
-      }
-
-      if (isMobileSearchUI && (location || passengers)) {
-        closeMobilePickers();
-      }
-    };
-
-    if (!keywordSheetOpen && !(isMobileSearchUI && (location || passengers))) {
-      return;
-    }
-
-    document.addEventListener("keydown", handleEscape);
-    return () => document.removeEventListener("keydown", handleEscape);
-  }, [keywordSheetOpen, isMobileSearchUI, location, passengers]);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      const calendarEl = flatpickrRef.current?.flatpickr?.calendarContainer;
-      if (calendarEl && calendarEl.contains(event.target as Node)) return;
-
-      if (
-        locationRef.current &&
-        !locationRef.current.contains(event.target as Node)
-      ) {
-        setLocation(false);
-      }
-      if (
-        passengersRef.current &&
-        !passengersRef.current.contains(event.target as Node)
-      ) {
-        setPassengers(false);
-      }
-    };
-
-    document.addEventListener("click", handleClickOutside);
-    return () => document.removeEventListener("click", handleClickOutside);
-  }, []);
-
-  useEffect(() => {
-    if (keywordEditing) {
-      keywordInputRef.current?.focus();
-    }
-  }, [keywordEditing]);
-
-  useEffect(() => {
-    setFormData(
-      buildSearchFormData(
-        selectedDestinoId,
-        selectedPasajerosId,
-        dateRange,
-        keyword,
-      ),
-    );
-  }, [selectedDestinoId, selectedPasajerosId, dateRange, keyword]);
-
-  const handleKeywordBlur = (value: string) => {
-    setKeyword(value.trim());
-    setKeywordEditing(false);
-  };
-
-  const handleSelectDestination = (destinoId: string) => {
-    setSelectedDestinoId(destinoId);
-    setLocation(false);
-  };
-
-  const handleSelectPassengers = (pasajerosId: string) => {
-    setSelectedPasajerosId(pasajerosId);
-    setPassengers(false);
-  };
-
-  const selectedDestinationData = destinoOptions.find(
-    (dest) => dest.value === selectedDestinoId,
-  );
-  const selectedPasajerosData = pasajerosOptions.find(
-    (option) => option.value === selectedPasajerosId,
-  );
-
-  const renderDestinoOptions = () =>
-    destinoOptions.map((dest) => (
-      <li
-        key={dest.value}
-        className={selectedDestinoId === dest.value ? "selected" : ""}
-        onClick={() => handleSelectDestination(dest.value)}
-      >
-        <Image src={dest.icon} width={30} height={30} alt={dest.label} />
-        <span>{dest.label}</span>
-      </li>
-    ));
-
-  const renderPasajerosOptions = () =>
-    pasajerosOptions.map((option) => (
-      <li
-        key={option.value}
-        className={selectedPasajerosId === option.value ? "selected" : ""}
-        onClick={() => handleSelectPassengers(option.value)}
-      >
-        <Image src={option.icon} width={30} height={30} alt={option.label} />
-        <span>{option.label}</span>
-      </li>
-    ));
+  const form = useSearchFormItems({ searchOpen, onToggle });
 
   return (
-    <form className="banner-form-two" onSubmit={(e) => e.preventDefault()}>
+    <form className="banner-form-two" onSubmit={form.handleFormSubmit}>
       <div
         className={`tg-booking-form-input-group align-items-center${searchOpen ? "" : " banner-form-two-collapsed"}`}
       >
         <div
-          className={`banner-form-two-expandable min-w-0${searchOpen && formFieldsVisible ? " banner-form-two-expandable--visible" : ""}${searchOpen ? " banner-form-two-expandable--open" : ""}`}
-          aria-hidden={!searchOpen || !formFieldsVisible}
+          className={`banner-form-two-expandable min-w-0${searchOpen && form.formFieldsVisible ? " banner-form-two-expandable--visible" : ""}${searchOpen ? " banner-form-two-expandable--open" : ""}`}
+          aria-hidden={!searchOpen || !form.formFieldsVisible}
         >
-          <div className="banner-form-two-expandable-inner d-flex align-items-center">
-            <div
-              ref={locationRef}
-              className="tg-booking-form-parent-inner tg-hero-quantity p-relative"
-            >
-              <div
-                onClick={() => {
-                  setPassengers(false);
-                  setKeywordSheetOpen(false);
-                  setLocation((prev) => !prev);
-                }}
-                className={`tg-booking-add-input-field tg-booking-form-field-destino tg-booking-quantity-toggle ${location ? "active" : ""}`}
-              >
-                <span className="location">
-                  {selectedDestinationData ? (
-                    <Image
-                      src={selectedDestinationData.icon}
-                      width={35}
-                      height={35}
-                      alt={selectedDestinationData.label}
-                    />
-                  ) : (
-                    <svg
-                      width="13"
-                      height="16"
-                      viewBox="0 0 13 16"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M12.3329 6.7071C12.3329 11.2324 6.55512 15.1111 6.55512 15.1111C6.55512 15.1111 0.777344 11.2324 0.777344 6.7071C0.777344 5.16402 1.38607 3.68414 2.46962 2.59302C3.55316 1.5019 5.02276 0.888916 6.55512 0.888916C8.08748 0.888916 9.55708 1.5019 10.6406 2.59302C11.7242 3.68414 12.3329 5.16402 12.3329 6.7071Z"
-                        stroke="currentColor"
-                        strokeWidth="1.15556"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                      <path
-                        d="M6.55512 8.64649C7.61878 8.64649 8.48105 7.7782 8.48105 6.7071C8.48105 5.636 7.61878 4.7677 6.55512 4.7677C5.49146 4.7677 4.6292 5.636 4.6292 6.7071C4.6292 7.7782 5.49146 8.64649 6.55512 8.64649Z"
-                        stroke="currentColor"
-                        strokeWidth="1.15556"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  )}
-                </span>
-                <span className="tg-booking-title-value banner-form-two-field-text">
-                  {selectedDestinationData?.label ?? "Destino"}
-                </span>
-              </div>
-              {!isMobileSearchUI && (
-                <div
-                  className={`tg-booking-form-location-list tg-booking-form-destino-list tg-booking-quantity-active banner-form-two-picker-sheet banner-form-two-picker-sheet--inline${location ? " tg-list-open banner-form-two-picker-sheet--open" : ""}`}
-                >
-                  <ul className="scrool-bar scrool-height pr-5">
-                    {renderDestinoOptions()}
-                  </ul>
-                </div>
-              )}{" "}
-            </div>
-
-            <div
-              ref={passengersRef}
-              className="tg-booking-form-parent-inner tg-hero-quantity p-relative"
-            >
-              <div
-                onClick={() => {
-                  setLocation(false);
-                  setKeywordSheetOpen(false);
-                  setPassengers((prev) => !prev);
-                }}
-                className={`tg-booking-add-input-field tg-booking-form-field-pasajeros tg-booking-quantity-toggle ${passengers ? "active" : ""}`}
-              >
-                <span className="location">
-                  <Image
-                    src="/assets/img/icons/Pasajeros.png"
-                    width={30}
-                    height={30}
-                    alt="Pasajeros"
-                  />
-                </span>
-                <span className="tg-booking-title-value banner-form-two-field-text">
-                  {selectedPasajerosData?.label ?? "Pasajeros"}
-                </span>
-              </div>
-              {!isMobileSearchUI && (
-                <div
-                  className={`tg-booking-form-location-list tg-booking-form-pasajeros-list tg-booking-quantity-active banner-form-two-picker-sheet banner-form-two-picker-sheet--inline${passengers ? " tg-list-open banner-form-two-picker-sheet--open" : ""}`}
-                >
-                  <ul className="scrool-bar scrool-height pr-5">
-                    {renderPasajerosOptions()}
-                  </ul>
-                </div>
-              )}{" "}
-            </div>
-
-            <div className="tg-booking-form-parent-inner-range banner-form-two-form-field-dates">
-              <div className="tg-booking-add-input-date p-relative">
-                <span>
-                  <svg
-                    width="14"
-                    height="14"
-                    viewBox="0 0 14 14"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M9.76501 0.777771V3.26668M4.23413 0.777771V3.26668M0.777344 5.75548H13.2218M2.16006 2.02211H11.8391C12.6027 2.02211 13.2218 2.57927 13.2218 3.26656V11.9778C13.2218 12.6651 12.6027 13.2222 11.8391 13.2222H2.16006C1.39641 13.2222 0.777344 12.6651 0.777344 11.9778V3.26656C0.777344 2.57927 1.39641 2.02211 2.16006 2.02211Z"
-                      stroke="currentColor"
-                      strokeWidth="0.977778"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </span>
-                <Flatpickr
-                  ref={flatpickrRef}
-                  value={dateRange}
-                  options={{
-                    mode: "range",
-                    dateFormat: "d/m/y",
-                    closeOnSelect: false,
-                  }}
-                  onChange={(selectedDates) => {
-                    setDateRange(selectedDates);
-                    if (selectedDates.length === 2) {
-                      flatpickrRef.current?.flatpickr.close();
-                    }
-                  }}
-                  className="input"
-                  placeholder="dd/mm/yyyy"
-                />
-              </div>
-            </div>
-
-            <div className="tg-booking-form-parent-inner tg-booking-form-field-keyword p-relative">
-              <div
-                onClick={handleKeywordTriggerClick}
-                className={`tg-booking-add-input-field banner-form-two-keyword-trigger${keywordEditing && !isMobileSearchUI ? " active" : ""}${keywordSheetOpen ? " banner-form-two-keyword-trigger--sheet-open" : ""}`}
-                role="button"
-                tabIndex={0}
-                aria-label="Buscar por palabra clave"
-                aria-expanded={keywordSheetOpen || keywordEditing}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    e.preventDefault();
-                    handleKeywordTriggerClick();
-                  }
-                }}
-              >
-                <span className="location">
-                  <Image
-                    src="/assets/img/icons/Buscar.png"
-                    width={20}
-                    height={20}
-                    alt=""
-                    aria-hidden="true"
-                  />
-                </span>
-
-                {!isMobileSearchUI && keywordEditing ? (
-                  <input
-                    ref={keywordInputRef}
-                    type="text"
-                    className="banner-form-two-keyword-input"
-                    defaultValue={keyword}
-                    onClick={(e) => e.stopPropagation()}
-                    onBlur={(e) => handleKeywordBlur(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        e.preventDefault();
-                        submitSearch(e.currentTarget.value.trim());
-                      }
-                    }}
-                  />
-                ) : (
-                  <span className="tg-booking-title-value banner-form-two-field-text">
-                    {keyword || "Palabra clave"}
-                  </span>
-                )}
-              </div>
-            </div>
-          </div>
+          <SearchFormExpandablePanel
+            isMobileSearchUI={form.isMobileSearchUI}
+            location={form.location}
+            passengers={form.passengers}
+            selectedDestinoId={form.selectedDestinoId}
+            selectedPasajerosId={form.selectedPasajerosId}
+            dateRange={form.dateRange}
+            keyword={form.keyword}
+            keywordEditing={form.keywordEditing}
+            keywordSheetOpen={form.keywordSheetOpen}
+            locationRef={form.locationRef}
+            passengersRef={form.passengersRef}
+            keywordInputRef={form.keywordInputRef}
+            flatpickrRef={form.flatpickrRef}
+            setLocation={form.setLocation}
+            setPassengers={form.setPassengers}
+            setKeywordSheetOpen={form.setKeywordSheetOpen}
+            setDateRange={form.setDateRange}
+            onSelectDestination={form.handleSelectDestination}
+            onSelectPassengers={form.handleSelectPassengers}
+            handleKeywordTriggerClick={form.handleKeywordTriggerClick}
+            handleKeywordBlur={form.handleKeywordBlur}
+            submitSearch={form.submitSearch}
+          />
         </div>
 
         <div className="tg-booking-form-search-btn flex-shrink-0">
           <button
             className="btn btn-dark rounded-circle banner-form-two-icon-btn"
             type="button"
-            onClick={handleSearchButtonClick}
+            onClick={form.handleSearchButtonClick}
             aria-label={searchOpen ? "Buscar" : "Mostrar buscador"}
           >
             <svg
@@ -587,7 +66,7 @@ const SearchFormItems = ({ searchOpen, onToggle }: FormItemsProps) => {
             >
               <g clipPath="url(#clip0_53_103)">
                 <path
-                  d="M13.2218 13.2222L10.5188 10.5192M12.1959 6.48705C12.1959 9.6402 9.63977 12.1963 6.48662 12.1963C3.33348 12.1963 0.777344 9.6402 0.777344 6.48705C0.777344 3.3339 3.33348 0.777771 6.48662 0.777771C9.63977 0.777771 12.1959 3.3339 12.1959 6.48705Z"
+                  d="M13.22 13.22L10.52 10.52M12.20 6.49C12.20 9.64 9.64 12.20 6.49 12.20C3.33 12.20 0.78 9.64 0.78 6.49C0.78 3.33 3.33 0.78 6.49 0.78C9.64 0.78 12.20 3.33 12.20 6.49Z"
                   stroke="currentColor"
                   strokeWidth="1.575"
                   strokeLinecap="round"
@@ -604,86 +83,23 @@ const SearchFormItems = ({ searchOpen, onToggle }: FormItemsProps) => {
         </div>
       </div>
 
-      {mobilePickerOpen &&
-        createPortal(
-          <div
-            className="banner-form-two-picker-sheet-layer"
-            role="dialog"
-            aria-modal="true"
-            aria-label={
-              location ? "Seleccionar destino" : "Seleccionar pasajeros"
-            }
-          >
-            <button
-              type="button"
-              className="banner-form-two-picker-sheet-backdrop"
-              aria-label="Cerrar selección"
-              onClick={closeMobilePickers}
-            />
-            <div
-              className={`banner-form-two tg-booking-form-location-list banner-form-two-picker-sheet banner-form-two-picker-sheet--portal banner-form-two-picker-sheet--open${location ? " tg-booking-form-destino-list" : " tg-booking-form-pasajeros-list"} tg-list-open`}
-            >
-              <ul className="scrool-bar scrool-height pr-5">
-                {location ? renderDestinoOptions() : renderPasajerosOptions()}
-              </ul>
-            </div>
-          </div>,
-          document.body,
-        )}
-
-      {mounted &&
-        isMobileSearchUI &&
-        keywordSheetOpen &&
-        createPortal(
-          <div
-            className="banner-form-two-keyword-sheet"
-            role="dialog"
-            aria-modal="true"
-            aria-label="Buscar por palabra clave"
-          >
-            <button
-              type="button"
-              className="banner-form-two-keyword-sheet-backdrop"
-              aria-label="Cerrar búsqueda"
-              onClick={() => closeKeywordSheet(true)}
-            />
-            <div className="banner-form-two-keyword-sheet-panel">
-              <div className="banner-form-two-keyword-sheet-bar">
-                <span className="banner-form-two-keyword-sheet-icon">
-                  <i
-                    className="bi bi-search fs-4 text-dark"
-                    aria-hidden="true"
-                  ></i>
-                </span>
-                <input
-                  ref={keywordSheetInputRef}
-                  type="search"
-                  enterKeyHint="search"
-                  className="banner-form-two-keyword-sheet-input"
-                  defaultValue={keyword}
-                  placeholder="Palabra clave"
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      e.preventDefault();
-                      const value = e.currentTarget.value.trim();
-                      setKeyword(value);
-                      closeKeywordSheet(false);
-                      submitSearch(value);
-                    }
-                  }}
-                />
-                <button
-                  type="button"
-                  className="banner-form-two-keyword-sheet-cancel"
-                  onClick={() => closeKeywordSheet(true)}
-                >
-                  Cancelar
-                </button>
-              </div>
-            </div>
-          </div>,
-          document.body,
-        )}
+      <SearchFormPortals
+        location={form.location}
+        passengers={form.passengers}
+        closeMobilePickers={form.closeMobilePickers}
+        mounted={form.mounted}
+        keyword={form.keyword}
+        keywordSheetInputRef={form.keywordSheetInputRef}
+        closeKeywordSheet={form.closeKeywordSheet}
+        setKeyword={form.setKeyword}
+        submitSearch={form.submitSearch}
+        selectedDestinoId={form.selectedDestinoId}
+        selectedPasajerosId={form.selectedPasajerosId}
+        onSelectDestination={form.handleSelectDestination}
+        onSelectPassengers={form.handleSelectPassengers}
+        pickerDialogRef={form.pickerDialogRef}
+        keywordDialogRef={form.keywordDialogRef}
+      />
     </form>
   );
 };

@@ -2,8 +2,8 @@ import Image from "next/image";
 import Link from "next/link";
 import pricing_data from "@/data/PricingData";
 
-import shape_1 from "@/assets/img/pricing/shape.png"
-import shape_2 from "@/assets/img/pricing/shape-2.png"
+import shape_1 from "@/assets/img/pricing/shape.webp"
+import shape_2 from "@/assets/img/pricing/shape-2.webp"
 
 const Pricing = () => {
    return (
@@ -35,14 +35,14 @@ const Pricing = () => {
                         </div>
                         <div className="tg-pricing-list">
                            <ul>
-                              {item.list.map((list, i) => (
-                                 <li key={i}>
+                              {item.list.map((feature) => (
+                                 <li key={feature}>
                                     <span className="icon">
                                        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                          <path d="M17 8.26858V9.00458C16.999 10.7297 16.4404 12.4083 15.4075 13.79C14.3745 15.1718 12.9226 16.1826 11.2683 16.6717C9.61394 17.1608 7.8458 17.1021 6.22757 16.5042C4.60934 15.9064 3.22772 14.8015 2.28877 13.3542C1.34981 11.907 0.903833 10.195 1.01734 8.47363C1.13085 6.75223 1.79777 5.11364 2.91862 3.80224C4.03948 2.49083 5.55423 1.57688 7.23695 1.1967C8.91967 0.816507 10.6802 0.990449 12.256 1.69258M17 2.60458L9 10.6126L6.6 8.21258" stroke="#560CE3" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                                          <path d="M17 8.27V9C16.999 10.73 16.44 12.41 15.41 13.79C14.37 15.17 12.92 16.18 11.27 16.67C9.61 17.16 7.85 17.10 6.23 16.50C4.61 15.91 3.23 14.80 2.29 13.35C1.35 11.907 0.90 10.195 1.02 8.47C1.13 6.75 1.80 5.11 2.92 3.80C4.04 2.49 5.55 1.58 7.24 1.20C8.92 0.82 10.68 0.99 12.256 1.69M17 2.60L9 10.61L6.6 8.21" stroke="#560CE3" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
                                        </svg>
                                     </span>
-                                    <span>{list}</span>
+                                    <span>{feature}</span>
                                  </li>
                               ))}
                            </ul>

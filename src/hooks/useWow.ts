@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, type DependencyList } from "react";
-import { getWowInstance, syncWow } from "@/utils/wow";
+import { useEffect } from "react";
+import { getWowInstance } from "@/utils/wow";
 
-export default function useWow(deps: DependencyList = []) {
+export default function useWow() {
   useEffect(() => {
     let timeoutId: ReturnType<typeof setTimeout> | undefined;
 
@@ -15,7 +15,5 @@ export default function useWow(deps: DependencyList = []) {
     return () => {
       if (timeoutId) clearTimeout(timeoutId);
     };
-  }, deps);
+  }, []);
 }
-
-export { syncWow };

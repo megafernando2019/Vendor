@@ -11,7 +11,7 @@ import UserIcon from "@/svg/UserIcon";
 import TotalCart from "./Menu/TotalCart";
 import HeaderCart from "./Menu/HeaderCart";
 
-import logo from "@/assets/img/logo/logo-green.png";
+import logo from "@/assets/img/logo/logo-green.webp";
 
 const HeaderFour = () => {
 
@@ -42,7 +42,7 @@ const HeaderFour = () => {
                      <div className="col-xl-5 col-8">
                         <div className="tg-menu-right-action tg-menu-right-action-2 d-flex align-items-center justify-content-end">
                            <div className="tg-header-cart p-relative d-none d-xl-block">
-                              <button className="cart-button">
+                              <button type="button" className="cart-button">
                                  <span>
                                     <CartIcon />
                                  </span>
@@ -68,7 +68,7 @@ const HeaderFour = () => {
                               </Link>
                            </div>
                            <div className="tg-header-menu-bar lh-1 p-relative pl-20 d-block d-xl-none">
-                              <button onClick={() => setOffCanvas(true)} style={{ cursor: "pointer" }} className="tgmenu-offcanvas-open-btn mobile-nav-toggler mobile-nav-black">
+                              <button type="button" onClick={() => setOffCanvas(true)} style={{ cursor: "pointer" }} className="tgmenu-offcanvas-open-btn mobile-nav-toggler mobile-nav-black" aria-label="Open menu">
                                  <span></span>
                                  <span></span>
                                  <span></span>

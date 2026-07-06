@@ -1,5 +1,5 @@
 import Image from "next/image"
-import comment from "@/assets/img/blog/details/avatar.png"
+import comment from "@/assets/img/blog/details/avatar.webp"
 
 const Comment = () => {
    return (

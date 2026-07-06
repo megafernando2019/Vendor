@@ -1,14 +1,10 @@
 import { useSelector } from "react-redux";
-import { useEffect, useState } from "react";
 import { RootState } from "@/redux/store";
+import { useIsClient } from "@/hooks/useIsClient";
 
 const TotalCart = () => {
    const productItem = useSelector((state: RootState) => state.cart.cart);
-   const [isClient, setIsClient] = useState(false);
-
-   useEffect(() => {
-      setIsClient(true);
-   }, []);
+   const isClient = useIsClient();
 
    if (!isClient) return null;
 

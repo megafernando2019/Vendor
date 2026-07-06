@@ -1,10 +1,10 @@
 import Image, { StaticImageData } from "next/image";
 import Link from "next/link";
 
-import img_1 from "@/assets/img/blog/sidebar/post-2.jpg"
-import img_2 from "@/assets/img/blog/sidebar/post-3.jpg"
-import img_3 from "@/assets/img/blog/sidebar/post-4.jpg"
-import img_4 from "@/assets/img/blog/sidebar/post.jpg"
+import img_1 from "@/assets/img/blog/sidebar/post-2.webp"
+import img_2 from "@/assets/img/blog/sidebar/post-3.webp"
+import img_3 from "@/assets/img/blog/sidebar/post-4.webp"
+import img_4 from "@/assets/img/blog/sidebar/post.webp"
 
 interface DataType {
    id: number;
@@ -53,7 +53,7 @@ const RecentPost = () => {
                   <h4 className="tg-blog-post-title mb-5"><Link href="/blog-details">{item.title}</Link></h4>
                   <span className="tg-blog-post-date">
                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M9.76501 0.777832V3.26675M4.23413 0.777832V3.26675M0.777344 5.75554H13.2218M2.16006 2.02217H11.8391C12.6027 2.02217 13.2218 2.57933 13.2218 3.26662V11.9778C13.2218 12.6651 12.6027 13.2223 11.8391 13.2223H2.16006C1.39641 13.2223 0.777344 12.6651 0.777344 11.9778V3.26662C0.777344 2.57933 1.39641 2.02217 2.16006 2.02217Z" stroke="#560CE3" strokeWidth="0.977778" strokeLinecap="round" strokeLinejoin="round" />
+                        <path d="M9.77 0.78V3.27M4.23 0.78V3.27M0.78 5.76H13.22M2.16 2.02H11.84C12.60 2.02 13.22 2.58 13.22 3.27V11.98C13.22 12.67 12.60 13.22 11.84 13.22H2.16C1.40 13.22 0.78 12.67 0.78 11.98V3.27C0.78 2.58 1.40 2.02 2.16 2.02Z" stroke="#560CE3" strokeWidth="0.977778" strokeLinecap="round" strokeLinejoin="round" />
                      </svg>
                      {item.date}
                   </span>

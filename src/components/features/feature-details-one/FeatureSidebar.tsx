@@ -1,19 +1,20 @@
 "use client"
 import NiceSelect from "@/ui/NiceSelect"
+import { preventNativeFormSubmit } from "@/utils/preventNativeFormSubmit"
+
+const noopSelectHandler = () => { };
 
 const FeatureSidebar = () => {
 
-   const selectHandler = () => { };
-
    return (
-      <form onSubmit={(e) => e.preventDefault()}>
+      <form onSubmit={preventNativeFormSubmit}>
          <h4 className="tg-tour-about-title title-2 mb-15">Book This Tour</h4>
          <div className="tg-booking-form-parent-inner mb-10">
             <div className="tg-tour-about-date p-relative">
-               <input className="input" name="datetime-local" type="text" placeholder="When (Date)" />
+               <input className="input" name="datetime-local" type="text" placeholder="When (Date)" aria-label="When (Date)" />
                <span className="calender">
                   <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                     <path d="M11.1111 1V3.80003M4.88888 1V3.80003M1 6.59992H15M2.55556 2.39988H13.4444C14.3036 2.39988 15 3.02668 15 3.79989V13.6C15 14.3732 14.3036 15 13.4444 15H2.55556C1.69645 15 1 14.3732 1 13.6V3.79989C1 3.02668 1.69645 2.39988 2.55556 2.39988Z" stroke="#560CE3" strokeWidth="1.1" strokeLinecap="round" strokeLinejoin="round" />
+                     <path d="M11.11 1V3.80M4.89 1V3.80M1 6.60H15M2.56 2.40H13.44C14.30 2.40 15 3.03 15 3.80V13.6C15 14.37 14.30 15 13.44 15H2.56C1.70 15 1 14.37 1 13.6V3.80C1 3.03 1.70 2.40 2.56 2.40Z" stroke="#560CE3" strokeWidth="1.1" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                </span>
                <span className="angle"><i className="fa-sharp fa-solid fa-angle-down"></i></span>
@@ -56,9 +57,9 @@ const FeatureSidebar = () => {
                         { value: "08", text: "07" },
                      ]}
                      defaultCurrent={0}
-                     onChange={selectHandler}
+                     onChange={noopSelectHandler}
                      name=""
-                     placeholder="" />
+                     placeholder=""  ariaLabel="Sort by" />
                </div>
             </div>
             <div className="tg-tour-about-tickets mb-10">
@@ -80,9 +81,9 @@ const FeatureSidebar = () => {
                         { value: "08", text: "07" },
                      ]}
                      defaultCurrent={0}
-                     onChange={selectHandler}
+                     onChange={noopSelectHandler}
                      name=""
-                     placeholder="" />
+                     placeholder=""  ariaLabel="Sort by" />
                </div>
             </div>
             <div className="tg-tour-about-tickets mb-10">
@@ -104,9 +105,9 @@ const FeatureSidebar = () => {
                         { value: "08", text: "07" },
                      ]}
                      defaultCurrent={0}
-                     onChange={selectHandler}
+                     onChange={noopSelectHandler}
                      name=""
-                     placeholder="" />
+                     placeholder=""  ariaLabel="Sort by" />
                </div>
             </div>
          </div>

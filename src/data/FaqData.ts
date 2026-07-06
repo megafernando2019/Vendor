@@ -49,7 +49,7 @@ export interface FaqAccordionItem {
   desc: string;
 }
 
-export function flattenFaqData(data: FAQData): FaqAccordionItem[] {
+function flattenFaqData(data: FAQData): FaqAccordionItem[] {
   const categories = Object.keys(data).filter((key) => key !== "Iconos");
   let id = 1;
   const items: FaqAccordionItem[] = [];

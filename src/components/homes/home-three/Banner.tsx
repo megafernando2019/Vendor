@@ -7,12 +7,12 @@ import Button from "@/components/common/Button"
 import Link from "next/link"
 
 const banner_thumb: string[] = [
-   "/assets/img/galeria/asistencias.jpg",
-   "/assets/img/galeria/comisiones.jpg",
-   "/assets/img/galeria/hotsale.png",
-   "/assets/img/galeria/landing.png",
-   "/assets/img/galeria/megasale.jpg",
-   "/assets/img/galeria/nuevos.jpg",
+   "/assets/img/galeria/asistencias.webp",
+   "/assets/img/galeria/comisiones.webp",
+   "/assets/img/galeria/hotsale.webp",
+   "/assets/img/galeria/landing.webp",
+   "/assets/img/galeria/megasale.webp",
+   "/assets/img/galeria/nuevos.webp",
 ]
 
 const Banner = () => {
@@ -71,7 +71,7 @@ const Banner = () => {
                   onClick={handleNext}
                >
                   <svg width="19" height="15" viewBox="0 0 19 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-                     <path d="M18.0274 7.5H0.972625M0.972625 7.5L7.25 1.22263M0.972625 7.5L7.25 13.7774" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                     <path d="M18.03 7.5H0.97M0.97 7.5L7.25 1.22M0.97 7.5L7.25 13.78" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                </button>
                <button
@@ -81,7 +81,7 @@ const Banner = () => {
                   onClick={handlePrev}
                >
                   <svg width="20" height="15" viewBox="0 0 20 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-                     <path d="M1.47263 7.5H18.5274M18.5274 7.5L12.25 1.22263M18.5274 7.5L12.25 13.7774" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                     <path d="M1.47 7.5H18.53M18.53 7.5L12.25 1.22M18.53 7.5L12.25 13.78" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                </button>
             </div>
@@ -120,14 +120,14 @@ const Banner = () => {
          <div className="tg-hero-bottom-shape d-none d-md-block">
             <span>
                <svg width="432" height="298" viewBox="0 0 432 298" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path className="line-1" opacity="0.4" d="M39.6062 428.345C4.4143 355.065 -24.2999 203.867 142.379 185.309C350.726 162.111 488.895 393.541 289.171 313.515C129.391 249.494 458.204 85.4772 642.582 11.4713" stroke="white" strokeWidth="24" />
+                  <path className="line-1" opacity="0.4" d="M39.61 428.345C4.41 355.065 -24.30 203.867 142.379 185.309C350.726 162.111 488.895 393.541 289.171 313.515C129.391 249.494 458.204 85.48 642.582 11.47" stroke="white" strokeWidth="24" />
                </svg>
             </span>
          </div>
          <div className="tg-hero-bottom-shape-2 d-none d-md-block">
             <span>
                <svg width="154" height="321" viewBox="0 0 154 321" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path className="line-1" opacity="0.4" d="M144.616 328.905C116.117 300.508 62.5986 230.961 76.5162 179.949C93.9132 116.184 275.231 7.44493 -65.0181 12.8762" stroke="white" strokeWidth="24" />
+                  <path className="line-1" opacity="0.4" d="M144.616 328.905C116.117 300.508 62.60 230.961 76.52 179.949C93.91 116.184 275.231 7.44 -65.02 12.88" stroke="white" strokeWidth="24" />
                </svg>
             </span>
          </div>

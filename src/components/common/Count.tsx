@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import CountUp from "react-countup";
 import { InView } from "react-intersection-observer";
 
@@ -9,16 +9,15 @@ interface CountType {
 }
 
 const Count = ({ number }: CountType) => {
-  const [focus, setFocus] = useState<boolean>(false);
-
-  useEffect(() => {
+  const [focus, setFocus] = useState(() => {
+    if (typeof window === "undefined") return false;
     const hasCountedBefore = localStorage.getItem("hasCountedBefore");
-
     if (!hasCountedBefore) {
-      setFocus(true);
       localStorage.setItem("hasCountedBefore", "true");
+      return true;
     }
-  }, []);
+    return false;
+  });
 
   return (
     <>

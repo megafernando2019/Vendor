@@ -1,11 +1,11 @@
 import Image from "next/image"
 import Link from "next/link"
 
-import img_1 from "@/assets/img/cta/cta-3/shape-2.png"
-import img_2 from "@/assets/img/cta/cta-4/thumb.png"
-import img_3 from "@/assets/img/cta/cta-3/shape.png"
-import icon_1 from "@/assets/img/cta/google.png"
-import icon_2 from "@/assets/img/cta/app.png"
+import img_1 from "@/assets/img/cta/cta-3/shape-2.webp"
+import img_2 from "@/assets/img/cta/cta-4/thumb.webp"
+import img_3 from "@/assets/img/cta/cta-3/shape.webp"
+import icon_1 from "@/assets/img/cta/google.webp"
+import icon_2 from "@/assets/img/cta/app.webp"
 
 const Cta = () => {
    return (

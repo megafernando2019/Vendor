@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 
-import img from "@/assets/img/error/text.png"
+import img from "@/assets/img/error/text.webp"
 
 const ErrorArea = () => {
    return (

@@ -65,22 +65,22 @@ const ShopArea = () => {
                       <div className="tg-shop-product-thumb mb-15 fix p-relative">
                         <Link href={`/shop-details/${item.id}`}><Image className="w-100" src={item.thumb} alt="product" /></Link>
                         <div className="tg-shop-product-btn">
-                          <a onClick={() => handleAddToWishlist(item)} style={{ cursor: "pointer" }} className="wishlist">
+                          <button type="button" onClick={() => handleAddToWishlist(item)} style={{ cursor: "pointer" }} className="wishlist" aria-label="Add to wishlist">
                             <svg width="18" height="16" viewBox="0 0 18 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                              <path d="M15.96 2.2377C15.5678 1.84531 15.1022 1.53404 14.5896 1.32168C14.0771 1.10931 13.5277 1 12.973 1C12.4182 1 11.8688 1.10931 11.3563 1.32168C10.8437 1.53404 10.3781 1.84531 9.98587 2.2377L9.17191 3.05166L8.35794 2.2377C7.56572 1.44548 6.49123 1.00041 5.37086 1.00041C4.25049 1.00041 3.176 1.44548 2.38378 2.2377C1.59155 3.02993 1.14648 4.10441 1.14648 5.22479C1.14648 6.34516 1.59155 7.41965 2.38378 8.21187L9.17191 15L15.96 8.21187C16.3524 7.81967 16.6637 7.354 16.8761 6.84146C17.0884 6.32893 17.1977 5.77958 17.1977 5.22479C17.1977 4.67 17.0884 4.12064 16.8761 3.60811C16.6637 3.09558 16.3524 2.6299 15.96 2.2377Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                              <path d="M15.96 2.24C15.57 1.85 15.10 1.53 14.59 1.32C14.08 1.11 13.53 1 12.973 1C12.42 1 11.87 1.11 11.36 1.32C10.84 1.53 10.38 1.85 9.99 2.24L9.17 3.05L8.36 2.24C7.57 1.45 6.49 1 5.37 1C4.25 1 3.176 1.45 2.38 2.24C1.59 3.03 1.15 4.10 1.15 5.22C1.15 6.35 1.59 7.42 2.38 8.21L9.17 15L15.96 8.21C16.35 7.82 16.66 7.354 16.88 6.84C17.09 6.33 17.20 5.78 17.20 5.22C17.20 4.67 17.09 4.12 16.88 3.61C16.66 3.10 16.35 2.63 15.96 2.24Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                             </svg>
-                          </a>
+                          </button>
                           <div className="tg-shop-product-hidden-btn">
-                            <a onClick={() => handleAddToCart(item)} style={{ cursor: "pointer" }}>
+                            <button type="button" onClick={() => handleAddToCart(item)} style={{ cursor: "pointer" }} aria-label="Add to cart">
                               <svg width="16" height="18" viewBox="0 0 16 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M0.799805 4.2L3.1998 1H12.7998L15.1998 4.2M0.799805 4.2V15.4C0.799805 15.8243 0.968376 16.2313 1.26843 16.5314C1.56849 16.8314 1.97546 17 2.3998 17H13.5998C14.0242 17 14.4311 16.8314 14.7312 16.5314C15.0312 16.2313 15.1998 15.8243 15.1998 15.4V4.2M0.799805 4.2H15.1998M11.1998 7.4C11.1998 8.24869 10.8627 9.06263 10.2625 9.66274C9.66243 10.2629 8.8485 10.6 7.9998 10.6C7.15111 10.6 6.33718 10.2629 5.73706 9.66274C5.13695 9.06263 4.7998 8.24869 4.7998 7.4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+                                <path d="M0.80 4.2L3.20 1H12.80L15.20 4.2M0.80 4.2V15.4C0.80 15.82 0.97 16.23 1.27 16.53C1.57 16.83 1.98 17 2.40 17H13.60C14.02 17 14.43 16.83 14.73 16.53C15.03 16.23 15.20 15.82 15.20 15.4V4.2M0.80 4.2H15.20M11.20 7.4C11.20 8.25 10.86 9.06 10.26 9.66C9.66 10.26 8.85 10.6 8 10.6C7.15 10.6 6.34 10.26 5.74 9.66C5.14 9.06 4.80 8.25 4.80 7.4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
                               </svg>
-                            </a>
-                            <a href="#">
+                            </button>
+                            <button type="button" aria-label="Quick view">
                               <svg width="15" height="16" viewBox="0 0 15 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M10.222 1H14.1109M14.1109 1V4.88889M14.1109 1L0.888672 14.2222M14.1109 11.1111V15M14.1109 15H10.222M14.1109 15L9.44423 10.3333M0.888672 1.77778L4.77756 5.66667" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+                                <path d="M10.222 1H14.11M14.11 1V4.89M14.11 1L0.89 14.22M14.11 11.11V15M14.11 15H10.222M14.11 15L9.44 10.33M0.89 1.78L4.78 5.67" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
                               </svg>
-                            </a>
+                            </button>
                           </div>
                         </div>
                       </div>
