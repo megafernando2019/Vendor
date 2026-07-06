@@ -103,7 +103,7 @@ const QuoteWizardCart = ({
                 <span className="fw-semibold">Habitaciones</span>
               </div>
               <div className="text-end">
-                <span className="d-block text-muted" style={{ fontSize: "0.65rem" }}>
+                <span className="d-block text-muted tg-quote-wizard-cart-section-total-label">
                   Total
                 </span>
                 <span className="fw-bold small">
@@ -172,7 +172,7 @@ const QuoteWizardCart = ({
                 <span className="fw-semibold">Asistencias</span>
               </div>
               <div className="text-end">
-                <span className="d-block text-muted" style={{ fontSize: "0.65rem" }}>
+                <span className="d-block text-muted tg-quote-wizard-cart-section-total-label">
                   Total
                 </span>
                 <span className="fw-bold small">
@@ -229,7 +229,7 @@ const QuoteWizardCart = ({
                 <span className="fw-semibold">Opcionales</span>
               </div>
               <div className="text-end">
-                <span className="d-block text-muted" style={{ fontSize: "0.65rem" }}>
+                <span className="d-block text-muted tg-quote-wizard-cart-section-total-label">
                   Total
                 </span>
                 <span className="fw-bold small">

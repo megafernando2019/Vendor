@@ -16,19 +16,36 @@ body{
 .text-orange-custom{
   color: #e97417;
 }
-.bg-testimonial {
+
+.bg-testimonial, .bg-top10,.bg-cruceros, .bg-ofertas {
   position: relative;
   width: 100vw;
   max-width: 100vw;
   margin-left: calc(50% - 50vw);
   margin-right: calc(50% - 50vw);
-  background-color: #fff;
-  background-image: url("/assets/img/nuestros-clientes/avion.webp");
   background-repeat: no-repeat;
   background-position: center top;
   background-size: 100% auto;
 }
-
+.bg-cards-blog{
+  background: linear-gradient(to bottom, transparent 50%, #f2e6fb 50%);
+}
+.bg-testimonial {
+  background-image: url("/assets/img/nuestros-clientes/avion.webp");
+    background-color: #fff;
+}
+.bg-top10 {
+  background-color: #fff;
+  background-image: url("/assets/img/top-10/Top-10.webp");
+}
+.bg-cruceros {
+  background-color: #fff;
+  background-image: url("/assets/img/cruceros/cruceros.webp");
+}
+.bg-ofertas{
+  background-color: #fff;
+  background-image: url("/assets/img/ofertas/ofertas.webp");
+}
 .bg-testimonial > .container {
   position: relative;
   z-index: 1;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
@@ -212,6 +229,7 @@ body{
 
 .tg-booking-sticky-scope {
   position: relative;
+  margin-top: -28px;
 }
 
 .tg-booking-form-sticky-bar {
@@ -219,7 +237,30 @@ body{
   top: var(--tg-booking-sticky-top);
   z-index: 98;
   width: 100%;
-  margin-top: -28px;
+  margin-top: 0;
+  animation: tg-booking-sticky-enter 0.9s ease 0.2s both;
+}
+
+@keyframes tg-booking-sticky-enter {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+/* WOW fadeInDown deja transform en el ancestro y rompe position:sticky */
+.tg-booking-sticky-scope .wow:has(.tg-booking-form-sticky-bar) {
+  transform: none !important;
+  visibility: visible !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tg-booking-form-sticky-bar {
+    animation: none;
+  }
 }
 
 .tg-hero-home-three-slider-wrap {
@@ -1730,6 +1771,10 @@ ul.scrool-bar.scrool-height > li > span {
 
 @media (max-width: 574px) {
   /* Barra completa (navbar + search) fija abajo */
+  .tg-booking-sticky-scope {
+    margin-top: 0;
+  }
+
   .tg-booking-form-sticky-bar {
     position: fixed !important;
     bottom: 0;
@@ -3006,6 +3051,10 @@ ul.scrool-bar.scrool-height > li > span {
   width: 100%;
 }
 
+.tg-disponibilidad-sticky-scope {
+  margin-top: 0;
+}
+
 .tg-disponibilidad-sticky-scope .tg-booking-form-sticky-bar {
   margin-top: 0;
   padding-top: 24px;
@@ -3805,12 +3854,16 @@ button.tg-booking-quantity-toggle {
   padding-bottom: 0.35rem;
 }
 
+.tg-quote-wizard-cart-section-total-label {
+  font-size: 0.75rem;
+}
+
 .tg-quote-wizard-cart-room + .tg-quote-wizard-cart-room {
   border-top: 1px solid #f1f3f5;
 }
 
 .tg-quote-wizard-cart-pax {
-  font-size: 0.72rem;
+  font-size: 0.75rem;
   letter-spacing: 0.01em;
 }
 
@@ -3861,6 +3914,11 @@ button.tg-booking-quantity-toggle {
 .tg-quote-wizard-insurance-link {
   color: var(--tg-theme-primary, #6f42c1);
   font-weight: 600;
+}
+
+.tg-quote-wizard-insurance-card-subtitle,
+.tg-quote-wizard-insurance-hint {
+  font-size: 0.75rem;
 }
 
 .tg-quote-wizard-insurance-logo {

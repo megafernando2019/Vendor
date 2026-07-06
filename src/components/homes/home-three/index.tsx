@@ -37,9 +37,7 @@ const HomeThree = () => {
         </WowSection>
 
         <div className="tg-booking-sticky-scope">
-          <WowSection animation="fadeInDown" delay=".2s" duration=".9s">
-            <BookingFormsSticky />
-          </WowSection>
+          <BookingFormsSticky />
 
           <WowSection animation="fadeInUp" delay=".3s" duration=".9s">
             <div className="tg-listing-area pt-100 pb-20 tg-grey-bg">
@@ -56,7 +54,7 @@ const HomeThree = () => {
               sectionKey="top_10"
               subtitle="Los tours más populares y mejor valorados"
               title="TOP 10"
-              backgroundImage="/assets/img/Top-10/Top-10.webp"
+              backgroundImage="bg-top10"
             />
           </WowSection>
 
@@ -65,61 +63,58 @@ const HomeThree = () => {
               sectionKey="cruceros"
               subtitle="Viajes con crucero incluido"
               title="CRUCEROS"
-              backgroundImage="/assets/img/cruceros/Cruceros.webp"
+              backgroundImage="bg-cruceros"
             />
           </WowSection>
 
           <WowSection animation="fadeInLeft" delay=".2s" duration=".9s">
             <Choose />
           </WowSection>
-          <WowSection animation="fadeInLeft" delay=".2s" duration=".9s">
-<div className="container">
- <div className="row d-flex justify-content-between">
-              <div className="col-md-4 rounded">
-              <Link href="/blog-details">
-             <Image
-                  src="/assets/img/blog/pages/promociones-exclusivas.png"
-                  alt="promociones exclusivas"
-                  className="img-fluid rounded"
-                  width={350}
-                  height={350}
-                />
-</Link>
-
-              </div>
-              <div className="col-md-4 rounded">
-<Link href="/blog-grid">
-                <Image
-                  src="/assets/img/blog/pages/protege-a-tus-pasajeros.png"
-                  alt="protege a tus pasajeros"
-                 className="img-fluid rounded"
-                  width={350}
-                  height={350}
-                />
-</Link>
-              </div>
-              <div className="col-md-4 rounded">
-<Link href="block-standard">
-<Image
-                  src="/assets/img/blog/pages/viajando-x-mis-xv.png"
-                  alt="viajando por mis xv"
-   className="img-fluid rounded"
-                  width={350}
-                  height={350}
-                />
-</Link>
-                
+          <WowSection className="bg-cards-blog" animation="fadeInLeft" delay=".2s" duration=".9s">
+            <div className="container">
+              <div className="row d-flex justify-content-between">
+                <div className="col-md-4 rounded">
+                  <Link href="/blog-details">
+                    <Image
+                      src="/assets/img/blog/pages/promociones-exclusivas.png"
+                      alt="promociones exclusivas"
+                      className="img-fluid roundedclerar"
+                      width={350}
+                      height={350}
+                    />
+                  </Link>
+                </div>
+                <div className="col-md-4 rounded">
+                  <Link href="/blog-grid">
+                    <Image
+                      src="/assets/img/blog/pages/protege-a-tus-pasajeros.png"
+                      alt="protege a tus pasajeros"
+                      className="img-fluid rounded"
+                      width={350}
+                      height={350}
+                    />
+                  </Link>
+                </div>
+                <div className="col-md-4 rounded">
+                  <Link href="block-standard">
+                    <Image
+                      src="/assets/img/blog/pages/viajando-x-mis-xv.png"
+                      alt="viajando por mis xv"
+                      className="img-fluid rounded"
+                      width={350}
+                      height={350}
+                    />
+                  </Link>
+                </div>
               </div>
             </div>
-</div>
-           
           </WowSection>
 
           <RecommendationCarrousel
             sectionKey="ofertas"
             subtitle="Promociones y precios especiales"
             title="OFERTAS"
-            backgroundImage="/assets/img/ofertas/Ofertas.webp"
+            backgroundImage="bg-ofertas"
             includeBg={false}
             headerClassName=""
             titleColumnClassName="col-lg-12 py-20"

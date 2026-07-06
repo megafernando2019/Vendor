@@ -111,7 +111,7 @@ const RecommendationCarrousel = ({
   }, []);
 
   return (
-    <div className="recommendation-carrousel-root mt-50">
+    <div className={`recommendation-carrousel-root pt-50 ${backgroundImage}`}>
       <div className="container">
         <div className="row">
           <div className="tg-listing-5-slider-navigation text-end mb-50">
@@ -120,23 +120,31 @@ const RecommendationCarrousel = ({
                 <h5 className="mb-15 mt-15 text-hortencia text-left text-purple text-morado-custom d-flex justify-content-start">
                   {subtitle}
                 </h5>
-                <h2 className="text-bold text-left text-dark fs-1 d-flex justify-content-start">{title}</h2>
+                <div className="row">
+                  <div className="col-md-6">
+                    <h2 className="text-bold text-left text-dark fs-1 d-flex justify-content-start">
+                      {title}
+                    </h2>
+                  </div>
+                  <div className="col-md-6">
+                    <button
+                      type="button"
+                      className={`${navigationId}-prev tg-listing-5-slide-prev`}
+                      aria-label="Anterior"
+                    >
+                      <i className="fa-solid fa-chevron-left" />
+                    </button>
+                    <button
+                      type="button"
+                      className={`${navigationId}-next tg-listing-5-slide-next`}
+                      aria-label="Siguiente"
+                    >
+                      <i className="fa-solid fa-chevron-right" />
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
-            <button
-              type="button"
-              className={`${navigationId}-prev tg-listing-5-slide-prev`}
-              aria-label="Anterior"
-            >
-              <i className="fa-solid fa-chevron-left" />
-            </button>
-            <button
-              type="button"
-              className={`${navigationId}-next tg-listing-5-slide-next`}
-              aria-label="Siguiente"
-            >
-              <i className="fa-solid fa-chevron-right" />
-            </button>
           </div>
         </div>
 
