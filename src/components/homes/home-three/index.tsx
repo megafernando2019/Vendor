@@ -75,35 +75,35 @@ const HomeThree = () => {
           <WowSection animation="fadeInLeft" delay=".2s" duration=".9s">
 <div className="container">
  <div className="row d-flex justify-content-between">
-              <div className="col-md-4">
+              <div className="col-md-4 rounded">
               <Link href="/blog-details">
              <Image
                   src="/assets/img/blog/pages/promociones-exclusivas.png"
                   alt="promociones exclusivas"
-                  className="img-fluid"
+                  className="img-fluid rounded"
                   width={350}
                   height={350}
                 />
 </Link>
 
               </div>
-              <div className="col-md-4">
+              <div className="col-md-4 rounded">
 <Link href="/blog-grid">
                 <Image
                   src="/assets/img/blog/pages/protege-a-tus-pasajeros.png"
                   alt="protege a tus pasajeros"
-                 className="img-fluid"
+                 className="img-fluid rounded"
                   width={350}
                   height={350}
                 />
 </Link>
               </div>
-              <div className="col-md-4">
+              <div className="col-md-4 rounded">
 <Link href="block-standard">
 <Image
                   src="/assets/img/blog/pages/viajando-x-mis-xv.png"
                   alt="viajando por mis xv"
-   className="img-fluid"
+   className="img-fluid rounded"
                   width={350}
                   height={350}
                 />
