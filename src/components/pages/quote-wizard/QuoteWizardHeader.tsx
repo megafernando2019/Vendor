@@ -66,21 +66,21 @@ const QuoteWizardHeader = ({
           <div className="row g-2 g-md-3 small text-muted">
             <div className="col-sm-6">
               <p className="mb-1">
-                <i className="far fa-calendar-alt me-2 text-morado-custom" aria-hidden />
+                <i className="p-1 rounded-circle text-light bg-info far fa-calendar-alt me-2" aria-hidden />
                 Fecha de salida {departureDateLabel}
               </p>
               <p className="mb-0">
-                <i className="far fa-calendar-check me-2 text-morado-custom" aria-hidden />
+                <i className="p-1 rounded-circle text-light bg-info far fa-calendar-check me-2" aria-hidden />
                 Fecha de regreso {returnDateLabel}
               </p>
             </div>
             <div className="col-sm-6">
               <p className="mb-1">
-                <i className="far fa-clock me-2 text-morado-custom" aria-hidden />
+                <i className="p-1 rounded-circle text-light bg-info far fa-clock me-2" aria-hidden />
                 Duración: {tour.days} días | {tour.nights} noches
               </p>
               <p className="mb-0">
-                <i className="fas fa-globe-americas me-2 text-morado-custom" aria-hidden />
+                <i className="p-1 rounded-circle text-light bg-info fas fa-globe-americas me-2" aria-hidden />
                 Países: {countries || tour.destination_name || "-"}
               </p>
             </div>
@@ -89,15 +89,16 @@ const QuoteWizardHeader = ({
 
         <div className="col-12 col-lg-auto">
           <div className="tg-quote-wizard-summary text-lg-end">
-            <p className="mb-1 small">
-              Tipo de cambio:{" "}
-              <span className="fw-semibold text-success">
+            
+            <p className="mb-1 small text-success">
+              Tipo de cambio:
+              <span className="fw-semibold">
                 ${DEFAULT_EXCHANGE_RATE_MXN.toFixed(2)} MXN
               </span>
             </p>
-            <p className="mb-1">
+            <p className="mb-1 small text-morado-custom">
               Total:{" "}
-              <span className="fw-bold fs-5 text-morado-custom">
+              <span className="fw-bold fs-5">
                 {formatMxnAmount(totalMxn)}
               </span>
               {totalUsd > 0 ? (
@@ -106,7 +107,7 @@ const QuoteWizardHeader = ({
                 </span>
               ) : null}
             </p>
-            <p className="mb-0 small">
+            <p className="mb-0 small text-orange-custom">
               Comisión:{" "}
               <span className="fw-semibold text-orange-custom">$0.00 MXN</span>
               <button
