@@ -18,6 +18,8 @@ import useWow from "@/hooks/useWow";
 
 import Image from "next/image";
 
+import Link from "next/link";
+
 const RecommendationCarrousel = dynamic(
   () => import("./RecommendationCarrousel"),
 
@@ -74,15 +76,19 @@ const HomeThree = () => {
 <div className="container">
  <div className="row d-flex justify-content-between">
               <div className="col-md-4">
-                <Image
+              <Link href="/blog-details">
+             <Image
                   src="/assets/img/blog/pages/promociones-exclusivas.png"
                   alt="promociones exclusivas"
                   className="img-fluid"
                   width={350}
                   height={350}
                 />
+</Link>
+
               </div>
               <div className="col-md-4">
+<Link href="/blog-grid">
                 <Image
                   src="/assets/img/blog/pages/protege-a-tus-pasajeros.png"
                   alt="protege a tus pasajeros"
@@ -90,15 +96,19 @@ const HomeThree = () => {
                   width={350}
                   height={350}
                 />
+</Link>
               </div>
               <div className="col-md-4">
-                <Image
+<Link href="block-standard">
+<Image
                   src="/assets/img/blog/pages/viajando-x-mis-xv.png"
                   alt="viajando por mis xv"
    className="img-fluid"
                   width={350}
                   height={350}
                 />
+</Link>
+                
               </div>
             </div>
 </div>

@@ -83,7 +83,6 @@ export async function getInsurancesCotizacion(
   let data = null;
   try {
     data = await res.json();
-   console.log(data)
   } catch {
     data = null;
   }
