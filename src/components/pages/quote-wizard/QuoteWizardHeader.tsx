@@ -65,21 +65,21 @@ const QuoteWizardHeader = ({
           </div>
           <div className="row g-2 g-md-3 small text-muted">
             <div className="col-sm-6">
-              <p className="mb-1">
+              <p className="mb-1 d-flex align-items-center">
                 <i className="p-1 rounded-circle text-light bg-info far fa-calendar-alt me-2" aria-hidden />
                 Fecha de salida {departureDateLabel}
               </p>
-              <p className="mb-0">
+              <p className="mb-0 d-flex align-items-center">
                 <i className="p-1 rounded-circle text-light bg-info far fa-calendar-check me-2" aria-hidden />
                 Fecha de regreso {returnDateLabel}
               </p>
             </div>
             <div className="col-sm-6">
-              <p className="mb-1">
+              <p className="mb-1 d-flex align-items-center">
                 <i className="p-1 rounded-circle text-light bg-info far fa-clock me-2" aria-hidden />
                 Duración: {tour.days} días | {tour.nights} noches
               </p>
-              <p className="mb-0">
+              <p className="mb-0 d-flex align-items-center">
                 <i className="p-1 rounded-circle text-light bg-info fas fa-globe-americas me-2" aria-hidden />
                 Países: {countries || tour.destination_name || "-"}
               </p>
