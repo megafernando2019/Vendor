@@ -11,7 +11,7 @@
   visibility: hidden;
 }
 body {
-  background: var(--tg-grey-5);
+  background: #fff;
 }
 .text-orange-custom {
   color: #e97417;
@@ -31,7 +31,7 @@ body {
   background-size: 100% auto;
 }
 .bg-cards-blog {
-  background: linear-gradient(to bottom, transparent 50%, #f2e6fb 50%);
+  background: linear-gradient(to bottom, transparent 50%, #f3e8fb 50%);
 }
 .bg-testimonial {
   background-image: url("/assets/img/nuestros-clientes/avion.webp");
@@ -360,6 +360,7 @@ body {
 
 .tg-hero-home-three-slider-wrap {
   position: relative;
+  height: 90vh;
 }
 
 .tg-hero-home-three-slider-wrap .tg-hero-arrow-box {
@@ -4178,4 +4179,8 @@ button.tg-booking-quantity-toggle {
 
 .tg-quote-wizard-opcional-rate {
   min-width: 12rem;
+}
+
+.tg-hero-slider-active {
+  height: 90vh;
 }

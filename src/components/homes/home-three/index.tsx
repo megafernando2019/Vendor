@@ -40,7 +40,7 @@ const HomeThree = () => {
           <BookingFormsSticky />
 
           <WowSection animation="fadeInUp" delay=".3s" duration=".9s">
-            <div className="tg-listing-area pt-100 pb-20 tg-grey-bg">
+            <div className="tg-listing-area pt-40 pb-20">
               <div className="container">
                 <h2 className="text-secondary text-center d-flex align-items-center justify-content-center p-10">
                   Hazlo fácil. Hazlo rápido. Hazlo a tu manera

@@ -13,13 +13,12 @@ import img_6 from "@/assets/img/chose/chose-3/thumb-1.webp";
 
 const Choose = () => {
   return (
-    <div className="tg-chose-area p-relative z-index-1  tg-grey-bg pt-115 pb-90">
+    <div className="tg-chose-area p-relative z-index-1 pt-115 pb-90">
       <Image className="tg-chose-3-shape p-absolute" src={img_1} alt="shape" />
       <div className="container">
         <div className="row">
           <div className="col-lg-7">
             <div className="tg-chose-3-left p-relative mb-35">
-              <Image className="tg-chose-3-map" src={img_2} alt="map" />
               <div className="row">
                 <div className="col-lg-4 col-md-6 col-sm-6">
                   <div className="tg-chose-3-thumb">

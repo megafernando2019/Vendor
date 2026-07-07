@@ -9,8 +9,6 @@ import Link from "next/link"
 const banner_thumb: string[] = [
    "/assets/img/galeria/asistencias.webp",
    "/assets/img/galeria/comisiones.webp",
-   "/assets/img/galeria/hotsale.webp",
-   "/assets/img/galeria/landing.webp",
    "/assets/img/galeria/megasale.webp",
    "/assets/img/galeria/nuevos.webp",
 ]
@@ -59,6 +57,27 @@ const Banner = () => {
                            aria-label=""
                         />
                      </div>
+                     <div className="tg-hero-content-area">
+                     <div className="container">
+                        <div className="p-relative">
+                           <div className="row justify-content-center">
+                              <div className="col-xl-10">
+                                 <div className="tg-hero-content text-left">
+                                    <div className="tg-hero-title-box mb-10">
+                                       <h2 className="tg-hero-title wow fadeInUp" data-wow-delay=".4s" data-wow-duration=".9s">Título</h2>
+                                       <p className="tg-hero-para mb-0  wow fadeInUp" data-wow-delay=".6s" data-wow-duration="1.1s">Descripción 1 <br /> Descripción 2</p>
+                                    </div>
+                                    <div className="tg-hero-btn-box  wow fadeInUp" data-wow-delay=".8s" data-wow-duration="1.5s">
+                                       <Link href="/" className="tg-btn tg-btn-switch-animation">
+                                          <Button text="Ir" />
+                                       </Link>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
                   </SwiperSlide>
                ))}
             </Swiper>
@@ -86,37 +105,7 @@ const Banner = () => {
                </button>
             </div>
          </div>
-
-         <div className="tg-hero-content-area">
-            <div className="container">
-               <div className="p-relative">
-                  <div className="row justify-content-center">
-                     <div className="col-xl-10">
-                        <div className="tg-hero-content text-center">
-                           <div className="tg-hero-title-box mb-10">
-                              <h5 className="tg-hero-subtitle mb-5 wow fadeInUp" data-wow-delay=".3s" data-wow-duration=".7s">Vendor 27</h5>
-                              <h2 className="tg-hero-title wow fadeInUp" data-wow-delay=".4s" data-wow-duration=".9s">Maldives island</h2>
-                              <p className="tg-hero-para mb-0  wow fadeInUp" data-wow-delay=".6s" data-wow-duration="1.1s">when an unknown printer took ar galley offer type area <br /> year anddey make specimen book</p>
-                           </div>
-                           <div className="tg-hero-price-wrap mb-35 d-flex align-items-center justify-content-center  wow fadeInUp" data-wow-delay=".7s" data-wow-duration="1.3s">
-                              <p className="mr-15">Booking Start From</p>
-                              <div className="tg-hero-price d-flex">
-                                 <span className="hero-dolar">$</span>
-                                 <span className="hero-price">299</span>
-                                 <span className="night">/night</span>
-                              </div>
-                           </div>
-                           <div className="tg-hero-btn-box  wow fadeInUp" data-wow-delay=".8s" data-wow-duration="1.5s">
-                              <Link href="/contact" className="tg-btn tg-btn-switch-animation">
-                                 <Button text="Take a Tour" />
-                              </Link>
-                           </div>
-                        </div>
-                     </div>
-                  </div>
-               </div>
-            </div>
-         </div>
+         
          <div className="tg-hero-bottom-shape d-none d-md-block">
             <span>
                <svg width="432" height="298" viewBox="0 0 432 298" fill="none" xmlns="http://www.w3.org/2000/svg">

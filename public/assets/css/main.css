@@ -3133,11 +3133,11 @@ textarea {
     	19. hero
 ===============================*/
 .tg-hero-slider-active {
-  height: 740px;
+  height: 90vh;
 }
 @media (max-width: 575px) {
   .tg-hero-slider-active {
-    height: 650px;
+    height: 90vh;
   }
 }
 .tg-hero-arrow-box button {
