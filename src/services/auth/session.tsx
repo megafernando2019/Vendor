@@ -43,7 +43,41 @@ export async function loginUser(
     };
   }
 }
+export async function tokenExchange(
+  tokenEx: string,
+): Promise<LoginUserResponse> {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
+  try {
+    const res = await fetch(`${apiUrl}auth/tokenExchange`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({ tokenEx }),
+    });
+
+    let data: Record<string, unknown> | null = null;
+    try {
+      data = await res.json();
+    } catch {
+      data = null;
+    }
+
+    return {
+      status: res.status,
+      statusText: res.statusText,
+      ...(data ?? {}),
+    } as LoginUserResponse;
+  } catch {
+    return {
+      status: 500,
+      statusText: "Internal Server Error",
+      message: "Error de conexión con el servidor",
+    };
+  }
+}
 export async function logoutUser(token: string) {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 

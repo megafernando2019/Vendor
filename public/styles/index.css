@@ -54,17 +54,20 @@ body {
   z-index: 1;
 }
 .tour-filters .salida-select-wrap {
-  min-width: 10rem;
+  width: 100%;
+  min-width: 0;
 }
-@media (min-width: 768px) {
-  .tour-filters .vista-actions {
-    width: auto !important;
-  }
+
+.tour-filters {
+  width: 100%;
 }
-.tour-filters .text-purple {
+
+.tour-filters .text-purple,
+.disponibilidad-view-switcher .text-purple {
   color: #4c1d95;
 }
-.tour-filters .btn-icon-circle {
+.tour-filters .btn-icon-circle,
+.disponibilidad-view-switcher .btn-icon-circle {
   width: 40px;
   height: 40px;
   padding: 0;
@@ -73,15 +76,18 @@ body {
     background-color 0.15s ease,
     color 0.15s ease;
 }
-.tour-filters .btn-purple-active {
+.tour-filters .btn-purple-active,
+.disponibilidad-view-switcher .btn-purple-active {
   background-color: #4c1d95;
   color: #fff;
 }
-.tour-filters .btn-purple-inactive {
+.tour-filters .btn-purple-inactive,
+.disponibilidad-view-switcher .btn-purple-inactive {
   background-color: #fff;
   color: #4c1d95;
 }
-.tour-filters .btn-purple-inactive:hover {
+.tour-filters .btn-purple-inactive:hover,
+.disponibilidad-view-switcher .btn-purple-inactive:hover {
   background-color: #f3f4f6;
 }
 .tour-filters .btn-purple-subtle {
@@ -122,7 +128,22 @@ body {
   cursor: pointer;
 }
 .range-slider-wrap {
-  min-width: 240px;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+.range-slider-wrap .range-slider-header {
+  min-width: 0;
+  flex-wrap: wrap;
+}
+.range-slider-wrap .range-slider-label {
+  flex: 0 1 auto;
+  min-width: 0;
+}
+.range-slider-wrap .range-slider-values {
+  flex: 0 1 auto;
+  min-width: 0;
+  margin-left: auto;
 }
 .range-slider-wrap .track-wrap {
   height: 20px;
@@ -897,34 +918,37 @@ form.banner-form-two .banner-form-two-expandable-inner:has(.tg-list-open) {
   overflow: visible !important;
 }
 
-@media (max-width: 574px) {
+@media (max-width: 990px) {
   .banner-form-two-picker-sheet-layer:not([open]) {
     display: none;
   }
 
   .banner-form-two-picker-sheet-layer[open] {
-    border: none;
-    padding: 0;
-    margin: 0;
-    background: transparent;
-    max-width: none;
-    max-height: none;
-    overflow: visible;
+    box-sizing: border-box;
     position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
     inset: 0;
+    width: 100%;
+    max-width: none;
+    min-width: 100%;
+    height: auto;
+    min-height: 100%;
+    margin: 0;
+    padding: 0;
+    border: none;
+    background: transparent;
+    overflow: visible;
+    transform: none;
     z-index: 220;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
+    display: block;
     pointer-events: none;
   }
 
-  body:has(.tg-booking-form-sticky-bar) .banner-form-two-picker-sheet-layer {
-    padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px) + 8px);
-  }
-
   .banner-form-two-picker-sheet-backdrop {
-    position: absolute;
+    position: fixed;
     inset: 0;
     z-index: 0;
     border: none;
@@ -936,13 +960,15 @@ form.banner-form-two .banner-form-two-expandable-inner:has(.tg-list-open) {
     animation: banner-form-two-picker-backdrop-in 0.28s ease-out;
   }
 
-  .banner-form-two-picker-sheet--portal.banner-form-two-picker-sheet--open {
-    position: relative;
+  .banner-form-two-picker-sheet--portal.banner-form-two-picker-sheet--open.banner-form-two-picker-sheet--anchored,
+  .banner-form-two
+    .tg-booking-form-location-list.banner-form-two-picker-sheet--anchored.tg-list-open {
+    position: fixed !important;
     z-index: 1;
-    left: auto !important;
-    right: auto !important;
-    top: auto !important;
-    bottom: auto !important;
+    top: var(--picker-top, auto) !important;
+    bottom: var(--picker-bottom, auto) !important;
+    left: 0 !important;
+    right: 0 !important;
     width: 100% !important;
     min-width: 0 !important;
     max-width: 100% !important;
@@ -950,20 +976,32 @@ form.banner-form-two .banner-form-two-expandable-inner:has(.tg-list-open) {
     box-sizing: border-box;
     border-radius: 16px 16px 0 0;
     pointer-events: auto;
-    padding: 16px 12px calc(16px + env(safe-area-inset-bottom, 0px));
+    padding: 16px 12px;
     background: var(--tg-common-white, #fff);
     box-shadow: 0 -8px 32px rgba(15, 23, 42, 0.14);
     opacity: 1 !important;
-    visibility: visible !important;
-    animation: banner-form-two-picker-sheet-in 0.3s ease-out;
+    visibility: inherit;
+    animation: banner-form-two-picker-sheet-up 0.3s ease-out;
   }
 
   .banner-form-two-picker-sheet--portal .scrool-height {
-    max-height: min(280px, 45vh);
+    max-height: min(320px, 50vh);
   }
 
   .banner-form-two .banner-form-two-picker-sheet--inline {
     display: none !important;
+  }
+}
+
+@keyframes banner-form-two-picker-sheet-up {
+  from {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
@@ -2814,6 +2852,25 @@ ul.scrool-bar.scrool-height > li > span {
   z-index: 4;
 }
 
+.recommendation-card__action-dropdown--open {
+  z-index: 5;
+}
+
+.recommendation-card__action-menu--inline {
+  position: static;
+  display: flex;
+  margin: 0;
+  transform: none;
+}
+
+.recommendation-card__action-menu--inline li + li {
+  margin-top: 0;
+}
+
+.recommendation-card__action-menu--inline .recommendation-card__action-icon-btn {
+  margin-top: 0;
+}
+
 .recommendation-card__action {
   width: 40px;
   height: 40px;
@@ -3146,7 +3203,7 @@ ul.scrool-bar.scrool-height > li > span {
 
 .recommendation-card__info-icon {
   color: #000;
-  font-size: 15px;
+  font-size: 5px;
   flex-shrink: 0;
 }
 
@@ -3203,67 +3260,169 @@ ul.scrool-bar.scrool-height > li > span {
 }
 
 .recommendation-card--list {
-  display: flex;
-  flex-direction: row;
-  align-items: stretch;
+  display: block;
   min-height: 220px;
+  border-radius: 28px;
+  overflow: hidden;
 }
 
-.recommendation-card--list .recommendation-card__media {
-  flex: 0 0 min(280px, 38%);
-  max-width: min(280px, 38%);
+.recommendation-card--list:hover {
+  transform: none;
+}
+
+.recommendation-card__list-col + .recommendation-card__list-col {
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+}
+/*
+.recommendation-card__list-media-stack {
   min-height: 100%;
+}
+*/
+.recommendation-card__list-media-wrap {
+  min-height: 180px;
+}
+
+.recommendation-card--list .recommendation-card__media--list {
+  min-height: 180px;
+  height: 100%;
 }
 
 .recommendation-card--list .recommendation-card__image-link,
 .recommendation-card--list .recommendation-card__image {
-  height: 100%;
-  min-height: 220px;
+  min-height: 180px;
+  border-radius: 28px 0 0 0;
 }
 
-.recommendation-card--list .recommendation-card__body {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding-top: 1.25rem;
-  padding-bottom: 1.25rem;
+.recommendation-card__list-price {
+  background: #fff;
+}
+
+.recommendation-card--list .recommendation-card__body--list {
+  text-align: left;
+  align-items: stretch;
+}
+
+.recommendation-card--list .recommendation-card__title--list {
+  font-size: clamp(1.05rem, 1.6vw, 1.35rem);
+  margin-bottom: 0.5rem;
+}
+
+.recommendation-card--list .recommendation-card__rating--list {
+  justify-content: flex-start;
+  margin-bottom: 1rem;
 }
 
 .recommendation-card--list .recommendation-card__meta-table {
-  max-width: 28rem;
+  width: 100%;
+  max-width: none;
+}
+
+.recommendation-card--list .recommendation-card__meta-table td {
+  width: 50%;
+  padding-top: 0.35rem;
+  padding-bottom: 0.35rem;
+}
+
+.recommendation-card__departures-title {
+  color: var(--recommendation-text, #1a1a1a);
+  font-weight: 700;
+}
+
+.recommendation-card__departures-table {
+  --bs-table-hover-bg: rgba(111, 66, 193, 0.06);
+  font-size: 0.875rem;
+}
+
+.recommendation-card__departures-table thead th {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--recommendation-muted, #666);
+  border-bottom-width: 1px;
+  white-space: nowrap;
+}
+
+.recommendation-card__departures-table tbody td {
+  vertical-align: middle;
+}
+
+.recommendation-card__departures-currency {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--recommendation-muted, #666);
+}
+
+.recommendation-card__price-pill--inline {
+  position: static;
+  transform: none;
+  margin-top: 0;
+  left: auto;
+}
+
+.recommendation-card__price-pill--inline:hover {
+  transform: scale(1.03);
 }
 
 .recommendation-card--list.recommendation-card--skeleton
   .recommendation-card-skeleton__image {
   height: 100%;
-  min-height: 220px;
-  border-radius: 40px 0 0 40px;
+  min-height: 180px;
+  border-radius: 28px 0 0 0;
 }
 
-@media (max-width: 575.98px) {
-  .recommendation-card--list {
-    flex-direction: column;
-    min-height: 0;
-  }
-
-  .recommendation-card--list .recommendation-card__media {
-    flex: 0 0 auto;
-    max-width: 100%;
-    width: 100%;
+@media (min-width: 992px) {
+  .recommendation-card__list-col + .recommendation-card__list-col {
+    border-top: 0;
+    border-left: 1px solid rgba(0, 0, 0, 0.06);
   }
 
   .recommendation-card--list .recommendation-card__image-link,
   .recommendation-card--list .recommendation-card__image,
   .recommendation-card--list.recommendation-card--skeleton
     .recommendation-card-skeleton__image {
-    min-height: 210px;
-    border-radius: 40px 40px 0 0;
+    border-radius: 28px 0 0 28px;
+  }
+}
+
+@media (max-width: 991.98px) {
+  .recommendation-card--list .recommendation-card__image-link,
+  .recommendation-card--list .recommendation-card__image,
+  .recommendation-card--list.recommendation-card--skeleton
+    .recommendation-card-skeleton__image {
+    border-radius: 28px 28px 0 0;
   }
 }
 
 .tg-disponibilidad-sticky-scope {
   margin-top: 0;
+}
+
+.disponibilidad-layout-row {
+  align-items: stretch;
+}
+
+.disponibilidad-layout-row > [class*="col-"] {
+  min-width: 0;
+}
+
+.disponibilidad-sidebar-panel,
+.disponibilidad-results-panel {
+  border-radius: 0.5rem;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.disponibilidad-sidebar-panel .card-body,
+.disponibilidad-results-panel .card-body {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.tg-disponibilidad-area {
+  padding-top: 0;
 }
 
 .tg-disponibilidad-sticky-scope .tg-booking-form-sticky-bar {
@@ -3333,6 +3492,21 @@ ul.scrool-bar.scrool-height > li > span {
   width: 120px;
   height: 44px;
   border-radius: 999px;
+  background: linear-gradient(90deg, #ececec 0%, #f6f6f6 45%, #ececec 90%);
+  background-size: 200% 100%;
+  animation: recommendation-skeleton-shimmer 1.4s ease-in-out infinite;
+}
+
+.recommendation-card-skeleton__price-pill--inline {
+  position: static;
+  transform: none;
+  width: 140px;
+}
+
+.recommendation-card-skeleton__departures-table {
+  width: 100%;
+  height: 120px;
+  border-radius: 12px;
   background: linear-gradient(90deg, #ececec 0%, #f6f6f6 45%, #ececec 90%);
   background-size: 200% 100%;
   animation: recommendation-skeleton-shimmer 1.4s ease-in-out infinite;
@@ -3820,27 +3994,8 @@ button.tg-booking-quantity-toggle {
   }
 }
 
-.tg-quote-wizard-detail-modal {
-  z-index: 1055;
-  width: min(800px, calc(100vw - 2rem));
-  max-width: calc(100vw - 2rem);
-  max-height: calc(100vh - 2rem);
-  margin: auto;
-  padding: 0;
-  border: none;
-  background: transparent;
-  overflow: visible;
-}
-
-.tg-quote-wizard-detail-modal::backdrop {
-  background-color: rgba(0, 0, 0, 0.5);
-  cursor: pointer;
-}
-
 .tg-quote-wizard-detail-modal .modal-dialog {
-  margin: 0;
-  max-width: none;
-  width: 100%;
+  max-width: min(800px, calc(100vw - 2rem));
 }
 
 .tg-quote-wizard-detail-html {

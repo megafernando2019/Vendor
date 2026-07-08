@@ -21,7 +21,7 @@ const ShopDetailsTabArea = () => {
                   <div className="tg-product-details-tab-nav mb-25">
                      <div className="tg-product-details-tab-nav-inner nav cm-tab-menu d-flex c-relative flex-wrap" id="nav-tab-info" role="tablist">
                         {tab_title.map((tab, index) => (
-                           <button type="button" key={index} onClick={() => handleTabClick(index)} className={`nav-link ${activeTab === index ? "active" : ""}`}>{tab}</button>
+                           <button type="button" key={tab} onClick={() => handleTabClick(index)} className={`nav-link ${activeTab === index ? "active" : ""}`}>{tab}</button>
                         ))}
                      </div>
                   </div>

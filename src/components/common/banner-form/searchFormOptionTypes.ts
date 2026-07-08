@@ -9,6 +9,7 @@ export type SearchFormOptionRenderProps = {
 
 export type SearchFormExpandablePanelProps = {
   isMobileSearchUI: boolean;
+  isResponsivePickerUI: boolean;
   location: boolean;
   passengers: boolean;
   selectedDestinoId: string;

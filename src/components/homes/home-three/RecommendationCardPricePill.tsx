@@ -11,11 +11,13 @@ import {
 type RecommendationCardPricePillProps = {
   item: RecommendationCard;
   dismissSignal?: number;
+  variant?: "overlay" | "inline";
 };
 
 const RecommendationCardPricePill = ({
   item,
   dismissSignal = 0,
+  variant = "overlay",
 }: RecommendationCardPricePillProps) => {
   const pricePillRef = useRef<HTMLDivElement>(null);
   const priceTooltipRef = useRef<HTMLDivElement>(null);
@@ -100,7 +102,9 @@ const RecommendationCardPricePill = ({
     <>
       <div
         ref={pricePillRef}
-        className="recommendation-card__price-pill"
+        className={`recommendation-card__price-pill${
+          variant === "inline" ? " recommendation-card__price-pill--inline" : ""
+        }`}
         onMouseEnter={openPriceTooltip}
         onMouseLeave={closePriceTooltip}
       >

@@ -8,8 +8,8 @@ const Tags = () => {
          <h5 className="tg-blog-sidebar-title mb-25">Tags</h5>
          <div className="tg-blog-sidebar-tag-list">
             <ul>
-               {tags.map((tag, i) => (
-                  <li key={i}><Link href="#">{tag}</Link></li>
+               {tags.map((tag) => (
+                  <li key={tag}><Link href="#">{tag}</Link></li>
                ))}
             </ul>
          </div>

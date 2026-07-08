@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import type { QuoteWizardAdditional } from "@/utils/quoteWizardCotizar";
 import QuoteWizardDetailModal from "./QuoteWizardDetailModal";
 import {
@@ -20,6 +20,10 @@ const QuoteWizardDetailsSidebar = ({
 
   const activeConfig = activeDetail ? DETAIL_BUTTON_CONFIG[activeDetail] : null;
   const activeHtml = activeConfig ? additional[activeConfig.key] : "";
+
+  const handleCloseDetail = useCallback(() => {
+    setActiveDetail(null);
+  }, []);
 
   return (
     <>
@@ -45,7 +49,7 @@ const QuoteWizardDetailsSidebar = ({
         <QuoteWizardDetailModal
           title={activeConfig?.title ?? "Detalle"}
           html={activeHtml}
-          onClose={() => setActiveDetail(null)}
+          onClose={handleCloseDetail}
         />
       ) : null}
     </>

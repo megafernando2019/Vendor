@@ -11,6 +11,7 @@ import RecommendationCardPricePill from "./RecommendationCardPricePill";
 
 type RecommendationCardMediaProps = {
   item: RecommendationCard;
+  layout?: "grid" | "list";
   onAddToWishlist: (item: RecommendationCard) => void;
   onActionMenuOpenChange?: (open: boolean) => void;
   detailHref?: string;
@@ -20,6 +21,7 @@ type RecommendationCardMediaProps = {
 
 const RecommendationCardMedia = ({
   item,
+  layout = "grid",
   onAddToWishlist,
   onActionMenuOpenChange,
   detailHref = `/tour-details?mt=${item.clv}`,
@@ -28,6 +30,7 @@ const RecommendationCardMedia = ({
 }: RecommendationCardMediaProps) => {
   const [priceTooltipDismissSignal, setPriceTooltipDismissSignal] = useState(0);
   const promotionBadges = item.promotions ?? [];
+  const isListLayout = layout === "list";
 
   const imageContent = item.thumb ? (
     <TourThumbImage
@@ -45,21 +48,29 @@ const RecommendationCardMedia = ({
   );
 
   return (
-    <div className="recommendation-card__media ">
+    <div
+      className={`recommendation-card__media${
+        isListLayout ? " recommendation-card__media--list h-100" : ""
+      }`}
+    >
       {onCardNavigate ? (
         <button
           type="button"
           onClick={onCardNavigate}
           disabled={cardNavigateDisabled}
-          className="recommendation-card__image-link bg-image hover-zoom border-0 p-0 w-100"
+          className="recommendation-card__image-link bg-image hover-zoom border-0 p-0 w-100 h-100"
           aria-label={`Buscar disponibilidad de ${item.title}`}
         >
+
+
           {imageContent}
         </button>
       ) : (
         <Link
           href={detailHref}
-          className="recommendation-card__image-link bg-image hover-zoom"
+          className={`recommendation-card__image-link bg-image hover-zoom${
+            isListLayout ? " h-100" : ""
+          }`}
         >
           {imageContent}
         </Link>
@@ -89,12 +100,16 @@ const RecommendationCardMedia = ({
         }}
       />
 
-      <RecommendationCardPricePill
-        item={item}
-        dismissSignal={priceTooltipDismissSignal}
-      />
+      {!isListLayout && (
+        <RecommendationCardPricePill
+          item={item}
+          dismissSignal={priceTooltipDismissSignal}
+        />
+      )}
 
-      <span className="recommendation-card__media-curve" aria-hidden="true" />
+      {!isListLayout && (
+        <span className="recommendation-card__media-curve" aria-hidden="true" />
+      )}
     </div>
   );
 };

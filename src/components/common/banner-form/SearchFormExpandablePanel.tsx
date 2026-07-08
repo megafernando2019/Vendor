@@ -9,6 +9,7 @@ import type { SearchFormExpandablePanelProps } from "./searchFormOptionTypes";
 
 const SearchFormExpandablePanel = ({
   isMobileSearchUI,
+  isResponsivePickerUI,
   location,
   passengers,
   selectedDestinoId,
@@ -90,7 +91,7 @@ const SearchFormExpandablePanel = ({
             {selectedDestinationData?.label ?? "Destino"}
           </span>
         </button>
-        {!isMobileSearchUI && (
+        {!isResponsivePickerUI && (
           <div
             className={`tg-booking-form-location-list tg-booking-form-destino-list tg-booking-quantity-active banner-form-two-picker-sheet banner-form-two-picker-sheet--inline${location ? " tg-list-open banner-form-two-picker-sheet--open" : ""}`}
           >
@@ -129,7 +130,7 @@ const SearchFormExpandablePanel = ({
             {selectedPasajerosData?.label ?? "Pasajeros"}
           </span>
         </button>
-        {!isMobileSearchUI && (
+        {!isResponsivePickerUI && (
           <div
             className={`tg-booking-form-location-list tg-booking-form-pasajeros-list tg-booking-quantity-active banner-form-two-picker-sheet banner-form-two-picker-sheet--inline${passengers ? " tg-list-open banner-form-two-picker-sheet--open" : ""}`}
           >

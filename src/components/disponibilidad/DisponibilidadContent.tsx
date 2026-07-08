@@ -7,8 +7,10 @@ import FooterThree from "@/components/common/FooterThree";
 import RecommendationTourCard from "@/components/homes/home-three/RecommendationTourCard";
 import RecommendationTourCardSkeleton from "@/components/disponibilidad/RecommendationTourCardSkeleton";
 import TourFilters from "@/components/disponibilidad/TourFilters";
+import DisponibilidadViewSwitcher from "@/components/disponibilidad/DisponibilidadViewSwitcher";
 import { useDisponibilidadInfiniteScroll } from "@/hooks/useDisponibilidadInfiniteScroll";
 import { useRestoreDisponibilidadSearch } from "@/hooks/useRestoreDisponibilidadSearch";
+import useWow from "@/hooks/useWow";
 import {
   computeDisponibilidadFilterLimits,
   createDefaultFilters,
@@ -27,8 +29,10 @@ import {
 const LOAD_MORE_SKELETON_COUNT = 4;
 
 const DisponibilidadContent = () => {
+  useWow();
   useRestoreDisponibilidadSearch();
-  const { sentinelRef, hasMore, loadingMore } = useDisponibilidadInfiniteScroll();
+  const { sentinelRef, hasMore, loadingMore } =
+    useDisponibilidadInfiniteScroll();
 
   const { itemSearch, resultados, pagination, uuid, loading, error } =
     useAppSelector((state) => state.search);
@@ -83,7 +87,10 @@ const DisponibilidadContent = () => {
     [itemSearch],
   );
 
-  const handleAddToWishlist = useCallback((_item: RecommendationCard) => {}, []);
+  const handleAddToWishlist = useCallback(
+    (_item: RecommendationCard) => {},
+    [],
+  );
 
   const handleResetFilters = useCallback(() => {
     setFilters(createDefaultFilters(filterLimits));
@@ -100,168 +107,200 @@ const DisponibilidadContent = () => {
 
   const gridColumnClass = isListView
     ? "col-12"
-    : "col-12 col-sm-6 col-lg-4 col-xl-3";
+    : "col-12 col-sm-6 col-md-4";
 
   return (
     <>
       <main>
         <div className="tg-booking-sticky-scope tg-disponibilidad-sticky-scope">
           <BookingFormsSticky />
-
-          <section className="tg-disponibilidad-area pt-60 pb-120">
-            <div className="container">
-              <h1 className="mb-20">Disponibilidad</h1>
-
-              {hasSearchSession && (
-                <p className="disponibilidad-search-summary mb-20 text-muted">
-                  {searchSummary}
-                </p>
-              )}
-
-              {totalResults > 0 && (
-                <p className="disponibilidad-results-total mb-20 text-muted">
-                  {filtersActive ? (
-                    <>
-                      {visibleCount} resultado
-                      {visibleCount === 1 ? "" : "s"} con filtros
-                      {loadedCount < totalResults ? (
-                        <span className="disponibilidad-results-total__loaded">
-                          {" "}
-                          · {loadedCount} de {totalResults} cargados
-                        </span>
-                      ) : (
-                        <span className="disponibilidad-results-total__loaded">
-                          {" "}
-                          · de {totalResults} en total
-                        </span>
-                      )}
-                    </>
-                  ) : (
-                    <>
-                      {totalResults} resultado
-                      {totalResults === 1 ? "" : "s"}
-                      {loadedCount > 0 && loadedCount < totalResults && (
-                        <span className="disponibilidad-results-total__loaded">
-                          {" "}
-                          · mostrando {loadedCount}
-                        </span>
-                      )}
-                    </>
+          <div className="container py-4 py-md-5">
+            <div className="row g-3 disponibilidad-layout-row">
+            <div className="col-md-3">
+              <div className="card border-0 shadow h-100 disponibilidad-sidebar-panel">
+                <div className="card-body p-3 p-md-4">
+                  <div className="tg-location-section-title text-left mb-30">
+                    <h5
+                      className="d-block mb-15 wow fadeInUp text-hortencia text-purple text-morado-custom"
+                      data-wow-delay=".4s"
+                      data-wow-duration=".9s"
+                    >
+                      Resultados para tu búsqueda
+                    </h5>
+                    <h2
+                      className="mb-15 text-capitalize wow fadeInUp"
+                      data-wow-delay=".5s"
+                      data-wow-duration=".9s"
+                    >
+                      Búsqueda
+                    </h2>
+                  </div>
+                  <h5>Filtros</h5>
+                  {loadedCount > 0 && (
+                    <TourFilters
+                      limits={filterLimits}
+                      filters={filters}
+                      onFiltersChange={setFilters}
+                      onReset={handleResetFilters}
+                    />
                   )}
-                </p>
-              )}
 
-              {loadedCount > 0 && (
-                <TourFilters
-                  limits={filterLimits}
-                  filters={filters}
-                  onFiltersChange={setFilters}
-                  onReset={handleResetFilters}
-                />
-              )}
-
-              {error && (
-                <div className="alert alert-danger mb-20" role="alert">
-                  {error}
                 </div>
-              )}
+              </div>
+            </div>
+            <div className="col-md-9">
+              <div className="card border-0 shadow disponibilidad-results-panel">
+                <div className="card-body p-3 p-md-4">
+              <section className="tg-disponibilidad-area">
 
-              {showInitialSkeleton && (
-                <>
-                  {totalResults === 0 && (
-                    <p className="mb-30 text-muted" aria-live="polite">
-                      Buscando disponibilidad...
+                  {totalResults > 0 && hasSearchSession && (
+                    <p className="disponibilidad-search-summary mb-20 text-muted">
+  {filtersActive ? (
+                        <>
+                          {visibleCount} resultado
+                          {visibleCount === 1 ? "" : "s"} con filtros
+                          {loadedCount < totalResults ? (
+                            <span className="disponibilidad-results-total__loaded">
+                              · {loadedCount} de {totalResults} cargados
+                            </span>
+                          ) : (
+                            <span className="disponibilidad-results-total__loaded">
+                              · de {totalResults} en total
+                            </span>
+                          )}
+                        </>
+                      ) : (
+                        <>
+                          {totalResults} resultado
+                          {totalResults === 1 ? "" : "s"}
+                          {loadedCount > 0 && loadedCount < totalResults && (
+                            <span className="disponibilidad-results-total__loaded mr-10">
+                              · para: 
+                            </span>
+                          )}
+                        </>
+                      )}
+                      {searchSummary}
                     </p>
                   )}
 
-                  <div
-                    className={`row g-4 disponibilidad-gallery${
-                      isListView ? " disponibilidad-gallery--list" : ""
-                    }`}
-                    aria-busy="true"
-                    aria-label="Cargando resultados"
-                  >
-                    {Array.from({ length: skeletonCount }, (_, index) => (
-                      <div key={`skeleton-${index}`} className={gridColumnClass}>
-                        <RecommendationTourCardSkeleton layout={isListView ? "list" : "grid"} />
-                      </div>
-                    ))}
-                  </div>
-                </>
-              )}
+                  {(showInitialSkeleton || cards.length > 0) &&
+                    !showFilterEmptyState && <DisponibilidadViewSwitcher />}
 
-              {showEmptyState && !showFilterEmptyState && (
-                <p className="mb-20">
-                  No hay resultados guardados. Realiza una búsqueda desde el
-                  inicio.
-                </p>
-              )}
-
-              {showFilterEmptyState && (
-                <div className="alert alert-info mb-20" role="status">
-                  Ningún tour coincide con los filtros seleccionados.{" "}
-                  <button
-                    type="button"
-                    className="btn btn-link btn-sm p-0 align-baseline"
-                    onClick={handleResetFilters}
-                  >
-                    Limpiar filtros
-                  </button>
-                </div>
-              )}
-
-              {cards.length > 0 && (
-                <div
-                  className={`row g-4 disponibilidad-gallery${
-                    isListView ? " disponibilidad-gallery--list" : ""
-                  }`}
-                >
-                  {cards.map((item) => (
-                    <div
-                      key={item.id}
-                      className={`${gridColumnClass} disponibilidad-gallery__item--loaded`}
-                    >
-                      <RecommendationTourCard
-                        item={item}
-                        onAddToWishlist={handleAddToWishlist}
-                        linkMode="quote-wizard"
-                        layout={isListView ? "list" : "grid"}
-                      />
+                  {error && (
+                    <div className="alert alert-danger mb-20" role="alert">
+                      {error}
                     </div>
-                  ))}
+                  )}
 
-                  {loadingMore &&
-                    Array.from({ length: LOAD_MORE_SKELETON_COUNT }, (_, index) => (
+                  {showInitialSkeleton && (
+                    <>
+                      {totalResults === 0 && (
+                        <p className="mb-30 text-muted" aria-live="polite">
+                          Buscando disponibilidad...
+                        </p>
+                      )}
+
                       <div
-                        key={`load-more-skeleton-${index}`}
-                        className={gridColumnClass}
+                        className={`row g-4 disponibilidad-gallery${
+                          isListView ? " disponibilidad-gallery--list" : ""
+                        }`}
+                        aria-busy="true"
+                        aria-label="Cargando resultados"
                       >
-                        <RecommendationTourCardSkeleton
-                          layout={isListView ? "list" : "grid"}
-                        />
+                        {Array.from({ length: skeletonCount }, (_, index) => (
+                          <div
+                            key={`skeleton-${index}`}
+                            className={gridColumnClass}
+                          >
+                            <RecommendationTourCardSkeleton
+                              layout={isListView ? "list" : "grid"}
+                            />
+                          </div>
+                        ))}
                       </div>
-                    ))}
+                    </>
+                  )}
+
+                  {showEmptyState && !showFilterEmptyState && (
+                    <p className="mb-20">
+                      No hay resultados guardados. Realiza una búsqueda desde el
+                      inicio.
+                    </p>
+                  )}
+
+                  {showFilterEmptyState && (
+                    <div className="alert alert-info mb-20" role="status">
+                      Ningún tour coincide con los filtros seleccionados.
+                      <button
+                        type="button"
+                        className="btn btn-link btn-sm p-0 align-baseline"
+                        onClick={handleResetFilters}
+                      >
+                        Limpiar filtros
+                      </button>
+                    </div>
+                  )}
+
+                  {cards.length > 0 && (
+                    <div
+                      className={`row g-4 disponibilidad-gallery${
+                        isListView ? " disponibilidad-gallery--list" : ""
+                      }`}
+                    >
+                      {cards.map((item) => (
+                        <div
+                          key={item.id}
+                          className={`${gridColumnClass} disponibilidad-gallery__item--loaded`}
+                        >
+                          <RecommendationTourCard
+                            item={item}
+                            onAddToWishlist={handleAddToWishlist}
+                            linkMode="quote-wizard"
+                            layout={isListView ? "list" : "grid"}
+                          />
+                        </div>
+                      ))}
+
+                      {loadingMore &&
+                        Array.from(
+                          { length: LOAD_MORE_SKELETON_COUNT },
+                          (_, index) => (
+                            <div
+                              key={`load-more-skeleton-${index}`}
+                              className={gridColumnClass}
+                            >
+                              <RecommendationTourCardSkeleton
+                                layout={isListView ? "list" : "grid"}
+                              />
+                            </div>
+                          ),
+                        )}
+                    </div>
+                  )}
+
+                  {resultados.length > 0 && hasMore && (
+                    <div
+                      ref={sentinelRef}
+                      className="disponibilidad-infinite-sentinel"
+                      aria-hidden="true"
+                    />
+                  )}
+
+                  {resultados.length > 0 && loadingMore && (
+                    <p
+                      className="disponibilidad-load-more-status text-muted text-center mt-4 mb-0"
+                      aria-live="polite"
+                    >
+                      Cargando más resultados...
+                    </p>
+                  )}
+              </section>
                 </div>
-              )}
-
-              {resultados.length > 0 && hasMore && (
-                <div
-                  ref={sentinelRef}
-                  className="disponibilidad-infinite-sentinel"
-                  aria-hidden="true"
-                />
-              )}
-
-              {resultados.length > 0 && loadingMore && (
-                <p
-                  className="disponibilidad-load-more-status text-muted text-center mt-4 mb-0"
-                  aria-live="polite"
-                >
-                  Cargando más resultados...
-                </p>
-              )}
+              </div>
             </div>
-          </section>
+          </div>
+          </div>
         </div>
       </main>
 

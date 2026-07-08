@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { createPortal } from "react-dom";
 import type { RecommendationCard } from "@/utils/recommendations";
 import {
   ActionMenuIcon,
@@ -25,21 +24,8 @@ const RecommendationCardActionMenu = ({
   onMenuOpenChange,
   onBeforeMenuToggle,
 }: RecommendationCardActionMenuProps) => {
-  const actionButtonRef = useRef<HTMLButtonElement>(null);
-  const portalMenuRef = useRef<HTMLUListElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
-
-  const updateMenuPosition = useCallback(() => {
-    const button = actionButtonRef.current;
-    if (!button) return;
-
-    const rect = button.getBoundingClientRect();
-    setMenuPosition({
-      top: rect.bottom + 8,
-      left: rect.left + rect.width / 2,
-    });
-  }, []);
 
   const updateMenuOpen = useCallback(
     (next: boolean) => {
@@ -55,29 +41,10 @@ const RecommendationCardActionMenu = ({
   useEffect(() => {
     if (!menuOpen) return;
 
-    updateMenuPosition();
-
-    const handleScrollOrResize = () => updateMenuPosition();
-
-    window.addEventListener("resize", handleScrollOrResize);
-    window.addEventListener("scroll", handleScrollOrResize, true);
-
-    return () => {
-      window.removeEventListener("resize", handleScrollOrResize);
-      window.removeEventListener("scroll", handleScrollOrResize, true);
-    };
-  }, [menuOpen, updateMenuPosition]);
-
-  useEffect(() => {
-    if (!menuOpen) return;
-
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Node;
 
-      if (
-        actionButtonRef.current?.contains(target) ||
-        portalMenuRef.current?.contains(target)
-      ) {
+      if (dropdownRef.current?.contains(target)) {
         return;
       }
 
@@ -129,78 +96,70 @@ const RecommendationCardActionMenu = ({
     }
   };
 
+  const openMenu = () => {
+    onBeforeMenuToggle?.(true);
+    updateMenuOpen(true);
+  };
+
   return (
-    <>
-      <div className="recommendation-card__action-dropdown">
+    <div
+      ref={dropdownRef}
+      className={`recommendation-card__action-dropdown${
+        menuOpen ? " recommendation-card__action-dropdown--open" : ""
+      }`}
+    >
+      {menuOpen ? (
+        <ul
+          className="dropdown-menu dropdown-menu-end recommendation-card__action-menu recommendation-card__action-menu--icons recommendation-card__action-menu--inline show"
+          role="menu"
+        >
+          <li role="none">
+            <button
+              type="button"
+              role="menuitem"
+              className="recommendation-card__action-icon-btn"
+              aria-label="Favorito"
+              onClick={handleFavorite}
+            >
+              <FavoriteIcon />
+            </button>
+          </li>
+          <li role="none">
+            <button
+              type="button"
+              role="menuitem"
+              className="recommendation-card__action-icon-btn"
+              aria-label="Agregar a lista"
+              onClick={handleAddToList}
+            >
+              <BookmarkIcon />
+            </button>
+          </li>
+          <li role="none">
+            <button
+              type="button"
+              role="menuitem"
+              className="recommendation-card__action-icon-btn"
+              aria-label="Compartir"
+              onClick={handleShare}
+            >
+              <ShareIcon />
+            </button>
+          </li>
+        </ul>
+      ) : (
         <button
-          ref={actionButtonRef}
           type="button"
           className="recommendation-card__action"
           aria-label="Más opciones"
-          aria-expanded={menuOpen}
+          aria-expanded={false}
           aria-haspopup="menu"
-          onClick={() => {
-            const next = !menuOpen;
-            onBeforeMenuToggle?.(next);
-            updateMenuOpen(next);
-            if (next) {
-              requestAnimationFrame(updateMenuPosition);
-            }
-          }}
+          onClick={openMenu}
         >
           <ActionMenuIcon />
         </button>
-      </div>
-
-      {menuOpen &&
-        typeof document !== "undefined" &&
-        createPortal(
-          <ul
-            ref={portalMenuRef}
-            className="dropdown-menu dropdown-menu-end recommendation-card__action-menu recommendation-card__action-menu--portal recommendation-card__action-menu--icons show"
-            style={{
-              top: menuPosition.top,
-              left: menuPosition.left,
-            }}
-            role="menu"
-          >
-            <li role="none">
-              <button
-                type="button"
-                role="menuitem"
-                className="recommendation-card__action-icon-btn"
-                aria-label="Favorito"
-                onClick={handleFavorite}
-              >
-                <FavoriteIcon />
-              </button>
-            </li>
-            <li role="none">
-              <button
-                type="button"
-                role="menuitem"
-                className="mt-1 recommendation-card__action-icon-btn"
-                aria-label="Agregar a lista"
-                onClick={handleAddToList}
-              >
-                <BookmarkIcon />
-              </button>
-            </li>
-            <li role="none">
-              <button
-                type="button"
-                role="menuitem"
-                className="mt-1 recommendation-card__action-icon-btn"
-                aria-label="Compartir"
-                onClick={handleShare}
-              >
-                <ShareIcon />
-              </button>
-            </li>
-          </ul>,
-          document.body,
-        )}
-    </>
+      )}
+    </div>
   );
 };
 

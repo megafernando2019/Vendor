@@ -7,8 +7,6 @@ import type {
   TourFiltersProps,
 } from "@/interfaces/disponibilidad-components";
 import { customStyles, FILTER_BORDER_RADIUS } from "@/styles/customSelectStyles";
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { changeView } from "@/redux/slices/viewSlice";
 
 const pct = (val: number, min: number, max: number) =>
   max === min ? 0 : ((val - min) / (max - min)) * 100;
@@ -24,6 +22,10 @@ const salidasOptions = [
 
 const destinoStyles: StylesConfig<{ value: string; label: string }, false> = {
   ...customStyles,
+  container: (provided) => ({
+    ...provided,
+    width: "100%",
+  }),
   control: (provided, state) => {
     const base = customStyles.control?.(provided, state) ?? provided;
     return {
@@ -48,9 +50,6 @@ export default function TourFilters({
   onFiltersChange,
   onReset,
 }: TourFiltersProps) {
-  const dispatch = useAppDispatch();
-  const view = useAppSelector((state) => state.view);
-
   const updateFilters = (patch: Partial<DisponibilidadFilters>) => {
     onFiltersChange({ ...filters, ...patch });
   };
@@ -60,9 +59,9 @@ export default function TourFilters({
     limits.precio.max - limits.precio.min <= 100 ? 1 : 100;
 
   return (
-    <div className="w-100 bg-white px-4 py-3 d-flex flex-wrap align-items-center gap-3 tour-filters mb-4">
-      <div className="flex-shrink-0 align-self-center" suppressHydrationWarning>
-        <div className="d-flex align-items-center gap-1 salida-select-wrap">
+    <div className="tour-filters w-100 d-flex flex-column align-items-stretch gap-3">
+      <div className="w-100" suppressHydrationWarning>
+        <div className="salida-select-wrap w-100">
           <Select<{ value: string; label: string }>
             instanceId="salida-select"
             placeholder="Salida desde"
@@ -80,7 +79,7 @@ export default function TourFilters({
       </div>
 
       <RangeSlider
-        label="Duración de"
+        label="Duración"
         suffix="días"
         aria-label="Duración en días"
         min={limits.duracion.min}
@@ -103,7 +102,7 @@ export default function TourFilters({
       />
 
       <RangeSlider
-        label="Precio de"
+        label="Precio"
         suffix="USD"
         min={limits.precio.min}
         max={limits.precio.max}
@@ -125,90 +124,29 @@ export default function TourFilters({
         pct={pct}
       />
 
-      <div className="d-flex align-items-center justify-content-center gap-3 flex-shrink-0 w-100 w-md-auto vista-actions">
-        <span className="text-purple fw-medium small text-center">
-          Cambiar Vista
-        </span>
-
+      <div className="d-flex justify-content-end w-100">
         <button
           type="button"
-          aria-label="Vista de tarjetas"
-          aria-pressed={view.view === "cards"}
-          onClick={() => dispatch(changeView("cards"))}
-          className={`btn btn-icon-circle d-flex align-items-center justify-content-center rounded-circle ${
-            view.view === "cards" ? "btn-purple-active" : "btn-purple-inactive"
-          }`}
+          onClick={onReset}
+          className="btn btn-icon-circle rounded-circle d-flex align-items-center justify-content-center btn-purple-subtle"
+          title="Limpiar filtros"
+          aria-label="Limpiar filtros"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            width="18"
-            height="18"
-            viewBox="0 0 24 24"
-            fill="currentColor"
-            aria-hidden
-          >
-            <rect x="3" y="3" width="5" height="5" rx="1" />
-            <rect x="9.5" y="3" width="5" height="5" rx="1" />
-            <rect x="16" y="3" width="5" height="5" rx="1" />
-            <rect x="3" y="9.5" width="5" height="5" rx="1" />
-            <rect x="9.5" y="9.5" width="5" height="5" rx="1" />
-            <rect x="16" y="9.5" width="5" height="5" rx="1" />
-            <rect x="3" y="16" width="5" height="5" rx="1" />
-            <rect x="9.5" y="16" width="5" height="5" rx="1" />
-            <rect x="16" y="16" width="5" height="5" rx="1" />
-          </svg>
-        </button>
-
-        <button
-          type="button"
-          aria-label="Vista de lista"
-          aria-pressed={view.view === "lista"}
-          onClick={() => dispatch(changeView("lista"))}
-          className={`btn btn-icon-circle d-flex align-items-center justify-content-center rounded-circle ${
-            view.view === "lista" ? "btn-purple-active" : "btn-purple-inactive"
-          }`}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="18"
-            height="18"
+            width="16"
+            height="16"
             viewBox="0 0 24 24"
             fill="none"
-            stroke="currentColor"
-            strokeWidth="2.5"
+            stroke="#7c3aed"
+            strokeWidth="2"
             strokeLinecap="round"
+            strokeLinejoin="round"
             aria-hidden
           >
-            <line x1="4" y1="6" x2="20" y2="6" />
-            <line x1="4" y1="12" x2="20" y2="12" />
-            <line x1="4" y1="18" x2="20" y2="18" />
+            <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
           </svg>
         </button>
-
-        <div className="flex-shrink-0 ms-auto">
-          <button
-            type="button"
-            onClick={onReset}
-            className="btn btn-icon-circle rounded-circle d-flex align-items-center justify-content-center btn-purple-subtle"
-            title="Limpiar filtros"
-            aria-label="Limpiar filtros"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="#7c3aed"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden
-            >
-              <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
-            </svg>
-          </button>
-        </div>
       </div>
     </div>
   );
@@ -233,16 +171,15 @@ function RangeSlider({
   const disabled = max <= min;
 
   return (
-    <div className="d-flex flex-grow-1 align-items-center gap-3 align-self-center range-slider-wrap">
-      <p className="text-secondary small text-nowrap flex-shrink-0 mb-0">
-        {label}{" "}
-        <span className="text-purple fw-semibold">{format(valueMin)}</span> a{" "}
-        <span className="text-purple fw-semibold">{format(valueMax)}</span>{" "}
-        <span className="text-muted">{suffix}</span>
-      </p>
+    <div className="d-flex flex-column gap-2 range-slider-wrap w-100 mt-10">
+      <div className="range-slider-header d-flex align-items-center justify-content-between gap-2 w-100">
+        <label className="fw-bold text-morado-custom text-secondary small mb-0 range-slider-label">
+          {label}
+        </label>
+      </div>
 
-      <div className="position-relative flex-grow-1 d-flex align-items-center track-wrap">
-        <div className="position-absolute start-0 end-0 track-base rounded-pill" />
+      <div className="position-relative d-flex align-items-center track-wrap w-100">
+        <div className="position-absolute start-0 end-0 track-base rounded-pill w-100" />
         <div
           className="position-absolute track-fill rounded-pill"
           style={{ left: `${pMin}%`, right: `${100 - pMax}%` }}
@@ -256,7 +193,7 @@ function RangeSlider({
           disabled={disabled}
           aria-label={ariaLabel ? `${ariaLabel}, mínimo` : `${label} mínimo`}
           onChange={(e) => onChangeMin(Number(e.target.value))}
-          className="thumb-purple"
+          className="thumb-purple w-100"
           style={{ zIndex: valueMin > max - (max - min) * 0.1 ? 5 : 3 }}
         />
         <input
@@ -268,10 +205,17 @@ function RangeSlider({
           disabled={disabled}
           aria-label={ariaLabel ? `${ariaLabel}, máximo` : `${label} máximo`}
           onChange={(e) => onChangeMax(Number(e.target.value))}
-          className="thumb-purple"
+          className="thumb-purple w-100"
           style={{ zIndex: 4 }}
         />
       </div>
+<div className="d-flex align-items-center justify-content-start gap-2 w-100">
+  <span className="text-secondary small mb-0 range-slider-values text-start d-block w-100">
+    <span className="fw-semibold">{format(valueMin)}</span> a{" "}
+    <span className="fw-semibold">{format(valueMax)}</span>{" "}
+    <span className="text-muted">{suffix}</span>
+  </span>
+</div>
     </div>
   );
 }

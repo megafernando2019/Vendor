@@ -2,6 +2,10 @@
 
 import { createPortal } from "react-dom";
 import type { RefObject } from "react";
+import {
+  pickerAnchorStyleToCssVars,
+  type PickerAnchorStyle,
+} from "./computePickerAnchorStyle";
 import SearchFormDestinoOptions from "./SearchFormDestinoOptions";
 import SearchFormPasajerosOptions from "./SearchFormPasajerosOptions";
 import type { SearchFormOptionRenderProps } from "./searchFormOptionTypes";
@@ -18,6 +22,7 @@ export interface SearchFormPortalsProps extends SearchFormOptionRenderProps {
   submitSearch: (keywordOverride?: string) => void;
   pickerDialogRef: RefObject<HTMLDialogElement | null>;
   keywordDialogRef: RefObject<HTMLDialogElement | null>;
+  pickerAnchorStyle: PickerAnchorStyle | null;
 }
 
 const SearchFormPortals = ({
@@ -36,10 +41,19 @@ const SearchFormPortals = ({
   onSelectPassengers,
   pickerDialogRef,
   keywordDialogRef,
+  pickerAnchorStyle,
 }: SearchFormPortalsProps) => {
   if (!mounted) {
     return null;
   }
+
+  const pickerPanelStyle =
+    pickerAnchorStyle == null
+      ? { visibility: "hidden" as const }
+      : {
+          ...pickerAnchorStyleToCssVars(pickerAnchorStyle),
+          visibility: "visible" as const,
+        };
 
   return (
     <>
@@ -59,7 +73,8 @@ const SearchFormPortals = ({
             onClick={closeMobilePickers}
           />
           <div
-            className={`banner-form-two tg-booking-form-location-list banner-form-two-picker-sheet banner-form-two-picker-sheet--portal banner-form-two-picker-sheet--open${location ? " tg-booking-form-destino-list" : " tg-booking-form-pasajeros-list"} tg-list-open`}
+            className={`banner-form-two tg-booking-form-location-list banner-form-two-picker-sheet banner-form-two-picker-sheet--portal banner-form-two-picker-sheet--open banner-form-two-picker-sheet--anchored${location ? " tg-booking-form-destino-list" : " tg-booking-form-pasajeros-list"} tg-list-open`}
+            style={pickerPanelStyle}
           >
             <ul className="scrool-bar scrool-height pr-5">
               {location ? (

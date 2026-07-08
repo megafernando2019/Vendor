@@ -25,6 +25,7 @@ const SearchFormItems = ({ searchOpen, onToggle }: FormItemsProps) => {
         >
           <SearchFormExpandablePanel
             isMobileSearchUI={form.isMobileSearchUI}
+            isResponsivePickerUI={form.isResponsivePickerUI}
             location={form.location}
             passengers={form.passengers}
             selectedDestinoId={form.selectedDestinoId}
@@ -99,6 +100,7 @@ const SearchFormItems = ({ searchOpen, onToggle }: FormItemsProps) => {
         onSelectPassengers={form.handleSelectPassengers}
         pickerDialogRef={form.pickerDialogRef}
         keywordDialogRef={form.keywordDialogRef}
+        pickerAnchorStyle={form.pickerAnchorStyle}
       />
     </form>
   );

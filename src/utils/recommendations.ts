@@ -1,5 +1,6 @@
 import type {
   Promotions,
+  RecommendationDeparture,
   RecommendationItem,
   RecommendationsData,
   ResultData,
@@ -33,6 +34,7 @@ export type RecommendationCard = {
   dblAdtBase?: number;
   dblAdtTax?: number;
   dblAdtSupplements?: number;
+  filteredDepartures: RecommendationDeparture[];
 };
 
 const EMPTY_RECOMMENDATIONS: RecommendationsData = {
@@ -304,6 +306,7 @@ function mapRecommendationToCard(
     nights: item.nights,
     has_promotions: hasPromotions,
     promotions,
+    filteredDepartures: item.filtered_departures ?? [],
     ...priceBreakdown,
   };
 }

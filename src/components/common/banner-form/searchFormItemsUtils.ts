@@ -2,6 +2,7 @@ import { format } from "date-fns";
 import type { ItemSearch } from "@/redux/slices/searchSlice";
 
 export const MOBILE_SEARCH_MQ = "(max-width: 574px)";
+export const RESPONSIVE_PICKER_MQ = "(max-width: 990px)";
 
 export const DEFAULT_DESTINO_ID = "3";
 export const DEFAULT_PASAJEROS_ID = "2";

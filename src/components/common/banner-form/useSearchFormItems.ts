@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type Dispatch, type SetStateAction } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type Dispatch, type SetStateAction } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { useAppDispatch } from "@/redux/hooks";
@@ -11,11 +11,16 @@ import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { useSyncSearchFormFromStore } from "@/hooks/useSyncSearchFormFromStore";
 import { useIsClient } from "@/hooks/useIsClient";
 import {
+  computePickerAnchorStyle,
+  type PickerAnchorStyle,
+} from "./computePickerAnchorStyle";
+import {
   buildBusquedaPayload,
   DEFAULT_DESTINO_ID,
   DEFAULT_PASAJEROS_ID,
   getDefaultDateRange,
   MOBILE_SEARCH_MQ,
+  RESPONSIVE_PICKER_MQ,
 } from "./searchFormItemsUtils";
 
 type UseSearchFormItemsOptions = {
@@ -29,6 +34,7 @@ export const useSearchFormItems = ({
 }: UseSearchFormItemsOptions) => {
   const formFieldsVisible = useDelayedPanelItems(searchOpen);
   const isMobileSearchUI = useMediaQuery(MOBILE_SEARCH_MQ);
+  const isResponsivePickerUI = useMediaQuery(RESPONSIVE_PICKER_MQ);
   const dispatch = useAppDispatch();
   const router = useRouter();
   const [location, setLocationState] = useState(false);
@@ -53,9 +59,12 @@ export const useSearchFormItems = ({
   const pickerDialogRef = useRef<HTMLDialogElement>(null);
   const keywordDialogRef = useRef<HTMLDialogElement>(null);
   const pickerOpenRef = useRef({ location: false, passengers: false });
+  const [pickerAnchorStyle, setPickerAnchorStyle] = useState<PickerAnchorStyle | null>(
+    null,
+  );
 
   const syncPickerDialog = (open: boolean) => {
-    if (!isMobileSearchUI || !mounted) return;
+    if (!isResponsivePickerUI || !mounted) return;
     requestAnimationFrame(() => {
       const dialog = pickerDialogRef.current;
       if (!dialog) return;
@@ -64,6 +73,23 @@ export const useSearchFormItems = ({
       } else if (!open && dialog.open) {
         dialog.close();
       }
+
+      if (!open) {
+        setPickerAnchorStyle(null);
+        return;
+      }
+
+      const anchorEl = pickerOpenRef.current.location
+        ? locationRef.current
+        : passengersRef.current;
+
+      if (!anchorEl) return;
+
+      setPickerAnchorStyle(
+        computePickerAnchorStyle(anchorEl, {
+          preferAbove: isMobileSearchUI,
+        }),
+      );
     });
   };
 
@@ -247,18 +273,71 @@ export const useSearchFormItems = ({
   setPassengersRef.current = setPassengers;
 
   const mobilePickerOpen =
-    isMobileSearchUI && mounted && (location || passengers);
+    isResponsivePickerUI && mounted && (location || passengers);
+
+  const updatePickerAnchor = () => {
+    if (!isResponsivePickerUI || (!location && !passengers)) {
+      setPickerAnchorStyle(null);
+      return;
+    }
+
+    const anchorEl = location ? locationRef.current : passengersRef.current;
+    if (!anchorEl) return;
+
+    setPickerAnchorStyle(
+      computePickerAnchorStyle(anchorEl, {
+        preferAbove: isMobileSearchUI,
+      }),
+    );
+  };
+
+  useLayoutEffect(() => {
+    if (!isResponsivePickerUI || (!location && !passengers)) {
+      setPickerAnchorStyle(null);
+      return;
+    }
+
+    updatePickerAnchor();
+
+    const frame = requestAnimationFrame(() => {
+      updatePickerAnchor();
+      requestAnimationFrame(updatePickerAnchor);
+    });
+
+    return () => cancelAnimationFrame(frame);
+  }, [
+    isResponsivePickerUI,
+    isMobileSearchUI,
+    location,
+    passengers,
+    formFieldsVisible,
+    searchOpen,
+  ]);
+
+  useEffect(() => {
+    if (!mobilePickerOpen) return;
+
+    const handleReposition = () => updatePickerAnchor();
+
+    window.addEventListener("resize", handleReposition);
+    window.addEventListener("scroll", handleReposition, true);
+
+    return () => {
+      window.removeEventListener("resize", handleReposition);
+      window.removeEventListener("scroll", handleReposition, true);
+    };
+  }, [mobilePickerOpen, location, passengers, isResponsivePickerUI]);
 
   useEffect(() => {
     const shouldLockScroll =
-      keywordSheetOpen || (isMobileSearchUI && (location || passengers));
+      keywordSheetOpen || (isResponsivePickerUI && (location || passengers));
 
     document.body.style.overflow = shouldLockScroll ? "hidden" : "";
 
     return () => {
       document.body.style.overflow = "";
     };
-  }, [keywordSheetOpen, isMobileSearchUI, location, passengers]);
+  }, [keywordSheetOpen, isResponsivePickerUI, location, passengers]);
 
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
@@ -269,34 +348,31 @@ export const useSearchFormItems = ({
         return;
       }
 
-      if (isMobileSearchUI && (location || passengers)) {
+      if (isResponsivePickerUI && (location || passengers)) {
         closeMobilePickersRef.current();
       }
     };
 
-    if (!keywordSheetOpen && !(isMobileSearchUI && (location || passengers))) {
+    if (!keywordSheetOpen && !(isResponsivePickerUI && (location || passengers))) {
       return;
     }
 
     document.addEventListener("keydown", handleEscape);
     return () => document.removeEventListener("keydown", handleEscape);
-  }, [keywordSheetOpen, isMobileSearchUI, location, passengers]);
+  }, [keywordSheetOpen, isResponsivePickerUI, location, passengers]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Node;
       const calendarEl = flatpickrRef.current?.flatpickr?.calendarContainer;
-      if (calendarEl && calendarEl.contains(event.target as Node)) return;
+      if (calendarEl && calendarEl.contains(target)) return;
 
-      if (
-        locationRef.current &&
-        !locationRef.current.contains(event.target as Node)
-      ) {
+      if (pickerDialogRef.current?.contains(target)) return;
+
+      if (locationRef.current && !locationRef.current.contains(target)) {
         setLocationRef.current(false);
       }
-      if (
-        passengersRef.current &&
-        !passengersRef.current.contains(event.target as Node)
-      ) {
+      if (passengersRef.current && !passengersRef.current.contains(target)) {
         setPassengersRef.current(false);
       }
     };
@@ -332,6 +408,7 @@ export const useSearchFormItems = ({
   return {
     formFieldsVisible,
     isMobileSearchUI,
+    isResponsivePickerUI,
     location,
     passengers,
     selectedDestinoId,
@@ -359,6 +436,7 @@ export const useSearchFormItems = ({
     handleSearchButtonClick,
     closeMobilePickers,
     mobilePickerOpen,
+    pickerAnchorStyle,
     closeKeywordSheet,
     handleSelectDestination,
     handleSelectPassengers,

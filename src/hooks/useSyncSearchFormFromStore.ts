@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useAppSelector } from "@/redux/hooks";
 import { usePersistBootstrapped } from "@/hooks/usePersistBootstrapped";
 import {
@@ -31,7 +31,8 @@ export function useSyncSearchFormFromStore({
     (state) => state.search,
   );
 
-  if (bootstrapped && !syncedRef.current) {
+  useEffect(() => {
+    if (!bootstrapped || syncedRef.current) return;
     syncedRef.current = true;
 
     const hasSession = hasPersistedSearchSession({
@@ -40,20 +41,33 @@ export function useSyncSearchFormFromStore({
       resultadosCount: resultados.length,
     });
 
-    if (hasSession) {
-      const fields = mapItemSearchToFormFields(itemSearch, {
-        destinoId: defaultDestinoId,
-        pasajerosId: defaultPasajerosId,
-        dateRange: getDefaultDateRange(),
-      });
+    if (!hasSession) return;
 
-      setSelectedDestinoId(fields.destinoId);
-      setSelectedPasajerosId(fields.pasajerosId);
-      setKeyword(fields.keyword);
+    const fields = mapItemSearchToFormFields(itemSearch, {
+      destinoId: defaultDestinoId,
+      pasajerosId: defaultPasajerosId,
+      dateRange: getDefaultDateRange(),
+    });
 
-      if (fields.dateRange) {
-        setDateRange(fields.dateRange);
-      }
+    setSelectedDestinoId(fields.destinoId);
+    setSelectedPasajerosId(fields.pasajerosId);
+    setKeyword(fields.keyword);
+
+    if (fields.dateRange) {
+      setDateRange(fields.dateRange);
     }
-  }
+  }, [
+    bootstrapped,
+    defaultDestinoId,
+    defaultPasajerosId,
+    getDefaultDateRange,
+    itemSearch,
+    pagination,
+    resultados.length,
+    setDateRange,
+    setKeyword,
+    setSelectedDestinoId,
+    setSelectedPasajerosId,
+    uuid,
+  ]);
 }

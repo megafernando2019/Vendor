@@ -5,6 +5,9 @@ import Link from "next/link";
 import type { RecommendationCard } from "@/utils/recommendations";
 import StarRating from "@/components/common/StarRating";
 import RecommendationCardMedia from "@/components/homes/home-three/RecommendationCardMedia";
+import RecommendationCardPricePill from "@/components/homes/home-three/RecommendationCardPricePill";
+import RecommendationTourCardMeta from "@/components/homes/home-three/RecommendationTourCardMeta";
+import RecommendationTourCardDeparturesTable from "@/components/homes/home-three/RecommendationTourCardDeparturesTable";
 
 type RecommendationTourCardProps = {
   item: RecommendationCard;
@@ -30,6 +33,7 @@ const RecommendationTourCard = ({
   layout = "grid",
 }: RecommendationTourCardProps) => {
   const titleLinkRef = useRef<HTMLAnchorElement | HTMLButtonElement>(null);
+  const isListLayout = layout === "list";
 
   const detailHref =
     linkMode === "quote-wizard"
@@ -66,14 +70,102 @@ const RecommendationTourCard = ({
     };
   }, [item.title]);
 
-  return (
-    <article
-      className={`recommendation-card${
-        layout === "list" ? " recommendation-card--list" : ""
+  const titleNode = usesSearchFlow ? (
+    <button
+      ref={titleLinkRef as React.RefObject<HTMLButtonElement>}
+      type="button"
+      onClick={handleSearchNavigate}
+      disabled={searchNavigateDisabled}
+      className="recommendation-card__title-link border-0 bg-transparent p-0 text-start"
+    >
+      {item.title}
+    </button>
+  ) : (
+    <Link
+      ref={titleLinkRef as React.RefObject<HTMLAnchorElement>}
+      href={detailHref}
+      className="recommendation-card__title-link"
+    >
+      {item.title}
+    </Link>
+  );
+
+  const ratingNode = (
+    <div
+      className={`recommendation-card__rating${
+        isListLayout ? " recommendation-card__rating--list" : ""
       }`}
     >
+      <StarRating
+        rating={rating}
+        className="recommendation-card__stars"
+        starClassName="recommendation-card__star"
+      />
+      <span className="recommendation-card__rating-text">
+        ({rating} {ratingLabel})
+      </span>
+    </div>
+  );
+
+  if (isListLayout) {
+    return (
+      <article className="card recommendation-card recommendation-card--list border-0 h-100">
+        <div className="row g-0 flex-grow-1 align-items-stretch">
+          <div className="col-12 col-lg-3 recommendation-card__list-col recommendation-card__list-col--media">
+            <div className="recommendation-card__list-media-stack d-flex flex-column h-100">
+              <div className="recommendation-card__list-media-wrap position-relative flex-grow-1">
+                <RecommendationCardMedia
+                  item={item}
+                  layout="list"
+                  onAddToWishlist={onAddToWishlist}
+                  onActionMenuOpenChange={onActionMenuOpenChange}
+                  detailHref={detailHref}
+                  onCardNavigate={
+                    usesSearchFlow ? handleSearchNavigate : undefined
+                  }
+                  cardNavigateDisabled={searchNavigateDisabled}
+                />
+              </div>
+
+              <div className="recommendation-card__list-price d-flex justify-content-center p-3">
+                <RecommendationCardPricePill item={item} variant="inline" />
+              </div>
+            </div>
+          </div>
+
+          <div className="col-12 col-lg-4 recommendation-card__list-col recommendation-card__list-col--meta">
+            <div className="card-body recommendation-card__body recommendation-card__body--list h-100 d-flex flex-column p-3 p-md-4">
+              <h3 className="recommendation-card__title recommendation-card__title--list mb-2">
+                {titleNode}
+              </h3>
+
+              {ratingNode}
+
+              <RecommendationTourCardMeta item={item} layout="list" />
+            </div>
+          </div>
+
+          <div className="col-12 col-lg-5 recommendation-card__list-col recommendation-card__list-col--departures">
+            <div className="card-body recommendation-card__body recommendation-card__body--list h-100 d-flex flex-column p-3 p-md-4">
+              <h4 className="recommendation-card__departures-title h6 mb-3">
+                Salidas disponibles
+              </h4>
+
+              <RecommendationTourCardDeparturesTable
+                departures={item.filteredDepartures}
+              />
+            </div>
+          </div>
+        </div>
+      </article>
+    );
+  }
+
+  return (
+    <article className="recommendation-card">
       <RecommendationCardMedia
         item={item}
+        layout="grid"
         onAddToWishlist={onAddToWishlist}
         onActionMenuOpenChange={onActionMenuOpenChange}
         detailHref={detailHref}
@@ -82,90 +174,11 @@ const RecommendationTourCard = ({
       />
 
       <div className="recommendation-card__body">
-        <h3 className="recommendation-card__title">
-          {usesSearchFlow ? (
-            <button
-              ref={titleLinkRef as React.RefObject<HTMLButtonElement>}
-              type="button"
-              onClick={handleSearchNavigate}
-              disabled={searchNavigateDisabled}
-              className="recommendation-card__title-link border-0 bg-transparent p-0 text-start"
-            >
-              {item.title}
-            </button>
-          ) : (
-            <Link
-              ref={titleLinkRef as React.RefObject<HTMLAnchorElement>}
-              href={detailHref}
-              className="recommendation-card__title-link"
-            >
-              {item.title}
-            </Link>
-          )}
-        </h3>
+        <h3 className="recommendation-card__title">{titleNode}</h3>
 
-        <div className="recommendation-card__rating">
-          <StarRating
-            rating={rating}
-            className="recommendation-card__stars"
-            starClassName="recommendation-card__star"
-          />
-          <span className="recommendation-card__rating-text">
-            ( {rating + " " + ratingLabel})
-          </span>
-        </div>
+        {ratingNode}
 
-        <table className="recommendation-card__meta-table">
-          <tbody>
-            <tr>
-              <td>
-                <span className="recommendation-card__mt">MT{item.clv}</span>
-              </td>
-              <td>
-                <span className="recommendation-card__info">
-                  <svg
-                    className="recommendation-card__info-icon-svg"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M12 5V3m0 18v-2M7.05 7.05 5.636 5.636m12.728 12.728L16.95 16.95M5 12H3m18 0h-2M7.05 16.95l-1.414 1.414M18.364 5.636 16.95 7.05M16 12a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z"
-                    />
-                  </svg>
-                  {item.days} días
-                </span>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <span className="recommendation-card__info">
-                  <i
-                    className="fa-solid fa-plane recommendation-card__info-icon"
-                    aria-hidden="true"
-                  />
-                  {item.departuresCount} salidas
-                </span>
-              </td>
-              <td>
-                <span className="recommendation-card__info">
-                  <i
-                    className="fa-regular fa-moon recommendation-card__info-icon"
-                    aria-hidden="true"
-                  />
-                  {item.nights} noches
-                </span>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        <RecommendationTourCardMeta item={item} layout="grid" />
       </div>
     </article>
   );
