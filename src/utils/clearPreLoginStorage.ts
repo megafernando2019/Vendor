@@ -8,11 +8,18 @@ import {
 const PERSIST_APP_KEY = "persist:app";
 const TOTALES_KEY = "totales";
 
+const LEGACY_COTIZACION_KEYS = [
+  "cotizacion_habitaciones",
+  "cotizacion_asistencias",
+  "cotizacion_opcionales",
+] as const;
+
 const PRE_LOGIN_STORAGE_KEYS = [
   COTIZACION_ASISTENCIAS_KEY,
   COTIZACION_DETALLE_KEY,
   COTIZACION_HABITACIONES_KEY,
   COTIZACION_OPCIONALES_KEY,
+  ...LEGACY_COTIZACION_KEYS,
   PERSIST_APP_KEY,
   TOTALES_KEY,
 ] as const;

@@ -27,7 +27,8 @@ const NiceSelect: FC<NiceSelectProps> = ({
    ariaLabel = "Select option",
 }) => {
    const [open, setOpen] = useState(false);
-   const [current, setCurrent] = useState<Option>(options[defaultCurrent]);
+   const [selectedOption, setSelectedOption] = useState<Option | null>(null);
+   const current = selectedOption ?? options[defaultCurrent];
    const onClose = useCallback(() => {
       setOpen(false);
    }, []);
@@ -36,7 +37,7 @@ const NiceSelect: FC<NiceSelectProps> = ({
    useClickAway(ref, onClose);
 
    const currentHandler = (item: Option) => {
-      setCurrent(item);
+      setSelectedOption(item);
       onChange(item, name);
       onClose();
    };

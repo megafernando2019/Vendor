@@ -37,12 +37,144 @@ export type RecommendationCard = {
   filteredDepartures: RecommendationDeparture[];
 };
 
-const EMPTY_RECOMMENDATIONS: RecommendationsData = {
-  top_10: [],
-  exatravel: [],
-  cruceros: [],
-  ofertas: [],
+const EMPTY_RECOMMENDATIONS: RecommendationsData = {};
+
+const SECTION_ALIASES: Record<string, string> = {
+  top10: "top_10",
+  exa_travel: "exatravel",
+  cruises: "cruceros",
+  offers: "ofertas",
+  promociones: "ofertas",
 };
+
+export type RecommendationSectionConfig = {
+  key: string;
+  label: string;
+  description: string;
+  count: number;
+  order: number;
+};
+
+const RECOMMENDATION_SECTION_METADATA: Record<
+  string,
+  { label: string; description: string; order: number }
+> = {
+  top_10: {
+    label: "Top 10",
+    description: "Los tours más populares y mejor valorados.",
+    order: 1,
+  },
+  exatravel: {
+    label: "Exa Travel",
+    description: "Experiencias premium con Exa Travel.",
+    order: 2,
+  },
+  cruceros: {
+    label: "Cruceros",
+    description: "Viajes con crucero incluido.",
+    order: 3,
+  },
+  ofertas: {
+    label: "Ofertas",
+    description: "Promociones y precios especiales.",
+    order: 4,
+  },
+};
+
+function canonicalSectionKey(key: string): string {
+  return SECTION_ALIASES[key] ?? key;
+}
+
+function isRecommendationItem(value: unknown): value is RecommendationItem {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    "clv" in value &&
+    "name" in value
+  );
+}
+
+function isRecommendationItemArray(
+  value: unknown,
+): value is RecommendationItem[] {
+  return (
+    Array.isArray(value) &&
+    (value.length === 0 || isRecommendationItem(value[0]))
+  );
+}
+
+function resolveRecommendationsSource(
+  record: Record<string, unknown>,
+): Record<string, unknown> {
+  const nested =
+    record.data && typeof record.data === "object"
+      ? (record.data as Record<string, unknown>)
+      : null;
+
+  const hasRecommendationSections = (source: Record<string, unknown>) =>
+    Object.values(source).some((value) => isRecommendationItemArray(value));
+
+  if (nested && hasRecommendationSections(nested)) {
+    return nested;
+  }
+
+  if (hasRecommendationSections(record)) {
+    return record;
+  }
+
+  return nested ?? record;
+}
+
+export function humanizeSectionKey(key: string): string {
+  return key
+    .replace(/_/g, " ")
+    .replace(/\b\w/g, (char) => char.toUpperCase());
+}
+
+export function normalizeRecommendationsData(raw: unknown): RecommendationsData {
+  if (!raw || typeof raw !== "object") {
+    return EMPTY_RECOMMENDATIONS;
+  }
+
+  const source = resolveRecommendationsSource(raw as Record<string, unknown>);
+  const merged: RecommendationsData = {};
+
+  for (const [rawKey, value] of Object.entries(source)) {
+    if (!isRecommendationItemArray(value)) continue;
+
+    const key = canonicalSectionKey(rawKey);
+    const existing = merged[key] ?? [];
+    const seen = new Set(existing.map((item) => item.clv));
+
+    merged[key] = [
+      ...existing,
+      ...value.filter((item) => !seen.has(item.clv)),
+    ];
+  }
+
+  return merged;
+}
+
+export function getRecommendationSections(
+  data: RecommendationsData,
+): RecommendationSectionConfig[] {
+  return Object.entries(data)
+    .map(([key, items]) => {
+      const meta = RECOMMENDATION_SECTION_METADATA[key];
+      return {
+        key,
+        label: meta?.label ?? humanizeSectionKey(key),
+        description: meta?.description ?? "",
+        count: items.length,
+        order: meta?.order ?? 100,
+      };
+    })
+    .sort(
+      (a, b) =>
+        a.order - b.order ||
+        a.label.localeCompare(b.label, "es"),
+    );
+}
 
 export function normalizeCountries(countries: unknown): string[] {
   if (Array.isArray(countries)) {
@@ -58,52 +190,6 @@ export function normalizeCountries(countries: unknown): string[] {
     });
   }
   return [];
-}
-
-function readRecommendationItems(
-  source: Record<string, unknown>,
-  ...keys: string[]
-): RecommendationItem[] {
-  for (const key of keys) {
-    const value = source[key];
-    if (Array.isArray(value)) {
-      return value as RecommendationItem[];
-    }
-  }
-  return [];
-}
-
-export function normalizeRecommendationsData(raw: unknown): RecommendationsData {
-  if (!raw || typeof raw !== "object") {
-    return EMPTY_RECOMMENDATIONS;
-  }
-
-  const record = raw as Record<string, unknown>;
-  const nested =
-    record.data && typeof record.data === "object"
-      ? (record.data as Record<string, unknown>)
-      : null;
-
-  const hasSections = (source: Record<string, unknown>) =>
-    "top_10" in source ||
-    "exatravel" in source ||
-    "cruceros" in source ||
-    "ofertas" in source ||
-    "offers" in source;
-
-  const source =
-    nested && hasSections(nested)
-      ? nested
-      : hasSections(record)
-        ? record
-        : nested ?? record;
-
-  return {
-    top_10: readRecommendationItems(source, "top_10", "top10"),
-    exatravel: readRecommendationItems(source, "exatravel", "exa_travel"),
-    cruceros: readRecommendationItems(source, "cruceros", "cruises"),
-    ofertas: readRecommendationItems(source, "ofertas", "offers", "promociones"),
-  };
 }
 
 function normalizePromotions(value: unknown): Promotions[] {
@@ -167,36 +253,13 @@ function mapRecommendationToResultData(
     multimedias: item.multimedias ?? [],
   };
 }
-const RECOMMENDATION_SECTIONS: {
-  key: keyof RecommendationsData;
-  titulo: string;
-  descripcion: string;
-}[] = [
-  {
-    key: "top_10",
-    titulo: "Top 10",
-    descripcion: "Los tours más populares y mejor valorados.",
-  },
-  {
-    key: "exatravel",
-    titulo: "Exa Travel",
-    descripcion: "Experiencias premium con Exa Travel.",
-  },
-  {
-    key: "cruceros",
-    titulo: "Cruceros",
-    descripcion: "Viajes con crucero incluido.",
-  },
-  {
-    key: "ofertas",
-    titulo: "Ofertas",
-    descripcion: "Promociones y precios especiales.",
-  },
-];
-
-function getRecommendationSectionMeta(key: keyof RecommendationsData) {
-  return RECOMMENDATION_SECTIONS.find((s) => s.key === key);
-}
+const RECOMMENDATION_SECTIONS = Object.entries(RECOMMENDATION_SECTION_METADATA).map(
+  ([key, meta]) => ({
+    key,
+    titulo: meta.label,
+    descripcion: meta.description,
+  }),
+);
 
 function slugifyCategory(value: string): string {
   return value
@@ -360,7 +423,7 @@ function buildCountryFilterGroups(
   }));
 }
 
-export type RecommendationSectionKey = keyof RecommendationsData;
+export type RecommendationSectionKey = string;
 
 export function mapRecommendationItemsToCards(items: RecommendationItem[]): {
   cards: RecommendationCard[];
@@ -373,10 +436,3 @@ export function mapRecommendationItemsToCards(items: RecommendationItem[]): {
   };
 }
 
-/** @deprecated Use mapRecommendationItemsToCards */
-function mapTop10Recommendations(items: RecommendationItem[]): {
-  cards: RecommendationCard[];
-  groups: RecommendationGroupTab[];
-} {
-  return mapRecommendationItemsToCards(items);
-}

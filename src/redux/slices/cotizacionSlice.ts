@@ -24,9 +24,13 @@ import {
   parseRulesCotizacionResponse,
 } from "@/utils/cotizacionRules";
 
-export const COTIZACION_HABITACIONES_KEY = "cotizacion_habitaciones";
-export const COTIZACION_ASISTENCIAS_KEY = "cotizacion_asistencias";
-export const COTIZACION_OPCIONALES_KEY = "cotizacion_opcionales";
+export const COTIZACION_HABITACIONES_KEY = "cotizacion_habitaciones:v1";
+export const COTIZACION_ASISTENCIAS_KEY = "cotizacion_asistencias:v1";
+export const COTIZACION_OPCIONALES_KEY = "cotizacion_opcionales:v1";
+
+const LEGACY_COTIZACION_HABITACIONES_KEY = "cotizacion_habitaciones";
+const LEGACY_COTIZACION_ASISTENCIAS_KEY = "cotizacion_asistencias";
+const LEGACY_COTIZACION_OPCIONALES_KEY = "cotizacion_opcionales";
 
 type CotizacionState = {
   bloqueo: TravelProgram | null;
@@ -94,17 +98,41 @@ function ensureOpcionales(state: CotizacionState) {
 
 function syncHabitacionesLocalStorage(habitaciones: HabitacionCotizacion[]) {
   if (typeof window === "undefined") return;
-  localStorage.setItem(COTIZACION_HABITACIONES_KEY, JSON.stringify(habitaciones));
+  try {
+    localStorage.setItem(
+      COTIZACION_HABITACIONES_KEY,
+      JSON.stringify(habitaciones),
+    );
+    localStorage.removeItem(LEGACY_COTIZACION_HABITACIONES_KEY);
+  } catch {
+    // Storage may be unavailable or quota exceeded.
+  }
 }
 
 function syncAsistenciasLocalStorage(asistencias: AsistenciaSeleccionada[]) {
   if (typeof window === "undefined") return;
-  localStorage.setItem(COTIZACION_ASISTENCIAS_KEY, JSON.stringify(asistencias));
+  try {
+    localStorage.setItem(
+      COTIZACION_ASISTENCIAS_KEY,
+      JSON.stringify(asistencias),
+    );
+    localStorage.removeItem(LEGACY_COTIZACION_ASISTENCIAS_KEY);
+  } catch {
+    // Storage may be unavailable or quota exceeded.
+  }
 }
 
 function syncOpcionalesLocalStorage(opcionales: OpcionalSeleccionado[]) {
   if (typeof window === "undefined") return;
-  localStorage.setItem(COTIZACION_OPCIONALES_KEY, JSON.stringify(opcionales));
+  try {
+    localStorage.setItem(
+      COTIZACION_OPCIONALES_KEY,
+      JSON.stringify(opcionales),
+    );
+    localStorage.removeItem(LEGACY_COTIZACION_OPCIONALES_KEY);
+  } catch {
+    // Storage may be unavailable or quota exceeded.
+  }
 }
 
 const initialState: CotizacionState = {
@@ -161,15 +189,13 @@ export const fetchCotizar = createAsyncThunk(
       if (!data.success) {
         return rejectWithValue(data.message || "Ha ocurrido un error");
       }
-
-      // ✅ Nuevo shape: data.data.data[0]
       const raw = data?.data?.data?.[0];
 
       if (!raw) {
         return rejectWithValue("No se encontraron datos del programa");
       }
 
-      // ✅ Remapeamos al shape que espera el componente
+  
       const bloqueo: TravelProgram = {
         departures_data: raw.departures ?? [],
         program_data: {

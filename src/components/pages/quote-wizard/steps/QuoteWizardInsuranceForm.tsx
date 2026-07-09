@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import type { InsuranceProduct, InsuranceProviderData } from "@/interfaces/seguros-cotizacion";
 import { formatInsuranceAddonPrice } from "@/interfaces/seguros-cotizacion";
 import { formatUsdAmount } from "@/utils/cotizacionRules";
@@ -31,6 +32,10 @@ const QuoteWizardInsuranceForm = ({
   onCancel,
   onAdd,
 }: QuoteWizardInsuranceFormProps) => {
+  const selectedAddonIdSet = useMemo(
+    () => new Set(selectedAddonIds),
+    [selectedAddonIds],
+  );
   const selectedProduct =
     selectedProductId != null
       ? selectedProvider.seguros.find((item) => item.id === selectedProductId) ??
@@ -101,7 +106,7 @@ const QuoteWizardInsuranceForm = ({
                     id={inputId}
                     type="checkbox"
                     className="form-check-input"
-                    checked={selectedAddonIds.includes(addon.id)}
+                    checked={selectedAddonIdSet.has(addon.id)}
                     onChange={() => onToggleAddon(addon.id)}
                   />
                   <label htmlFor={inputId} className="form-check-label small">

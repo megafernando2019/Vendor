@@ -3,9 +3,16 @@ type WowInstance = {
   sync: (element?: Element) => void;
 };
 
+type RawWowInstance = WowInstance & {
+  stop?: () => void;
+  doSync?: (element?: Element) => void;
+  scrollCallback?: () => void;
+  scrolled?: boolean;
+};
+
 declare global {
   interface Window {
-    WOW?: new (options?: Record<string, unknown>) => WowInstance;
+    WOW?: new (options?: Record<string, unknown>) => RawWowInstance;
   }
 }
 
@@ -17,17 +24,29 @@ const WOW_OPTIONS = {
   animateClass: "animated",
   offset: 80,
   mobile: true,
-  live: false,
+  live: true,
 };
+
+function wrapWowInstance(raw: RawWowInstance): WowInstance {
+  return {
+    init: () => raw.init(),
+    sync: (element?: Element) => {
+      // WOW's public sync() is a no-op when MutationObserver is supported.
+      raw.doSync?.(element ?? document.documentElement);
+      raw.scrolled = true;
+      raw.scrollCallback?.();
+    },
+  };
+}
 
 function createWowInstance(): WowInstance | null {
   if (typeof window === "undefined" || !window.WOW) {
     return null;
   }
 
-  const instance = new window.WOW(WOW_OPTIONS);
-  instance.init();
-  return instance;
+  const raw = new window.WOW(WOW_OPTIONS);
+  raw.init();
+  return wrapWowInstance(raw);
 }
 
 function loadWowScript(): Promise<void> {
@@ -38,7 +57,7 @@ function loadWowScript(): Promise<void> {
     }
 
     const existingScript = document.querySelector<HTMLScriptElement>(
-      'script[data-wow-loader="true"]'
+      'script[data-wow-loader="true"]',
     );
 
     if (existingScript) {
@@ -55,6 +74,13 @@ function loadWowScript(): Promise<void> {
     script.onerror = () => reject(new Error("Failed to load WOW.js"));
     document.body.appendChild(script);
   });
+}
+
+export function destroyWowInstance() {
+  const raw = wowInstance as RawWowInstance | null;
+  raw?.stop?.();
+  wowInstance = null;
+  wowInitPromise = null;
 }
 
 export function getWowInstance(): Promise<WowInstance | null> {
@@ -78,13 +104,14 @@ export function getWowInstance(): Promise<WowInstance | null> {
   return wowInitPromise;
 }
 
-function syncWow(element?: Element) {
-  if (wowInstance) {
-    wowInstance.sync(element);
-    return;
+export async function refreshWow(options?: {
+  recreate?: boolean;
+  element?: Element;
+}) {
+  if (options?.recreate) {
+    destroyWowInstance();
   }
 
-  getWowInstance().then((instance) => {
-    instance?.sync(element);
-  });
+  const instance = await getWowInstance();
+  instance?.sync(options?.element);
 }

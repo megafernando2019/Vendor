@@ -1,39 +1,30 @@
-import { useEffect, useRef } from "react";
+import { useMemo } from "react";
 import { useAppSelector } from "@/redux/hooks";
 import { usePersistBootstrapped } from "@/hooks/usePersistBootstrapped";
 import {
   hasPersistedSearchSession,
   mapItemSearchToFormFields,
+  type SearchFormFieldValues,
 } from "@/lib/searchFormState";
 
-type UseSyncSearchFormFromStoreOptions = {
+type UseRestoredSearchFormFieldsOptions = {
   defaultDestinoId: string;
   defaultPasajerosId: string;
   getDefaultDateRange: () => Date[];
-  setSelectedDestinoId: (value: string) => void;
-  setSelectedPasajerosId: (value: string) => void;
-  setDateRange: (value: Date[]) => void;
-  setKeyword: (value: string) => void;
 };
 
-export function useSyncSearchFormFromStore({
+export function useRestoredSearchFormFields({
   defaultDestinoId,
   defaultPasajerosId,
   getDefaultDateRange,
-  setSelectedDestinoId,
-  setSelectedPasajerosId,
-  setDateRange,
-  setKeyword,
-}: UseSyncSearchFormFromStoreOptions) {
+}: UseRestoredSearchFormFieldsOptions): SearchFormFieldValues | null {
   const bootstrapped = usePersistBootstrapped();
-  const syncedRef = useRef(false);
   const { itemSearch, pagination, uuid, resultados } = useAppSelector(
     (state) => state.search,
   );
 
-  useEffect(() => {
-    if (!bootstrapped || syncedRef.current) return;
-    syncedRef.current = true;
+  return useMemo(() => {
+    if (!bootstrapped) return null;
 
     const hasSession = hasPersistedSearchSession({
       pagination,
@@ -41,21 +32,13 @@ export function useSyncSearchFormFromStore({
       resultadosCount: resultados.length,
     });
 
-    if (!hasSession) return;
+    if (!hasSession) return null;
 
-    const fields = mapItemSearchToFormFields(itemSearch, {
+    return mapItemSearchToFormFields(itemSearch, {
       destinoId: defaultDestinoId,
       pasajerosId: defaultPasajerosId,
       dateRange: getDefaultDateRange(),
     });
-
-    setSelectedDestinoId(fields.destinoId);
-    setSelectedPasajerosId(fields.pasajerosId);
-    setKeyword(fields.keyword);
-
-    if (fields.dateRange) {
-      setDateRange(fields.dateRange);
-    }
   }, [
     bootstrapped,
     defaultDestinoId,
@@ -64,10 +47,6 @@ export function useSyncSearchFormFromStore({
     itemSearch,
     pagination,
     resultados.length,
-    setDateRange,
-    setKeyword,
-    setSelectedDestinoId,
-    setSelectedPasajerosId,
     uuid,
   ]);
 }

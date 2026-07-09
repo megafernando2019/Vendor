@@ -185,12 +185,17 @@ export function useQuoteWizardAsistencia({
     );
   }, [selectedProvider, selectedProductId]);
 
+  const selectedAddonIdSet = useMemo(
+    () => new Set(selectedAddonIds),
+    [selectedAddonIds],
+  );
+
   const selectedAddons = useMemo(() => {
     if (!selectedProvider) return [];
     return selectedProvider.addons.filter((addon) =>
-      selectedAddonIds.includes(addon.id),
+      selectedAddonIdSet.has(addon.id),
     );
-  }, [selectedProvider, selectedAddonIds]);
+  }, [selectedProvider, selectedAddonIdSet]);
 
   const coberturaLineas = useMemo(() => {
     if (!selectedProduct) return [];

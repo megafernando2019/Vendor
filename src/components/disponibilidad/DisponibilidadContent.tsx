@@ -7,12 +7,14 @@ import FooterThree from "@/components/common/FooterThree";
 import RecommendationTourCard from "@/components/homes/home-three/RecommendationTourCard";
 import RecommendationTourCardSkeleton from "@/components/disponibilidad/RecommendationTourCardSkeleton";
 import TourFilters from "@/components/disponibilidad/TourFilters";
+import PromotionFilters from "@/components/disponibilidad/PromotionFilters";
 import DisponibilidadViewSwitcher from "@/components/disponibilidad/DisponibilidadViewSwitcher";
 import { useDisponibilidadInfiniteScroll } from "@/hooks/useDisponibilidadInfiniteScroll";
 import { useRestoreDisponibilidadSearch } from "@/hooks/useRestoreDisponibilidadSearch";
 import useWow from "@/hooks/useWow";
 import {
   computeDisponibilidadFilterLimits,
+  computeDisponibilidadPromotionOptions,
   createDefaultFilters,
   filterDisponibilidadResults,
   hasActiveDisponibilidadFilters,
@@ -46,6 +48,11 @@ const DisponibilidadContent = () => {
 
   const filterLimits = useMemo(
     () => computeDisponibilidadFilterLimits(resultados),
+    [resultados],
+  );
+
+  const promotionOptions = useMemo(
+    () => computeDisponibilidadPromotionOptions(resultados),
     [resultados],
   );
 
@@ -96,6 +103,10 @@ const DisponibilidadContent = () => {
     setFilters(createDefaultFilters(filterLimits));
   }, [filterLimits]);
 
+  const handlePromotionChange = useCallback((promotions: string[]) => {
+    setFilters((current) => ({ ...current, promotions }));
+  }, []);
+
   const showInitialSkeleton = loading && cards.length === 0 && !filtersActive;
   const showEmptyState =
     !loading && !loadingMore && cards.length === 0 && !error;
@@ -142,6 +153,14 @@ const DisponibilidadContent = () => {
                       filters={filters}
                       onFiltersChange={setFilters}
                       onReset={handleResetFilters}
+                    />
+                  )}
+
+                  {loadedCount > 0 && (
+                    <PromotionFilters
+                      options={promotionOptions}
+                      selected={filters.promotions}
+                      onChange={handlePromotionChange}
                     />
                   )}
 

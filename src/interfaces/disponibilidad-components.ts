@@ -1,8 +1,14 @@
-import type { ResultData } from "@/interfaces/disponibilidad";
+import type { Promotions, ResultData } from "@/interfaces/disponibilidad";
 
 export type DisponibilidadFilterLimits = {
   duracion: { min: number; max: number };
   precio: { min: number; max: number };
+};
+
+export type PromotionFilterOption = {
+  key: string;
+  name: string;
+  count: number;
 };
 
 export type DisponibilidadFilters = {
@@ -11,6 +17,7 @@ export type DisponibilidadFilters = {
   duracionMax: number;
   precioMin: number;
   precioMax: number;
+  promotions: string[];
 };
 
 export type TourFiltersProps = {
@@ -18,6 +25,12 @@ export type TourFiltersProps = {
   filters: DisponibilidadFilters;
   onFiltersChange: (filters: DisponibilidadFilters) => void;
   onReset: () => void;
+};
+
+export type PromotionFiltersProps = {
+  options: PromotionFilterOption[];
+  selected: string[];
+  onChange: (selected: string[]) => void;
 };
 
 export type RangeSliderProps = {
@@ -49,7 +62,73 @@ export function createDefaultFilters(
     duracionMax: limits.duracion.max,
     precioMin: limits.precio.min,
     precioMax: limits.precio.max,
+    promotions: [],
   };
+}
+
+function getPromotionKey(promotion: Promotions): string {
+  const uuid = promotion.uuid?.trim();
+  if (uuid) return uuid;
+
+  const name = promotion.name?.trim();
+  if (!name) return "";
+
+  return name
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+export function computeDisponibilidadPromotionOptions(
+  data: ResultData[],
+): PromotionFilterOption[] {
+  const options = new Map<string, { name: string; count: number }>();
+
+  for (const item of data) {
+    const seenInItem = new Set<string>();
+
+    for (const promotion of item.promotions ?? []) {
+      const key = getPromotionKey(promotion);
+      if (!key || seenInItem.has(key)) continue;
+
+      seenInItem.add(key);
+      const existing = options.get(key);
+
+      if (existing) {
+        existing.count += 1;
+      } else {
+        options.set(key, {
+          name: promotion.name?.trim() || key,
+          count: 1,
+        });
+      }
+    }
+  }
+
+  return Array.from(options.entries())
+    .map(([key, value]) => ({
+      key,
+      name: value.name,
+      count: value.count,
+    }))
+    .sort((a, b) => a.name.localeCompare(b.name, "es"));
+}
+
+function resultMatchesPromotionFilters(
+  item: ResultData,
+  selectedPromotions: string[],
+): boolean {
+  if (selectedPromotions.length === 0) return true;
+
+  const itemPromotionKeys = new Set(
+    (item.promotions ?? [])
+      .map(getPromotionKey)
+      .filter((key): key is string => Boolean(key)),
+  );
+
+  return selectedPromotions.some((key) => itemPromotionKeys.has(key));
 }
 
 export function computeDisponibilidadFilterLimits(
@@ -105,6 +184,10 @@ export function filterDisponibilidadResults(
       return false;
     }
 
+    if (!resultMatchesPromotionFilters(item, filters.promotions)) {
+      return false;
+    }
+
     if (!filters.salida) {
       return true;
     }
@@ -124,6 +207,7 @@ export function hasActiveDisponibilidadFilters(
 ): boolean {
   return (
     filters.salida !== "" ||
+    filters.promotions.length > 0 ||
     filters.duracionMin !== limits.duracion.min ||
     filters.duracionMax !== limits.duracion.max ||
     filters.precioMin !== limits.precio.min ||

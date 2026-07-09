@@ -1,19 +1,36 @@
 "use client";
 
 import { useEffect } from "react";
-import { getWowInstance } from "@/utils/wow";
+import { usePathname } from "next/navigation";
+import { refreshWow } from "@/utils/wow";
+
+const RESYNC_DELAYS_MS = [300, 800, 1500];
 
 export default function useWow() {
-  useEffect(() => {
-    let timeoutId: ReturnType<typeof setTimeout> | undefined;
+  const pathname = usePathname();
 
-    getWowInstance().then((instance) => {
-      instance?.sync();
-      timeoutId = setTimeout(() => instance?.sync(), 600);
-    });
+  useEffect(() => {
+    let cancelled = false;
+    const timeouts: ReturnType<typeof setTimeout>[] = [];
+
+    const runSync = async (recreate = false) => {
+      if (cancelled) return;
+      await refreshWow({ recreate });
+    };
+
+    void runSync(true);
+
+    for (const delay of RESYNC_DELAYS_MS) {
+      timeouts.push(
+        setTimeout(() => {
+          void runSync(false);
+        }, delay),
+      );
+    }
 
     return () => {
-      if (timeoutId) clearTimeout(timeoutId);
+      cancelled = true;
+      timeouts.forEach(clearTimeout);
     };
-  }, []);
+  }, [pathname]);
 }

@@ -171,12 +171,10 @@ function RangeSlider({
   const disabled = max <= min;
 
   return (
-    <div className="d-flex flex-column gap-2 range-slider-wrap w-100 mt-10">
-      <div className="range-slider-header d-flex align-items-center justify-content-between gap-2 w-100">
-        <label className="fw-bold text-morado-custom text-secondary small mb-0 range-slider-label">
-          {label}
-        </label>
-      </div>
+    <fieldset className="d-flex flex-column gap-2 range-slider-wrap w-100 mt-10 border-0 p-0 m-0 min-w-0">
+      <legend className="range-slider-header d-flex align-items-center justify-content-between gap-2 w-100 fw-bold text-morado-custom text-secondary small mb-0 range-slider-label float-none w-auto p-0">
+        {label}
+      </legend>
 
       <div className="position-relative d-flex align-items-center track-wrap w-100">
         <div className="position-absolute start-0 end-0 track-base rounded-pill w-100" />
@@ -216,6 +214,6 @@ function RangeSlider({
     <span className="text-muted">{suffix}</span>
   </span>
 </div>
-    </div>
+    </fieldset>
   );
 }

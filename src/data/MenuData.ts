@@ -29,7 +29,7 @@ const menu_data: MenuItem[] = [
     {
         id: 2,
         title: "Recomendaciones",
-        link: "#",
+        link: "/recomendaciones",
         has_dropdown: false,
     },
     {

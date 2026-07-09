@@ -44,7 +44,7 @@ const HeaderSix = () => {
                         </div>
                         <div className="col-lg-4 col-7">
                            <div className="tg-menu-right-action tg-menu-right-action-3 tg-menu-4-right-action d-flex align-items-center justify-content-end">
-                              <button type="button" onClick={() => setIsSearch(true)} className="search-button search-open-btn">
+                              <button type="button" onClick={() => setIsSearch(true)} className="search-button search-open-btn" aria-label="Abrir búsqueda">
                                  <SearchIcon />
                               </button>
                               <div className="tg-header-cart p-relative d-none d-xl-block">

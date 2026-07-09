@@ -30,6 +30,7 @@ const RecommendationCardPricePill = ({
   const priceTooltipOpen =
     tooltipRequested &&
     tooltipOpenedAtDismissSignalRef.current === dismissSignal;
+  const isSoldOut = item.filteredDepartures.length === 0;
   const [priceTooltipPosition, setPriceTooltipPosition] = useState({
     top: 0,
     left: 0,
@@ -66,6 +67,8 @@ const RecommendationCardPricePill = ({
   }, [detachScrollListeners, updatePriceTooltipPosition]);
 
   const openPriceTooltip = useCallback(() => {
+    if (isSoldOut) return;
+
     if (hidePriceTooltipTimeoutRef.current) {
       clearTimeout(hidePriceTooltipTimeoutRef.current);
       hidePriceTooltipTimeoutRef.current = null;
@@ -75,7 +78,7 @@ const RecommendationCardPricePill = ({
     tooltipOpenedAtDismissSignalRef.current = dismissSignal;
     setTooltipRequested(true);
     attachScrollListeners();
-  }, [attachScrollListeners, dismissSignal, updatePriceTooltipPosition]);
+  }, [attachScrollListeners, dismissSignal, isSoldOut, updatePriceTooltipPosition]);
 
   const closePriceTooltip = useCallback(() => {
     if (hidePriceTooltipTimeoutRef.current) {
@@ -104,17 +107,22 @@ const RecommendationCardPricePill = ({
         ref={pricePillRef}
         className={`recommendation-card__price-pill${
           variant === "inline" ? " recommendation-card__price-pill--inline" : ""
-        }`}
-        onMouseEnter={openPriceTooltip}
-        onMouseLeave={closePriceTooltip}
+        }${isSoldOut ? " recommendation-card__price-pill--sold-out" : ""}`}
+        onMouseEnter={isSoldOut ? undefined : openPriceTooltip}
+        onMouseLeave={isSoldOut ? undefined : closePriceTooltip}
       >
-        <span className="recommendation-card__price-label">Desde</span>
+        {!isSoldOut && (
+          <span className="recommendation-card__price-label">Desde</span>
+        )}
         <strong className="recommendation-card__price-value">
-          {formatPrice(item.price, item.currency)} {item.currency}
+          {isSoldOut
+            ? "Vendido"
+            : `${formatPrice(item.price, item.currency)} ${item.currency}`}
         </strong>
       </div>
 
-      {priceTooltipOpen &&
+      {!isSoldOut &&
+        priceTooltipOpen &&
         typeof document !== "undefined" &&
         createPortal(
           <div

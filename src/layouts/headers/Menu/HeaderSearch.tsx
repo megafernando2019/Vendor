@@ -29,7 +29,7 @@ const HeaderSearch = ({ isSearch, setIsSearch }: MobileSidebarProps) => {
             <div className="col-12">
               <div className="search__wrapper">
                 <div className="search__close">
-                  <button onClick={() => setIsSearch(false)} type="button" className="search-close-btn">
+                  <button onClick={() => setIsSearch(false)} type="button" className="search-close-btn" aria-label="Cerrar búsqueda">
                     <CloseIcon />
                   </button>
                 </div>
@@ -44,7 +44,7 @@ const HeaderSearch = ({ isSearch, setIsSearch }: MobileSidebarProps) => {
                         className="search-input-field"
                       />
                       <span className="search-focus-border"></span>
-                      <button type="submit">
+                      <button type="submit" aria-label="Buscar">
                         <SearchIcon />
                       </button>
                     </div>

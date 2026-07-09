@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useRef, useState, type Dispatch, type SetStateAction } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, type Dispatch, type SetStateAction } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { useAppDispatch } from "@/redux/hooks";
@@ -8,7 +8,7 @@ import { fetchBusqueda, setItemSearch } from "@/redux/slices/searchSlice";
 import { resetView } from "@/redux/slices/viewSlice";
 import { useDelayedPanelItems } from "@/hooks/useDelayedPanelItems";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
-import { useSyncSearchFormFromStore } from "@/hooks/useSyncSearchFormFromStore";
+import { useRestoredSearchFormFields } from "@/hooks/useSyncSearchFormFromStore";
 import { useIsClient } from "@/hooks/useIsClient";
 import {
   computePickerAnchorStyle,
@@ -62,6 +62,24 @@ export const useSearchFormItems = ({
   const [pickerAnchorStyle, setPickerAnchorStyle] = useState<PickerAnchorStyle | null>(
     null,
   );
+  const [storeFieldsSynced, setStoreFieldsSynced] = useState(false);
+
+  const restoredSearchFields = useRestoredSearchFormFields({
+    defaultDestinoId: DEFAULT_DESTINO_ID,
+    defaultPasajerosId: DEFAULT_PASAJEROS_ID,
+    getDefaultDateRange,
+  });
+
+  if (restoredSearchFields && !storeFieldsSynced) {
+    setStoreFieldsSynced(true);
+    setSelectedDestinoId(restoredSearchFields.destinoId);
+    setSelectedPasajerosId(restoredSearchFields.pasajerosId);
+    setKeyword(restoredSearchFields.keyword);
+
+    if (restoredSearchFields.dateRange) {
+      setDateRange(restoredSearchFields.dateRange);
+    }
+  }
 
   const syncPickerDialog = (open: boolean) => {
     if (!isResponsivePickerUI || !mounted) return;
@@ -155,16 +173,6 @@ export const useSearchFormItems = ({
       closeAllMobileDialogs();
     }
   }
-
-  useSyncSearchFormFromStore({
-    defaultDestinoId: DEFAULT_DESTINO_ID,
-    defaultPasajerosId: DEFAULT_PASAJEROS_ID,
-    getDefaultDateRange,
-    setSelectedDestinoId,
-    setSelectedPasajerosId,
-    setDateRange,
-    setKeyword,
-  });
 
   const closeKeywordSheet = (saveValue = true) => {
     if (saveValue && keywordSheetInputRef.current) {
@@ -275,7 +283,7 @@ export const useSearchFormItems = ({
   const mobilePickerOpen =
     isResponsivePickerUI && mounted && (location || passengers);
 
-  const updatePickerAnchor = () => {
+  const updatePickerAnchor = useCallback(() => {
     if (!isResponsivePickerUI || (!location && !passengers)) {
       setPickerAnchorStyle(null);
       return;
@@ -289,7 +297,7 @@ export const useSearchFormItems = ({
         preferAbove: isMobileSearchUI,
       }),
     );
-  };
+  }, [isResponsivePickerUI, isMobileSearchUI, location, passengers]);
 
   useLayoutEffect(() => {
     if (!isResponsivePickerUI || (!location && !passengers)) {
@@ -312,6 +320,7 @@ export const useSearchFormItems = ({
     passengers,
     formFieldsVisible,
     searchOpen,
+    updatePickerAnchor,
   ]);
 
   useEffect(() => {
@@ -326,7 +335,7 @@ export const useSearchFormItems = ({
       window.removeEventListener("resize", handleReposition);
       window.removeEventListener("scroll", handleReposition, true);
     };
-  }, [mobilePickerOpen, location, passengers, isResponsivePickerUI]);
+  }, [mobilePickerOpen, location, passengers, isResponsivePickerUI, updatePickerAnchor]);
 
   useEffect(() => {
     const shouldLockScroll =

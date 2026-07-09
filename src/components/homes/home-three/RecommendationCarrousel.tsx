@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useMemo, useRef, useCallback } from "react";
+import { useMemo, useRef, useCallback, useEffect } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Navigation } from "swiper/modules";
 import type { Swiper as SwiperType } from "swiper";
@@ -14,6 +14,7 @@ import {
 } from "@/utils/recommendations";
 import { useRecommendationsQuery } from "@/hooks/useRecommendationsQuery";
 import { useSearchDisponibilidad } from "@/hooks/useSearchDisponibilidad";
+import { refreshWow } from "@/utils/wow";
 import RecommendationTourCard from "./RecommendationTourCard";
 
 const MAX_SLIDES_PER_VIEW = 4;
@@ -109,6 +110,17 @@ const RecommendationCarrousel = ({
 
     swiper.autoplay.start();
   }, []);
+
+  useEffect(() => {
+    if (loading) return;
+
+    void refreshWow();
+    const timeoutId = setTimeout(() => {
+      void refreshWow();
+    }, 400);
+
+    return () => clearTimeout(timeoutId);
+  }, [loading, cards.length, sectionKey]);
 
   return (
     <div className={`recommendation-carrousel-root pt-50 ${backgroundImage}`}>

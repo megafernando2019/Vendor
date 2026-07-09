@@ -54,12 +54,7 @@ export interface RecommendationItem {
   dbl_adt_suplements?: number;
 }
 
-export interface RecommendationsData {
-  top_10: RecommendationItem[];
-  exatravel: RecommendationItem[];
-  cruceros: RecommendationItem[];
-  ofertas: RecommendationItem[];
-}
+export type RecommendationsData = Record<string, RecommendationItem[]>;
 
 export interface DepartureData {
   month: string; 

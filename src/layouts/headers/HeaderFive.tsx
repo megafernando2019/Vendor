@@ -42,7 +42,7 @@ const HeaderFive = () => {
                               </div>
                            </nav>
                            <div className="tg-menu-right-action tg-menu-right-action-3 d-flex align-items-center">
-                              <button type="button" onClick={() => setIsSearch(true)} className="search-button search-open-btn">
+                              <button type="button" onClick={() => setIsSearch(true)} className="search-button search-open-btn" aria-label="Abrir búsqueda">
                                  <SearchIcon />
                               </button>
                               <div className="tg-header-cart p-relative d-none d-xl-block">

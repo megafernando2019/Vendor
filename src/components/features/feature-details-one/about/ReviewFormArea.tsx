@@ -42,7 +42,7 @@ const ReviewFormArea = () => {
             <ul>
                {review_data.map((item) => (
                   <li key={item.id}>
-                     <label>{item.title}</label>
+                     <span className="d-block mb-1">{item.title}</span>
                      <div className="rating-icon">
                         {item.rating.map((rat, i) => (
                            <i key={i} className={rat}></i>

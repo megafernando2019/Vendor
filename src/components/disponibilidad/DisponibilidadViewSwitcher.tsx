@@ -3,13 +3,19 @@
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { changeView } from "@/redux/slices/viewSlice";
 
-export default function DisponibilidadViewSwitcher() {
+export default function DisponibilidadViewSwitcher({
+  embedded = false,
+}: {
+  embedded?: boolean;
+}) {
   const dispatch = useAppDispatch();
   const view = useAppSelector((state) => state.view.view);
 
   return (
     <div
-      className="disponibilidad-view-switcher d-flex align-items-center justify-content-end gap-3 flex-wrap mb-3"
+      className={`disponibilidad-view-switcher d-flex align-items-center justify-content-end gap-2 gap-sm-3 flex-wrap${
+        embedded ? " disponibilidad-view-switcher--embedded mb-0" : " mb-3"
+      }`}
       role="group"
       aria-label="Cambiar vista de resultados"
     >

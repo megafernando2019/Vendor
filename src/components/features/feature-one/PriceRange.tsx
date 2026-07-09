@@ -19,8 +19,8 @@ const PriceRange = ({ STEP, MIN, MAX, values, handleChanges }: IProps) => {
             onChange={(vals) => handleChanges(vals)}
             renderTrack={({ props, children }) => (
                <div
+                  key="track"
                   {...props}
-                  key='track'
                   style={{
                      ...props.style,
                      height: '8px',
@@ -39,8 +39,8 @@ const PriceRange = ({ STEP, MIN, MAX, values, handleChanges }: IProps) => {
             )}
             renderThumb={({ props, index }) => (
                <div
-                  {...props}
                   key={`thumb-${index}`}
+                  {...props}
                   className="ui-input"
                   style={{
                      ...props.style,
