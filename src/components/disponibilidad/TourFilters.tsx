@@ -124,30 +124,7 @@ export default function TourFilters({
         pct={pct}
       />
 
-      <div className="d-flex justify-content-end w-100">
-        <button
-          type="button"
-          onClick={onReset}
-          className="btn btn-icon-circle rounded-circle d-flex align-items-center justify-content-center btn-purple-subtle"
-          title="Limpiar filtros"
-          aria-label="Limpiar filtros"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="#7c3aed"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden
-          >
-            <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
-          </svg>
-        </button>
-      </div>
+
     </div>
   );
 }

@@ -213,6 +213,7 @@ const RecomendacionesContent = () => {
                             >
                               <RecommendationTourCard
                                 item={item}
+                                compareOptions={cards}
                                 onAddToWishlist={handleAddToWishlist}
                                 linkMode="quote-wizard"
                                 layout={isListView ? "list" : "grid"}

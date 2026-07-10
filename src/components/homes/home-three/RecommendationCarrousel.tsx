@@ -200,6 +200,7 @@ const RecommendationCarrousel = ({
                     <SwiperSlide key={item.id} className="swiper-slide">
                       <RecommendationTourCard
                         item={item}
+                        compareOptions={cards}
                         ratingLabel={ratingLabel}
                         onAddToWishlist={handleAddToWishlist}
                         onActionMenuOpenChange={handleActionMenuOpenChange}

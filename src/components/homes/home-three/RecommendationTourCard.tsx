@@ -11,6 +11,7 @@ import RecommendationTourCardDeparturesTable from "@/components/homes/home-three
 
 type RecommendationTourCardProps = {
   item: RecommendationCard;
+  compareOptions?: RecommendationCard[];
   rating?: number;
   ratingLabel?: string;
   onAddToWishlist: (item: RecommendationCard) => void;
@@ -23,6 +24,7 @@ type RecommendationTourCardProps = {
 
 const RecommendationTourCard = ({
   item,
+  compareOptions,
   rating = 5,
   ratingLabel = "calificaciones",
   onAddToWishlist,
@@ -53,13 +55,14 @@ const RecommendationTourCard = ({
     const initTooltip = async () => {
       const { Tooltip } = await import("bootstrap");
       const element = titleLinkRef.current;
-      if (!element) return;
+      const title = item.title?.trim();
+      if (!element || !title) return;
 
       tooltip = new Tooltip(element, {
         placement: "top",
         trigger: "hover focus",
         container: "body",
-        title: item.title,
+        title,
       });
     };
 
@@ -116,6 +119,7 @@ const RecommendationTourCard = ({
               <div className="recommendation-card__list-media-wrap position-relative flex-grow-1">
                 <RecommendationCardMedia
                   item={item}
+                  compareOptions={compareOptions}
                   layout="list"
                   onAddToWishlist={onAddToWishlist}
                   onActionMenuOpenChange={onActionMenuOpenChange}
@@ -165,6 +169,7 @@ const RecommendationTourCard = ({
     <article className="recommendation-card">
       <RecommendationCardMedia
         item={item}
+        compareOptions={compareOptions}
         layout="grid"
         onAddToWishlist={onAddToWishlist}
         onActionMenuOpenChange={onActionMenuOpenChange}

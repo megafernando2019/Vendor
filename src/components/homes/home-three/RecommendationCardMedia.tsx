@@ -11,6 +11,7 @@ import RecommendationCardPricePill from "./RecommendationCardPricePill";
 
 type RecommendationCardMediaProps = {
   item: RecommendationCard;
+  compareOptions?: RecommendationCard[];
   layout?: "grid" | "list";
   onAddToWishlist: (item: RecommendationCard) => void;
   onActionMenuOpenChange?: (open: boolean) => void;
@@ -21,6 +22,7 @@ type RecommendationCardMediaProps = {
 
 const RecommendationCardMedia = ({
   item,
+  compareOptions,
   layout = "grid",
   onAddToWishlist,
   onActionMenuOpenChange,
@@ -91,6 +93,7 @@ const RecommendationCardMedia = ({
 
       <RecommendationCardActionMenu
         item={item}
+        compareOptions={compareOptions}
         onAddToWishlist={onAddToWishlist}
         onActionMenuOpenChange={onActionMenuOpenChange}
         onBeforeMenuToggle={(nextOpen) => {

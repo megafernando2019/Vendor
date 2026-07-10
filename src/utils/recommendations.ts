@@ -35,6 +35,8 @@ export type RecommendationCard = {
   dblAdtTax?: number;
   dblAdtSupplements?: number;
   filteredDepartures: RecommendationDeparture[];
+  countries: string[];
+  cities: string[];
 };
 
 const EMPTY_RECOMMENDATIONS: RecommendationsData = {};
@@ -192,6 +194,36 @@ export function normalizeCountries(countries: unknown): string[] {
   return [];
 }
 
+export function normalizeCities(cities: unknown): string[] {
+  if (Array.isArray(cities)) {
+    return cities.flatMap((city) => {
+      if (typeof city === "string") {
+        return city
+          .split(/[,;]|\s-\s/)
+          .map((part) => part.trim())
+          .filter(Boolean);
+      }
+
+      if (city && typeof city === "object" && "name" in city) {
+        const name = String((city as { name?: string }).name ?? "").trim();
+        return name ? [name] : [];
+      }
+
+      const value = String(city).trim();
+      return value ? [value] : [];
+    });
+  }
+
+  if (typeof cities === "string" && cities.trim()) {
+    return cities
+      .split(/[,;]|\s-\s/)
+      .map((part) => part.trim())
+      .filter(Boolean);
+  }
+
+  return [];
+}
+
 function normalizePromotions(value: unknown): Promotions[] {
   if (!Array.isArray(value)) return [];
 
@@ -345,6 +377,7 @@ function mapRecommendationToCard(
   index = 0
 ): RecommendationCard {
   const countries = normalizeCountries(item.countries);
+  const cities = normalizeCities(item.cities);
   const primaryCountry = countries[0];
   const hasDiscount = item.total_upto > item.total_from;
   const promotions = normalizePromotions(item.promotions);
@@ -370,6 +403,8 @@ function mapRecommendationToCard(
     has_promotions: hasPromotions,
     promotions,
     filteredDepartures: item.filtered_departures ?? [],
+    countries,
+    cities,
     ...priceBreakdown,
   };
 }

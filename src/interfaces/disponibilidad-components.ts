@@ -1,4 +1,5 @@
 import type { Promotions, ResultData } from "@/interfaces/disponibilidad";
+import type { BusquedaPromotionSummary } from "@/utils/normalizeBusqueda";
 
 export type DisponibilidadFilterLimits = {
   duracion: { min: number; max: number };
@@ -113,6 +114,28 @@ export function computeDisponibilidadPromotionOptions(
       name: value.name,
       count: value.count,
     }))
+    .sort((a, b) => a.name.localeCompare(b.name, "es"));
+}
+
+export function mapPromotionsSummaryToOptions(
+  summary: BusquedaPromotionSummary[],
+): PromotionFilterOption[] {
+  return summary
+    .map((entry) => {
+      const key = getPromotionKey({
+        uuid: entry.uuid,
+        name: entry.name,
+      });
+
+      if (!key) return null;
+
+      return {
+        key,
+        name: entry.name.trim() || key,
+        count: entry.count,
+      };
+    })
+    .filter((option): option is PromotionFilterOption => option != null)
     .sort((a, b) => a.name.localeCompare(b.name, "es"));
 }
 

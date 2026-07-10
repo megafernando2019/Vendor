@@ -4,6 +4,10 @@ import type { RehydrateAction } from "redux-persist";
 import type { ResultData } from "@/interfaces/disponibilidad";
 import { prepareItemSearch, applySearchDefaults } from "@/lib/searchValidation";
 import { DEFAULT_PASSENGERS } from "@/interfaces/search";
+import {
+  normalizeBusquedaPayload,
+  type BusquedaPromotionSummary,
+} from "@/utils/normalizeBusqueda";
 
 export const SEARCH_PAGE_LIMIT = 12;
 
@@ -29,6 +33,7 @@ export type PaginationMeta = {
 type SearchState = {
   itemSearch: ItemSearch;
   resultados: ResultData[];
+  promotionsSummary: BusquedaPromotionSummary[];
   pagination: PaginationMeta | null;
   uuid: string | null;
   loading: boolean;
@@ -42,6 +47,7 @@ type RehydratedSearchPayload = {
 
 export type BusquedaSuccessPayload = {
   data: ResultData[];
+  promotionsSummary: BusquedaPromotionSummary[];
   page: number;
   limit: number;
   total: number;
@@ -61,6 +67,7 @@ const initialState: SearchState = {
     limit: SEARCH_PAGE_LIMIT,
   }),
   resultados: [],
+  promotionsSummary: [],
   pagination: null,
   uuid: null,
   loading: false,
@@ -92,7 +99,7 @@ export const fetchBusqueda = createAsyncThunk<
     const data = (await res.json()) as {
       success?: boolean;
       message?: string;
-      data?: ResultData[];
+      data?: unknown;
       page: number;
       limit: number;
       total: number;
@@ -109,8 +116,13 @@ export const fetchBusqueda = createAsyncThunk<
       return rejectWithValue(msg);
     }
 
+    const { documents, promotions_summary } = normalizeBusquedaPayload(
+      data.data,
+    );
+
     return {
-      data: data.data ?? [],
+      data: documents,
+      promotionsSummary: promotions_summary,
       page: data.page ?? 0,
       limit: data.limit ?? 0,
       total: data.total ?? 0,
@@ -159,6 +171,7 @@ const searchSlice = createSlice({
     resetSearch(state) {
       state.itemSearch = initialState.itemSearch;
       state.resultados = [];
+      state.promotionsSummary = [];
       state.pagination = null;
       state.uuid = null;
       state.error = null;
@@ -186,6 +199,7 @@ const searchSlice = createSlice({
         const requestedPage = action.meta.arg.page;
         if (requestedPage <= 1) {
           state.resultados = action.payload.data;
+          state.promotionsSummary = action.payload.promotionsSummary;
         } else {
           state.resultados = [...state.resultados, ...action.payload.data];
         }
@@ -198,7 +212,8 @@ const searchSlice = createSlice({
           from: Number(action.payload.from) || 0,
           to: Number(action.payload.to) || 0,
         };
-        const firstUuid = action.payload.data[0]?.uuid;
+        const first = action.payload.data[0];
+        const firstUuid = first?.uuid || first?.clv;
         if (firstUuid) {
           state.uuid = firstUuid;
         }
@@ -229,6 +244,9 @@ const searchSlice = createSlice({
           }
           if (Array.isArray(persistedSearch.resultados)) {
             state.resultados = persistedSearch.resultados;
+          }
+          if (Array.isArray(persistedSearch.promotionsSummary)) {
+            state.promotionsSummary = persistedSearch.promotionsSummary;
           }
           if (persistedSearch.pagination !== undefined) {
             state.pagination = persistedSearch.pagination;

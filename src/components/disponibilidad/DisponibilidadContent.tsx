@@ -14,10 +14,10 @@ import { useRestoreDisponibilidadSearch } from "@/hooks/useRestoreDisponibilidad
 import useWow from "@/hooks/useWow";
 import {
   computeDisponibilidadFilterLimits,
-  computeDisponibilidadPromotionOptions,
   createDefaultFilters,
   filterDisponibilidadResults,
   hasActiveDisponibilidadFilters,
+  mapPromotionsSummaryToOptions,
   type DisponibilidadFilters,
 } from "@/interfaces/disponibilidad-components";
 import { formatSearchCriteriaSummary } from "@/lib/searchLabels";
@@ -36,7 +36,7 @@ const DisponibilidadContent = () => {
   const { sentinelRef, hasMore, loadingMore } =
     useDisponibilidadInfiniteScroll();
 
-  const { itemSearch, resultados, pagination, uuid, loading, error } =
+  const { itemSearch, resultados, promotionsSummary, pagination, uuid, loading, error } =
     useAppSelector((state) => state.search);
   const viewMode = useAppSelector((state) => state.view.view);
   const isListView = viewMode === "lista";
@@ -52,8 +52,8 @@ const DisponibilidadContent = () => {
   );
 
   const promotionOptions = useMemo(
-    () => computeDisponibilidadPromotionOptions(resultados),
-    [resultados],
+    () => mapPromotionsSummaryToOptions(promotionsSummary),
+    [promotionsSummary],
   );
 
   const [filters, setFilters] = useState<DisponibilidadFilters>(() =>
@@ -128,7 +128,7 @@ const DisponibilidadContent = () => {
           <div className="container py-4 py-md-5">
             <div className="row g-3 disponibilidad-layout-row">
             <div className="col-md-3">
-              <div className="card border-0 shadow h-100 disponibilidad-sidebar-panel">
+              <div className="card border-0 h-100 disponibilidad-sidebar-panel">
                 <div className="card-body p-3 p-md-4">
                   <div className="tg-location-section-title text-left mb-30">
                     <h5
@@ -156,7 +156,7 @@ const DisponibilidadContent = () => {
                     />
                   )}
 
-                  {loadedCount > 0 && (
+                  {(loadedCount > 0 || promotionOptions.length > 0) && (
                     <PromotionFilters
                       options={promotionOptions}
                       selected={filters.promotions}
@@ -274,6 +274,7 @@ const DisponibilidadContent = () => {
                         >
                           <RecommendationTourCard
                             item={item}
+                            compareOptions={cards}
                             onAddToWishlist={handleAddToWishlist}
                             linkMode="quote-wizard"
                             layout={isListView ? "list" : "grid"}

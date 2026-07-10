@@ -12,11 +12,20 @@ export interface ResultData {
     departures_count: number;
     has_promotions: boolean;
     promotions: Promotions[];
-    countries: string[];
+    countries: string | string[];
     filtered_departures: any[];
     currencies: string[];
     multimedias: string[];
 }
+
+export type BusquedaDataEnvelope = {
+  documents: ResultData[];
+  promotions_summary?: Array<{
+    uuid: string;
+    name: string;
+    count: number;
+  }>;
+};
 
 export interface RecommendationDeparture {
   uid: string;
@@ -40,6 +49,7 @@ export interface RecommendationItem {
   days: number;
   nights: number;
   countries: string | string[];
+  cities?: string | string[] | Array<{ name?: string }>;
   total_from: number;
   total_upto: number;
   has_promotions: boolean;

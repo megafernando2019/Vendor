@@ -1,16 +1,23 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { toast } from "react-toastify";
 import type { RecommendationCard } from "@/utils/recommendations";
+import { createProgramList } from "@/utils/programLists";
 import {
   ActionMenuIcon,
   BookmarkIcon,
-  FavoriteIcon,
   ShareIcon,
+  CompareIcon
 } from "./recommendationCardMediaShared";
+import RecommendationShareModal from "./RecommendationShareModal";
+import RecommendationAddToListModal from "./RecommendationAddToListModal";
+import RecommendationCreateListModal from "./RecommendationCreateListModal";
+import RecommendationCompareModal from "./RecommendationCompareModal";
 
 type RecommendationCardActionMenuProps = {
   item: RecommendationCard;
+  compareOptions?: RecommendationCard[];
   onAddToWishlist: (item: RecommendationCard) => void;
   onActionMenuOpenChange?: (open: boolean) => void;
   onMenuOpenChange?: (open: boolean) => void;
@@ -19,6 +26,7 @@ type RecommendationCardActionMenuProps = {
 
 const RecommendationCardActionMenu = ({
   item,
+  compareOptions,
   onAddToWishlist,
   onActionMenuOpenChange,
   onMenuOpenChange,
@@ -26,6 +34,10 @@ const RecommendationCardActionMenu = ({
 }: RecommendationCardActionMenuProps) => {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [shareModalOpen, setShareModalOpen] = useState(false);
+  const [addToListModalOpen, setAddToListModalOpen] = useState(false);
+  const [createListModalOpen, setCreateListModalOpen] = useState(false);
+  const [compareModalOpen, setCompareModalOpen] = useState(false);
 
   const updateMenuOpen = useCallback(
     (next: boolean) => {
@@ -53,6 +65,14 @@ const RecommendationCardActionMenu = ({
 
     const handleEscape = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
+        if (
+          addToListModalOpen ||
+          createListModalOpen ||
+          compareModalOpen ||
+          shareModalOpen
+        ) {
+          return;
+        }
         updateMenuOpenRef.current(false);
       }
     };
@@ -64,36 +84,46 @@ const RecommendationCardActionMenu = ({
       document.removeEventListener("mousedown", handleClickOutside);
       document.removeEventListener("keydown", handleEscape);
     };
-  }, [menuOpen]);
+  }, [
+    addToListModalOpen,
+    compareModalOpen,
+    createListModalOpen,
+    menuOpen,
+    shareModalOpen,
+  ]);
 
-  const handleFavorite = () => {
+  const handleCompare = () => {
     updateMenuOpen(false);
-    onAddToWishlist(item);
+    setCompareModalOpen(true);
   };
 
   const handleAddToList = () => {
     updateMenuOpen(false);
+    setAddToListModalOpen(true);
+  };
+
+  const handleAddToFavorites = () => {
+    setAddToListModalOpen(false);
     onAddToWishlist(item);
   };
 
-  const handleShare = async () => {
+  const handleCreateList = () => {
+    setAddToListModalOpen(false);
+    setCreateListModalOpen(true);
+  };
+
+  const handleSaveNewList = (name: string) => {
+    const programId = item.id ?? item.clv;
+    createProgramList(name, programId);
+    setCreateListModalOpen(false);
+    toast.success(`Lista "${name}" creada y programa agregado.`, {
+      position: "top-right",
+    });
+  };
+
+  const handleShare = () => {
     updateMenuOpen(false);
-
-    const url = `${window.location.origin}/tour-details?mt=${item.clv}`;
-
-    try {
-      if (navigator.share) {
-        await navigator.share({
-          title: item.title,
-          url,
-        });
-        return;
-      }
-
-      await navigator.clipboard.writeText(url);
-    } catch {
-      // Usuario canceló o el navegador bloqueó la acción.
-    }
+    setShareModalOpen(true);
   };
 
   const openMenu = () => {
@@ -102,64 +132,98 @@ const RecommendationCardActionMenu = ({
   };
 
   return (
-    <div
-      ref={dropdownRef}
-      className={`recommendation-card__action-dropdown${
-        menuOpen ? " recommendation-card__action-dropdown--open" : ""
-      }`}
-    >
-      {menuOpen ? (
-        <ul
-          className="dropdown-menu dropdown-menu-end recommendation-card__action-menu recommendation-card__action-menu--icons recommendation-card__action-menu--inline show"
-          role="menu"
-        >
-          <li role="none">
-            <button
-              type="button"
-              role="menuitem"
-              className="recommendation-card__action-icon-btn"
-              aria-label="Favorito"
-              onClick={handleFavorite}
-            >
-              <FavoriteIcon />
-            </button>
-          </li>
-          <li role="none">
-            <button
-              type="button"
-              role="menuitem"
-              className="recommendation-card__action-icon-btn"
-              aria-label="Agregar a lista"
-              onClick={handleAddToList}
-            >
-              <BookmarkIcon />
-            </button>
-          </li>
-          <li role="none">
-            <button
-              type="button"
-              role="menuitem"
-              className="recommendation-card__action-icon-btn"
-              aria-label="Compartir"
-              onClick={handleShare}
-            >
-              <ShareIcon />
-            </button>
-          </li>
-        </ul>
-      ) : (
-        <button
-          type="button"
-          className="recommendation-card__action"
-          aria-label="Más opciones"
-          aria-expanded={false}
-          aria-haspopup="menu"
-          onClick={openMenu}
-        >
-          <ActionMenuIcon />
-        </button>
-      )}
-    </div>
+    <>
+      <div
+        ref={dropdownRef}
+        className={`recommendation-card__action-dropdown${
+          menuOpen ? " recommendation-card__action-dropdown--open" : ""
+        }`}
+      >
+        {menuOpen ? (
+          <ul
+            className="dropdown-menu dropdown-menu-end recommendation-card__action-menu recommendation-card__action-menu--icons recommendation-card__action-menu--inline show"
+            role="menu"
+          >
+            <li role="none">
+              <button
+                type="button"
+                role="menuitem"
+                className="recommendation-card__action-icon-btn"
+                aria-label="Agregar a lista"
+                onClick={handleAddToList}
+              >
+                <BookmarkIcon />
+              </button>
+            </li>
+
+            <li role="none">
+              <button
+                type="button"
+                role="menuitem"
+                className="recommendation-card__action-icon-btn"
+                aria-label="Compartir"
+                onClick={handleShare}
+              >
+                <ShareIcon />
+              </button>
+            </li>
+            <li role="none">
+              <button
+                type="button"
+                role="menuitem"
+                className="recommendation-card__action-icon-btn"
+                aria-label="Comparar"
+                onClick={handleCompare}
+              >
+                <CompareIcon />
+              </button>
+            </li>
+          </ul>
+        ) : (
+          <button
+            type="button"
+            className="recommendation-card__action"
+            aria-label="Más opciones"
+            aria-expanded={false}
+            aria-haspopup="menu"
+            onClick={openMenu}
+          >
+            <ActionMenuIcon />
+          </button>
+        )}
+      </div>
+
+      {addToListModalOpen ? (
+        <RecommendationAddToListModal
+          item={item}
+          onClose={() => setAddToListModalOpen(false)}
+          onAddToFavorites={handleAddToFavorites}
+          onCreateList={handleCreateList}
+        />
+      ) : null}
+
+      {shareModalOpen ? (
+        <RecommendationShareModal
+          item={item}
+          onClose={() => setShareModalOpen(false)}
+        />
+      ) : null}
+
+      {createListModalOpen ? (
+        <RecommendationCreateListModal
+          onClose={() => setCreateListModalOpen(false)}
+          onSave={handleSaveNewList}
+        />
+      ) : null}
+
+      {compareModalOpen ? (
+        <RecommendationCompareModal
+          item={item}
+          compareOptions={compareOptions}
+          onClose={() => setCompareModalOpen(false)}
+        />
+      ) : null}
+    </>
   );
 };
 
