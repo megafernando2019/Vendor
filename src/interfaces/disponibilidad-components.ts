@@ -154,6 +154,16 @@ function resultMatchesPromotionFilters(
   return selectedPromotions.some((key) => itemPromotionKeys.has(key));
 }
 
+export function filterResultsByPromotions(
+  data: ResultData[],
+  selectedPromotions: string[],
+): ResultData[] {
+  if (selectedPromotions.length === 0) return data;
+  return data.filter((item) =>
+    resultMatchesPromotionFilters(item, selectedPromotions),
+  );
+}
+
 export function computeDisponibilidadFilterLimits(
   data: ResultData[],
 ): DisponibilidadFilterLimits {

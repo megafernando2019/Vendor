@@ -30,7 +30,7 @@ export type DeleteProgramInListPayload = {
 export type ShowListsPayload = {
   user_id: number;
   name_list?: string;
-  type_view: 0 | 1;
+  type_view: 0 | 1 | 2;
 };
 
 export type AgencyListProgram = {

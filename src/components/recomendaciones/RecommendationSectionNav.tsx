@@ -6,23 +6,23 @@ type RecommendationSectionNavProps = {
   sections: RecommendationSectionConfig[];
   activeSection: string;
   onSectionChange: (sectionKey: string) => void;
+  emptyMessage?: string;
+  ariaLabel?: string;
 };
 
 const RecommendationSectionNav = ({
   sections,
   activeSection,
   onSectionChange,
+  emptyMessage = "No hay categorías de recomendaciones disponibles.",
+  ariaLabel = "Categorías de recomendaciones",
 }: RecommendationSectionNavProps) => {
   if (sections.length === 0) {
-    return (
-      <p className="text-muted small mb-0">
-        No hay categorías de recomendaciones disponibles.
-      </p>
-    );
+    return <p className="text-muted small mb-0">{emptyMessage}</p>;
   }
 
   return (
-    <nav aria-label="Categorías de recomendaciones">
+    <nav aria-label={ariaLabel}>
       <ul className="list-unstyled mb-0 recommendation-section-nav">
         {sections.map((section) => {
           const isActive = section.key === activeSection;

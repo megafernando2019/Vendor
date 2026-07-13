@@ -88,7 +88,8 @@ export async function POST(req: Request) {
         );
       case 404:
         return NextResponse.json(
-          { success: false, message: apiMessage("Recurso no encontrado.") },
+          { success: false, 
+            message: apiMessage("Recurso no encontrado.") },
           { status: 404 }
         );
       case 406:

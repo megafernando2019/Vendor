@@ -61,9 +61,9 @@ export async function POST(req: Request) {
       );
     }
 
-    if (rawTypeView !== 0 && rawTypeView !== 1) {
+    if (rawTypeView !== 0 && rawTypeView !== 1 && rawTypeView !== 2) {
       return NextResponse.json(
-        { success: false, message: "type_view debe ser 0 o 1" },
+        { success: false, message: "type_view debe ser 0, 1 o 2" },
         { status: 422 },
       );
     }
@@ -71,7 +71,7 @@ export async function POST(req: Request) {
     const payload: ShowListsPayload = {
       user_id: userId,
       name_list: nameList,
-      type_view: rawTypeView,
+      type_view: rawTypeView as ShowListsPayload["type_view"],
     };
 
     const res = await showLists(token, payload);
@@ -85,7 +85,7 @@ export async function POST(req: Request) {
           {
             success: true,
             message: res.message,
-            data: Array.isArray(res.data) ? res.data : [],
+            data: res.data ?? null,
           },
           { status: 200 },
         );
