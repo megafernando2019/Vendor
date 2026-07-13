@@ -116,7 +116,7 @@ const RecommendationCardPricePill = ({
         )}
         <strong className="recommendation-card__price-value">
           {isSoldOut
-            ? "Vendido"
+            ? "Sold Out"
             : `${formatPrice(item.price, item.currency)} ${item.currency}`}
         </strong>
       </div>

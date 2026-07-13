@@ -102,13 +102,11 @@ export default function LoginForm({ redirectTo }: LoginFormProps) {  const route
             <div className="d-flex align-items-center justify-content-between">
               <div className="review-checkbox d-flex align-items-center mb-25">
                 <input className="tg-checkbox" type="checkbox" id="australia" />
-                <label htmlFor="australia" className="tg-label">Remember me</label>
+                <label htmlFor="australia" className="tg-label">Recordarme</label>
               </div>
-              <div className="tg-login-navigate mb-25">
-                <Link href="/register">Register Now</Link>
-              </div>
+              
             </div>
-            <button type="submit" className="tg-btn w-100">Sign In</button>
+            <button type="submit" className="tg-btn w-100">Entrar</button>
           </div>
         </div>
       </form>
