@@ -1,6 +1,6 @@
 "use client"
 import { getTrackBackground, Range } from "react-range";
-// prop type 
+
 type IProps = {
    STEP: number;
    MIN: number;
@@ -8,6 +8,19 @@ type IProps = {
    values: number[];
    handleChanges: (val: number[]) => void
 }
+
+function splitRangeProps<T extends object>(props: T, fallbackKey: string) {
+   const { key: propsKey, ...rest } = props as T & {
+      key?: string | number;
+   };
+   const key =
+      typeof propsKey === "string" || typeof propsKey === "number"
+         ? propsKey
+         : fallbackKey;
+
+   return { key, rest };
+}
+
 const PriceRange = ({ STEP, MIN, MAX, values, handleChanges }: IProps) => {
    return (
       <>
@@ -17,10 +30,12 @@ const PriceRange = ({ STEP, MIN, MAX, values, handleChanges }: IProps) => {
             max={MAX}
             values={values}
             onChange={(vals) => handleChanges(vals)}
-            renderTrack={({ props, children }) => (
+            renderTrack={({ props, children }) => {
+               const { key, rest } = splitRangeProps(props, "track");
+               return (
                <div
-                  key="track"
-                  {...props}
+                  key={key}
+                  {...rest}
                   style={{
                      ...props.style,
                      height: '8px',
@@ -36,11 +51,14 @@ const PriceRange = ({ STEP, MIN, MAX, values, handleChanges }: IProps) => {
                >
                   {children}
                </div>
-            )}
-            renderThumb={({ props, index }) => (
+               );
+            }}
+            renderThumb={({ props, index }) => {
+               const { key, rest } = splitRangeProps(props, `thumb-${index}`);
+               return (
                <div
-                  key={`thumb-${index}`}
-                  {...props}
+                  key={key}
+                  {...rest}
                   className="ui-input"
                   style={{
                      ...props.style,
@@ -53,7 +71,8 @@ const PriceRange = ({ STEP, MIN, MAX, values, handleChanges }: IProps) => {
                      boxShadow: "0px 8px 25px 0px rgba(0, 0, 0, 0.3)"
                   }}
                />
-            )}
+               );
+            }}
          />
       </>
    );

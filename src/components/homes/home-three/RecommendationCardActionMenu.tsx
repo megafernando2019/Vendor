@@ -112,7 +112,24 @@ const RecommendationCardActionMenu = ({
     setCreateListModalOpen(true);
   };
 
-  const handleSaveNewList = (name: string) => {
+  const handleSaveNewList = async (name: string) => {
+    const res = await fetch("/api/list/createListAgency", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name }),
+    });
+
+    let data: { success?: boolean; message?: string } | null = null;
+    try {
+      data = (await res.json()) as { success?: boolean; message?: string };
+    } catch {
+      data = null;
+    }
+
+    if (!res.ok || !data?.success) {
+      throw new Error(data?.message || "No se pudo crear la lista.");
+    }
+
     const programId = item.id ?? item.clv;
     createProgramList(name, programId);
     setCreateListModalOpen(false);

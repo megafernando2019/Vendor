@@ -13,7 +13,7 @@ import {
   type RecommendationSectionKey,
 } from "@/utils/recommendations";
 import { useRecommendationsQuery } from "@/hooks/useRecommendationsQuery";
-import { useSearchDisponibilidad } from "@/hooks/useSearchDisponibilidad";
+import { useStartCotizacionFromRecommendation } from "@/hooks/useStartCotizacionFromRecommendation";
 import { refreshWow } from "@/utils/wow";
 import RecommendationTourCard from "./RecommendationTourCard";
 
@@ -52,7 +52,8 @@ const RecommendationCarrousel = ({
 }: RecommendationCarrouselProps) => {
   const dispatch = useDispatch();
   const swiperRef = useRef<SwiperType | null>(null);
-  const { searchByKeyword, searching } = useSearchDisponibilidad();
+  const { startCotizacion, loading: cotizando } =
+    useStartCotizacionFromRecommendation();
   const recommendationsQuery = useRecommendationsQuery();
 
   const { cards, loading, error } = useMemo(() => {
@@ -110,6 +111,15 @@ const RecommendationCarrousel = ({
 
     swiper.autoplay.start();
   }, []);
+
+  const handleCardNavigate = useCallback(
+    (clv: string) => {
+      const item = cards.find((card) => card.clv === clv);
+      if (!item) return;
+      void startCotizacion(item);
+    },
+    [cards, startCotizacion],
+  );
 
   useEffect(() => {
     if (loading) return;
@@ -205,8 +215,8 @@ const RecommendationCarrousel = ({
                         onAddToWishlist={handleAddToWishlist}
                         onActionMenuOpenChange={handleActionMenuOpenChange}
                         linkMode="search-disponibilidad"
-                        onSearchNavigate={searchByKeyword}
-                        searchNavigateDisabled={searching}
+                        onSearchNavigate={handleCardNavigate}
+                        searchNavigateDisabled={cotizando}
                       />
                     </SwiperSlide>
                   ))}

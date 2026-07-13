@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Select, { type StylesConfig } from "react-select";
 import type {
   DisponibilidadFilters,
@@ -12,7 +13,13 @@ const pct = (val: number, min: number, max: number) =>
   max === min ? 0 : ((val - min) / (max - min)) * 100;
 
 const formatDuracion = (v: number) => String(v);
-const formatPrecio = (v: number) => `$${v.toLocaleString("es-MX")}`;
+
+function formatPrecio(v: number) {
+  const rounded = Math.round(v);
+  const digits = String(Math.abs(rounded));
+  const withSeparators = digits.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  return `$${rounded < 0 ? "-" : ""}${withSeparators}`;
+}
 
 const salidasOptions = [
   { value: "CDMX", label: "Ciudad de México" },
@@ -48,19 +55,39 @@ export default function TourFilters({
   limits,
   filters,
   onFiltersChange,
-  onReset,
 }: TourFiltersProps) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const updateFilters = (patch: Partial<DisponibilidadFilters>) => {
     onFiltersChange({ ...filters, ...patch });
   };
 
-  const durStep = limits.duracion.max - limits.duracion.min <= 1 ? 1 : 1;
+  const durStep = 1;
   const prcStep =
     limits.precio.max - limits.precio.min <= 100 ? 1 : 100;
 
+  if (!mounted) {
+    return (
+      <div
+        className="tour-filters w-100 d-flex flex-column align-items-stretch gap-3"
+        aria-hidden
+      >
+        <div className="w-100">
+          <div className="salida-select-wrap w-100">
+            <div className="tour-filters__select-placeholder">Salida desde</div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="tour-filters w-100 d-flex flex-column align-items-stretch gap-3">
-      <div className="w-100" suppressHydrationWarning>
+      <div className="w-100">
         <div className="salida-select-wrap w-100">
           <Select<{ value: string; label: string }>
             instanceId="salida-select"
@@ -123,8 +150,6 @@ export default function TourFilters({
         format={formatPrecio}
         pct={pct}
       />
-
-
     </div>
   );
 }
@@ -184,13 +209,13 @@ function RangeSlider({
           style={{ zIndex: 4 }}
         />
       </div>
-<div className="d-flex align-items-center justify-content-start gap-2 w-100">
-  <span className="text-secondary small mb-0 range-slider-values text-start d-block w-100">
-    <span className="fw-semibold">{format(valueMin)}</span> a{" "}
-    <span className="fw-semibold">{format(valueMax)}</span>{" "}
-    <span className="text-muted">{suffix}</span>
-  </span>
-</div>
+      <div className="d-flex align-items-center justify-content-start gap-2 w-100">
+        <span className="text-secondary small mb-0 range-slider-values text-start d-block w-100">
+          <span className="fw-semibold">{format(valueMin)}</span> a{" "}
+          <span className="fw-semibold">{format(valueMax)}</span>{" "}
+          <span className="text-muted">{suffix}</span>
+        </span>
+      </div>
     </fieldset>
   );
 }

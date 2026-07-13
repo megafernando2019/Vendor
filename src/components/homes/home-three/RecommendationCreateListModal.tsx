@@ -5,7 +5,7 @@ import { createPortal } from "react-dom";
 
 type RecommendationCreateListModalProps = {
   onClose: () => void;
-  onSave: (name: string) => void;
+  onSave: (name: string) => void | Promise<void>;
 };
 
 const RecommendationCreateListModal = ({
@@ -18,6 +18,7 @@ const RecommendationCreateListModal = ({
 
   const [name, setName] = useState("");
   const [error, setError] = useState("");
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     const element = modalRef.current;
@@ -50,7 +51,7 @@ const RecommendationCreateListModal = ({
     };
   }, []);
 
-  const handleSave = () => {
+  const handleSave = async () => {
     const trimmedName = name.trim();
 
     if (!trimmedName) {
@@ -58,7 +59,22 @@ const RecommendationCreateListModal = ({
       return;
     }
 
-    onSave(trimmedName);
+    if (saving) return;
+
+    setSaving(true);
+    setError("");
+
+    try {
+      await onSave(trimmedName);
+    } catch (err) {
+      const message =
+        err instanceof Error && err.message
+          ? err.message
+          : "No se pudo crear la lista.";
+      setError(message);
+    } finally {
+      setSaving(false);
+    }
   };
 
   return createPortal(
@@ -83,6 +99,7 @@ const RecommendationCreateListModal = ({
               className="btn-close"
               data-bs-dismiss="modal"
               aria-label="Cerrar"
+              disabled={saving}
             />
           </div>
 
@@ -99,6 +116,7 @@ const RecommendationCreateListModal = ({
               className="form-control recommendation-create-list-modal__input"
               placeholder="Top Clientes"
               value={name}
+              disabled={saving}
               onChange={(event) => {
                 setName(event.target.value);
                 if (error) setError("");
@@ -106,7 +124,7 @@ const RecommendationCreateListModal = ({
               onKeyDown={(event) => {
                 if (event.key === "Enter") {
                   event.preventDefault();
-                  handleSave();
+                  void handleSave();
                 }
               }}
             />
@@ -121,9 +139,12 @@ const RecommendationCreateListModal = ({
             <button
               type="button"
               className="btn btn-purple recommendation-create-list-modal__save"
-              onClick={handleSave}
+              onClick={() => {
+                void handleSave();
+              }}
+              disabled={saving}
             >
-              Guardar
+              {saving ? "Guardando..." : "Guardar"}
             </button>
           </div>
         </div>

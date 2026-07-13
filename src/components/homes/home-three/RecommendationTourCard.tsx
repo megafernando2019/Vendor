@@ -5,7 +5,6 @@ import Link from "next/link";
 import type { RecommendationCard } from "@/utils/recommendations";
 import StarRating from "@/components/common/StarRating";
 import RecommendationCardMedia from "@/components/homes/home-three/RecommendationCardMedia";
-import RecommendationCardPricePill from "@/components/homes/home-three/RecommendationCardPricePill";
 import RecommendationTourCardMeta from "@/components/homes/home-three/RecommendationTourCardMeta";
 import RecommendationTourCardDeparturesTable from "@/components/homes/home-three/RecommendationTourCardDeparturesTable";
 
@@ -112,28 +111,22 @@ const RecommendationTourCard = ({
 
   if (isListLayout) {
     return (
-      <article className="card recommendation-card recommendation-card--list border-0 h-100">
-        <div className="row g-0 flex-grow-1 align-items-stretch">
+      <article className="card recommendation-card recommendation-card--list border-0">
+        <div className="row g-0 align-items-stretch recommendation-card__list-row">
           <div className="col-12 col-lg-3 recommendation-card__list-col recommendation-card__list-col--media">
-            <div className="recommendation-card__list-media-stack d-flex flex-column h-100">
-              <div className="recommendation-card__list-media-wrap position-relative flex-grow-1">
-                <RecommendationCardMedia
-                  item={item}
-                  compareOptions={compareOptions}
-                  layout="list"
-                  onAddToWishlist={onAddToWishlist}
-                  onActionMenuOpenChange={onActionMenuOpenChange}
-                  detailHref={detailHref}
-                  onCardNavigate={
-                    usesSearchFlow ? handleSearchNavigate : undefined
-                  }
-                  cardNavigateDisabled={searchNavigateDisabled}
-                />
-              </div>
-
-              <div className="recommendation-card__list-price d-flex justify-content-center p-3">
-                <RecommendationCardPricePill item={item} variant="inline" />
-              </div>
+            <div className="recommendation-card__list-media-wrap position-relative h-100">
+              <RecommendationCardMedia
+                item={item}
+                compareOptions={compareOptions}
+                layout="list"
+                onAddToWishlist={onAddToWishlist}
+                onActionMenuOpenChange={onActionMenuOpenChange}
+                detailHref={detailHref}
+                onCardNavigate={
+                  usesSearchFlow ? handleSearchNavigate : undefined
+                }
+                cardNavigateDisabled={searchNavigateDisabled}
+              />
             </div>
           </div>
 

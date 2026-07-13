@@ -20,6 +20,18 @@ type RecommendationCardMediaProps = {
   cardNavigateDisabled?: boolean;
 };
 
+function splitOverlayTitle(title: string) {
+  const words = title.trim().split(/\s+/).filter(Boolean);
+  if (words.length <= 1) {
+    return { lead: "", main: title.trim() };
+  }
+
+  return {
+    lead: words.slice(0, -1).join(" "),
+    main: words[words.length - 1] ?? "",
+  };
+}
+
 const RecommendationCardMedia = ({
   item,
   compareOptions,
@@ -33,6 +45,7 @@ const RecommendationCardMedia = ({
   const [priceTooltipDismissSignal, setPriceTooltipDismissSignal] = useState(0);
   const promotionBadges = item.promotions ?? [];
   const isListLayout = layout === "list";
+  const overlayTitle = splitOverlayTitle(item.title);
 
   const imageContent = item.thumb ? (
     <TourThumbImage
@@ -63,8 +76,6 @@ const RecommendationCardMedia = ({
           className="recommendation-card__image-link bg-image hover-zoom border-0 p-0 w-100 h-100"
           aria-label={`Buscar disponibilidad de ${item.title}`}
         >
-
-
           {imageContent}
         </button>
       ) : (
@@ -77,6 +88,19 @@ const RecommendationCardMedia = ({
           {imageContent}
         </Link>
       )}
+
+      {isListLayout && overlayTitle.main ? (
+        <div className="recommendation-card__media-title" aria-hidden="true">
+          {overlayTitle.lead ? (
+            <span className="recommendation-card__media-title-lead">
+              {overlayTitle.lead}
+            </span>
+          ) : null}
+          <span className="recommendation-card__media-title-main">
+            {overlayTitle.main}
+          </span>
+        </div>
+      ) : null}
 
       {(promotionBadges.length > 0 || item.promotions) && (
         <div className="recommendation-card__badges" aria-label="Promociones">
@@ -103,16 +127,14 @@ const RecommendationCardMedia = ({
         }}
       />
 
-      {!isListLayout && (
-        <RecommendationCardPricePill
-          item={item}
-          dismissSignal={priceTooltipDismissSignal}
-        />
-      )}
+      <RecommendationCardPricePill
+        item={item}
+        dismissSignal={priceTooltipDismissSignal}
+      />
 
-      {!isListLayout && (
+      {!isListLayout ? (
         <span className="recommendation-card__media-curve" aria-hidden="true" />
-      )}
+      ) : null}
     </div>
   );
 };

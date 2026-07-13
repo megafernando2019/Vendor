@@ -4,13 +4,9 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { toast } from "react-toastify";
 import type { RecommendationCard } from "@/utils/recommendations";
-import {
-  addProgramToList,
-  formatProgramCount,
-  readProgramLists,
-  type ProgramList,
-} from "@/utils/programLists";
-import { BookmarkIcon, FavoriteIcon } from "./recommendationCardMediaShared";
+import { formatProgramCount } from "@/utils/programLists";
+import type { AgencyListItem } from "@/services/list";
+import { BookmarkIcon } from "./recommendationCardMediaShared";
 
 type RecommendationAddToListModalProps = {
   item: RecommendationCard;
@@ -39,6 +35,47 @@ const CreateListGridIcon = () => (
   </svg>
 );
 
+function normalizeAgencyLists(data: unknown): AgencyListItem[] {
+  if (!Array.isArray(data)) return [];
+
+  return data
+    .map((entry) => {
+      if (!entry || typeof entry !== "object") return null;
+      const record = entry as Record<string, unknown>;
+      const name = typeof record.name === "string" ? record.name.trim() : "";
+      if (!name) return null;
+
+      const programs = Array.isArray(record.programs)
+        ? record.programs
+            .map((program) => {
+              if (!program || typeof program !== "object") return null;
+              const item = program as Record<string, unknown>;
+              const mt = item.mt != null ? String(item.mt) : "";
+              if (!mt) return null;
+              return {
+                mt,
+                name: item.name != null ? String(item.name) : "",
+                order: item.order != null ? String(item.order) : "",
+              };
+            })
+            .filter(
+              (program): program is AgencyListItem["programs"][number] =>
+                program != null,
+            )
+        : [];
+
+      const totalElements = Number(record.total_elements);
+      return {
+        name,
+        total_elements: Number.isFinite(totalElements)
+          ? totalElements
+          : programs.length,
+        programs,
+      };
+    })
+    .filter((entry): entry is AgencyListItem => entry != null);
+}
+
 const RecommendationAddToListModal = ({
   item,
   onClose,
@@ -49,8 +86,13 @@ const RecommendationAddToListModal = ({
   const onCloseRef = useRef(onClose);
   onCloseRef.current = onClose;
 
-  const [lists, setLists] = useState<ProgramList[]>(() => readProgramLists());
-  const programId = useMemo(() => item.id ?? item.clv, [item.clv, item.id]);
+  const [lists, setLists] = useState<AgencyListItem[]>([]);
+  const [loadingLists, setLoadingLists] = useState(true);
+  const [listsError, setListsError] = useState("");
+  const programId = useMemo(
+    () => String(item.id ?? item.clv ?? ""),
+    [item.clv, item.id],
+  );
 
   useEffect(() => {
     const element = modalRef.current;
@@ -83,11 +125,76 @@ const RecommendationAddToListModal = ({
     };
   }, []);
 
-  const handleAddToList = (listId: string) => {
-    const list = lists.find((entry) => entry.id === listId);
+  useEffect(() => {
+    let cancelled = false;
+
+    const loadLists = async () => {
+      setLoadingLists(true);
+      setListsError("");
+
+      try {
+        const res = await fetch("/api/list/showLists", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name_list: "",
+            type_view: 1,
+          }),
+        });
+
+        let data: {
+          success?: boolean;
+          message?: string;
+          data?: unknown;
+        } | null = null;
+
+        try {
+          data = (await res.json()) as {
+            success?: boolean;
+            message?: string;
+            data?: unknown;
+          };
+        } catch {
+          data = null;
+        }
+
+        if (cancelled) return;
+
+        if (!res.ok || !data?.success) {
+          setLists([]);
+          setListsError(data?.message || "No se pudieron cargar las listas.");
+          return;
+        }
+
+        setLists(normalizeAgencyLists(data.data));
+      } catch {
+        if (!cancelled) {
+          setLists([]);
+          setListsError("No se pudieron cargar las listas.");
+        }
+      } finally {
+        if (!cancelled) {
+          setLoadingLists(false);
+        }
+      }
+    };
+
+    void loadLists();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const handleAddToList = (listName: string) => {
+    const list = lists.find((entry) => entry.name === listName);
     if (!list) return;
 
-    if (list.programIds.includes(programId)) {
+    const alreadyInList = list.programs.some(
+      (program) => program.mt === programId,
+    );
+
+    if (alreadyInList) {
       toast.info(`"${item.title}" ya está en ${list.name}.`, {
         position: "top-right",
       });
@@ -95,14 +202,27 @@ const RecommendationAddToListModal = ({
       return;
     }
 
-    const nextLists = addProgramToList(listId, programId);
-    setLists(nextLists);
-
-    const updatedList = nextLists.find((entry) => entry.id === listId);
-    toast.success(
-      `"${item.title}" se agregó a ${updatedList?.name ?? "la lista"}.`,
-      { position: "top-right" },
+    setLists((current) =>
+      current.map((entry) => {
+        if (entry.name !== listName) return entry;
+        return {
+          ...entry,
+          total_elements: entry.total_elements + 1,
+          programs: [
+            ...entry.programs,
+            {
+              mt: programId,
+              name: item.title,
+              order: String(entry.programs.length + 1),
+            },
+          ],
+        };
+      }),
     );
+
+    toast.success(`"${item.title}" se agregó a ${list.name}.`, {
+      position: "top-right",
+    });
     onClose();
   };
 
@@ -142,35 +262,42 @@ const RecommendationAddToListModal = ({
           </div>
 
           <div className="modal-body recommendation-add-to-list-modal__body">
-            <button
-              type="button"
-              className="recommendation-add-to-list-modal__favorites"
-              onClick={onAddToFavorites}
-            >
-              <span>Agregar a Favoritos</span>
-              <span className="recommendation-add-to-list-modal__favorites-icon">
-                <FavoriteIcon />
-              </span>
-            </button>
-
             <p className="recommendation-add-to-list-modal__section-label">
               Agregar a Lista
             </p>
 
+            {loadingLists ? (
+              <p className="text-muted mb-3" aria-live="polite">
+                Cargando listas...
+              </p>
+            ) : null}
+
+            {listsError ? (
+              <p className="text-danger mb-3" role="alert">
+                {listsError}
+              </p>
+            ) : null}
+
+            {!loadingLists && !listsError && lists.length === 0 ? (
+              <p className="text-muted mb-3">
+                Aún no tienes listas. Crea una nueva para empezar.
+              </p>
+            ) : null}
+
             <ul className="recommendation-add-to-list-modal__lists">
               {lists.map((list) => (
-                <li key={list.id}>
+                <li key={list.name}>
                   <button
                     type="button"
                     className="recommendation-add-to-list-modal__list-item"
-                    onClick={() => handleAddToList(list.id)}
+                    onClick={() => handleAddToList(list.name)}
                   >
                     <span className="recommendation-add-to-list-modal__list-copy">
                       <span className="recommendation-add-to-list-modal__list-name">
                         {list.name}
                       </span>
                       <span className="recommendation-add-to-list-modal__list-count">
-                        {formatProgramCount(list.programIds.length)}
+                        {formatProgramCount(list.total_elements)}
                       </span>
                     </span>
                     <span className="recommendation-add-to-list-modal__list-icon">

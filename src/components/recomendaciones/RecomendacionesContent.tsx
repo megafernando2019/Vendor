@@ -5,11 +5,9 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { addToWishlist } from "@/redux/features/wishlistSlice";
 import { useAppSelector } from "@/redux/hooks";
-import BookingFormsSticky from "@/components/common/banner-form/BookingFormsSticky";
-import FooterThree from "@/components/common/FooterThree";
+import CatalogPageLayout from "@/components/common/catalog/CatalogPageLayout";
 import RecommendationTourCardSkeleton from "@/components/disponibilidad/RecommendationTourCardSkeleton";
 import RecommendationTourCard from "@/components/homes/home-three/RecommendationTourCard";
-import RecommendationPageToolbar from "@/components/recomendaciones/RecommendationPageToolbar";
 import RecommendationSectionNav from "@/components/recomendaciones/RecommendationSectionNav";
 import { useRecommendationsQuery } from "@/hooks/useRecommendationsQuery";
 import { useSearchDisponibilidad } from "@/hooks/useSearchDisponibilidad";
@@ -102,139 +100,89 @@ const RecomendacionesContent = () => {
   const showViewSwitcher = !loading && cards.length > 0;
 
   return (
-    <>
-      <main>
-        <div className="tg-booking-sticky-scope tg-disponibilidad-sticky-scope">
-          <BookingFormsSticky />
+    <CatalogPageLayout
+      subtitle="Conoce nuestras"
+      title="Recomendaciones"
+      toolbarLabel={activeSectionMeta?.label ?? "Recomendaciones"}
+      showViewSwitcher={showViewSwitcher}
+      sidebarTitle="Recomendaciones"
+      resultsAreaClassName="tg-recomendaciones-area"
+      sidebar={
+        loading ? (
+          <div
+            className="recommendation-section-nav-skeleton mt-4"
+            aria-hidden="true"
+          />
+        ) : (
+          <div className="mt-4">
+            <RecommendationSectionNav
+              sections={sections}
+              activeSection={activeSection}
+              onSectionChange={handleSectionChange}
+            />
+          </div>
+        )
+      }
+    >
+      {error && (
+        <div className="alert alert-danger mb-20" role="alert">
+          {error}
+        </div>
+      )}
 
-          <div className="container py-4 py-md-5">
-            <div className="row g-3 align-items-center tg-recomendaciones-layout__header">
-              <div className="col-md-3">
-                <div className="recommendation-page-header">
-                  <p className="recommendation-page-header__subtitle text-hortencia text-morado-custom mb-1">
-                    Conoce nuestras
-                  </p>
-                  <h1 className="recommendation-page-header__title mb-0">
-                    Recomendaciones
-                  </h1>
-                </div>
-              </div>
-
-              <div className="col-md-9">
-                <RecommendationPageToolbar
-                  activeSectionLabel={
-                    activeSectionMeta?.label ?? "Recomendaciones"
-                  }
-                  showViewSwitcher={showViewSwitcher}
+      {loading && (
+        <>
+          <p className="mb-30 text-muted" aria-live="polite">
+            Cargando recomendaciones...
+          </p>
+          <div
+            className={`row g-4 disponibilidad-gallery${
+              isListView ? " disponibilidad-gallery--list" : ""
+            }`}
+            aria-busy="true"
+          >
+            {Array.from({ length: SKELETON_COUNT }, (_, index) => (
+              <div key={`skeleton-${index}`} className={gridColumnClass}>
+                <RecommendationTourCardSkeleton
+                  layout={isListView ? "list" : "grid"}
                 />
               </div>
-            </div>
-
-            <div className="row g-4 disponibilidad-layout-row tg-recomendaciones-layout">
-              <div className="col-md-3">
-                <div className="card border-0 shadow recommendation-sidebar-card recommendation-section-nav-panel h-100">
-                  <div className="card-body p-4 p-md-4">
-                    <h2 className="recommendation-sidebar-card__title mb-0">
-                      Recomendaciones
-                    </h2>
-
-                    {loading ? (
-                      <div
-                        className="recommendation-section-nav-skeleton mt-4"
-                        aria-hidden="true"
-                      />
-                    ) : (
-                      <div className="mt-4">
-                        <RecommendationSectionNav
-                          sections={sections}
-                          activeSection={activeSection}
-                          onSectionChange={handleSectionChange}
-                        />
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              <div className="col-md-9">
-                <div className="card border-0 shadow h-100 disponibilidad-results-panel">
-                  <div className="card-body p-3 p-md-4">
-                    <section className="tg-recomendaciones-area">
-                      {error && (
-                        <div className="alert alert-danger mb-20" role="alert">
-                          {error}
-                        </div>
-                      )}
-
-                      {loading && (
-                        <>
-                          <p className="mb-30 text-muted" aria-live="polite">
-                            Cargando recomendaciones...
-                          </p>
-                          <div
-                            className={`row g-4 disponibilidad-gallery${
-                              isListView ? " disponibilidad-gallery--list" : ""
-                            }`}
-                            aria-busy="true"
-                          >
-                            {Array.from(
-                              { length: SKELETON_COUNT },
-                              (_, index) => (
-                                <div
-                                  key={`skeleton-${index}`}
-                                  className={gridColumnClass}
-                                >
-                                  <RecommendationTourCardSkeleton
-                                    layout={isListView ? "list" : "grid"}
-                                  />
-                                </div>
-                              ),
-                            )}
-                          </div>
-                        </>
-                      )}
-
-                      {!loading && !error && cards.length === 0 && (
-                        <p className="text-muted mb-0">
-                          No hay tours en esta categoría por el momento.
-                        </p>
-                      )}
-
-                      {!loading && !error && cards.length > 0 && (
-                        <div
-                          className={`row g-4 disponibilidad-gallery${
-                            isListView ? " disponibilidad-gallery--list" : ""
-                          }`}
-                        >
-                          {cards.map((item) => (
-                            <div
-                              key={item.id}
-                              className={`${gridColumnClass} disponibilidad-gallery__item--loaded`}
-                            >
-                              <RecommendationTourCard
-                                item={item}
-                                compareOptions={cards}
-                                onAddToWishlist={handleAddToWishlist}
-                                linkMode="quote-wizard"
-                                layout={isListView ? "list" : "grid"}
-                                onSearchNavigate={searchByKeyword}
-                                searchNavigateDisabled={searching}
-                              />
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </section>
-                  </div>
-                </div>
-              </div>
-            </div>
+            ))}
           </div>
-        </div>
-      </main>
+        </>
+      )}
 
-      <FooterThree />
-    </>
+      {!loading && !error && cards.length === 0 && (
+        <p className="text-muted mb-0">
+          No hay tours en esta categoría por el momento.
+        </p>
+      )}
+
+      {!loading && !error && cards.length > 0 && (
+        <div
+          className={`row g-4 disponibilidad-gallery${
+            isListView ? " disponibilidad-gallery--list" : ""
+          }`}
+        >
+          {cards.map((item) => (
+            <div
+              key={item.id}
+              className={`${gridColumnClass} disponibilidad-gallery__item--loaded`}
+            >
+              <RecommendationTourCard
+                item={item}
+                compareOptions={cards}
+                onAddToWishlist={handleAddToWishlist}
+                linkMode="quote-wizard"
+                layout={isListView ? "list" : "grid"}
+                onSearchNavigate={searchByKeyword}
+                searchNavigateDisabled={searching}
+              />
+            </div>
+          ))}
+        </div>
+      )}
+    </CatalogPageLayout>
   );
 };
 
