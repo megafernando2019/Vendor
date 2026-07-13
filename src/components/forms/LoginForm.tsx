@@ -56,7 +56,7 @@ export default function LoginForm({ redirectTo }: LoginFormProps) {  const route
       const message =
         typeof data?.message === "string" && data.message.trim().length > 0
           ? data.message
-          : `Error ${res.status} ${res.message}`;
+          : `Error ${res.status}`;
 
       if (res.ok && data?.success) {
         toast.success("Bienvenido");
