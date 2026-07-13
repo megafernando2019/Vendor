@@ -6,9 +6,27 @@ import {
 } from "@/services/list";
 import { getApiMessage } from "@/utils/apiMessage";
 
+function getUserIdFromUserCookie(raw: string | undefined): number | null {
+  if (!raw) return null;
+
+  try {
+    const user = JSON.parse(raw) as Record<string, unknown>;
+    const userId = Number(user.id);
+
+    if (!Number.isFinite(userId) || userId < 0) {
+      return null;
+    }
+
+    return userId;
+  } catch {
+    return null;
+  }
+}
+
 export async function POST(req: Request) {
   const cookieStore = await cookies();
   const token = cookieStore.get("token")?.value;
+  const userRaw = cookieStore.get("user")?.value;
 
   if (!token) {
     return NextResponse.json(
@@ -19,8 +37,10 @@ export async function POST(req: Request) {
 
   try {
     const body = (await req.json()) as Partial<AddProgramToListPayload>;
-
-    const userId = Number(body.user_id);
+    const userIdFromCookie = getUserIdFromUserCookie(userRaw);
+    const userId =
+      userIdFromCookie ??
+      (body.user_id != null ? Number(body.user_id) : NaN);
     const listName =
       typeof body.list_name === "string" ? body.list_name.trim() : "";
     const program: Partial<AddProgramToListPayload["program"]> =
@@ -36,7 +56,10 @@ export async function POST(req: Request) {
 
     if (!Number.isFinite(userId) || userId < 0) {
       return NextResponse.json(
-        { success: false, message: "user_id inválido" },
+        {
+          success: false,
+          message: "No se pudo obtener user_id de la sesión",
+        },
         { status: 422 },
       );
     }

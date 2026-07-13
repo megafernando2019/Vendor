@@ -79,7 +79,6 @@ function normalizeAgencyLists(data: unknown): AgencyListItem[] {
 const RecommendationAddToListModal = ({
   item,
   onClose,
-  onAddToFavorites,
   onCreateList,
 }: RecommendationAddToListModalProps) => {
   const modalRef = useRef<HTMLDivElement>(null);
@@ -89,8 +88,10 @@ const RecommendationAddToListModal = ({
   const [lists, setLists] = useState<AgencyListItem[]>([]);
   const [loadingLists, setLoadingLists] = useState(true);
   const [listsError, setListsError] = useState("");
+  const [addingListName, setAddingListName] = useState<string | null>(null);
+
   const programId = useMemo(
-    () => String(item.id ?? item.clv ?? ""),
+    () => String(item.clv ?? item.id ?? ""),
     [item.clv, item.id],
   );
 
@@ -186,44 +187,85 @@ const RecommendationAddToListModal = ({
     };
   }, []);
 
-  const handleAddToList = (listName: string) => {
+  const isProgramInList = (list: AgencyListItem) =>
+    list.programs.some((program) => String(program.mt) === programId);
+
+  const handleAddToList = async (listName: string) => {
     const list = lists.find((entry) => entry.name === listName);
-    if (!list) return;
+    if (!list || addingListName) return;
 
-    const alreadyInList = list.programs.some(
-      (program) => program.mt === programId,
-    );
-
-    if (alreadyInList) {
+    if (isProgramInList(list)) {
       toast.info(`"${item.title}" ya está en ${list.name}.`, {
         position: "top-right",
       });
-      onClose();
       return;
     }
 
-    setLists((current) =>
-      current.map((entry) => {
-        if (entry.name !== listName) return entry;
-        return {
-          ...entry,
-          total_elements: entry.total_elements + 1,
-          programs: [
-            ...entry.programs,
-            {
-              mt: programId,
-              name: item.title,
-              order: String(entry.programs.length + 1),
-            },
-          ],
-        };
-      }),
-    );
+    setAddingListName(listName);
 
-    toast.success(`"${item.title}" se agregó a ${list.name}.`, {
-      position: "top-right",
-    });
-    onClose();
+    try {
+      const res = await fetch("/api/list/addProgramToList", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          list_name: listName,
+          program: {
+            mt: programId,
+            name: item.title,
+            order: "",
+          },
+        }),
+      });
+
+      let data: { success?: boolean; message?: string } | null = null;
+      try {
+        data = (await res.json()) as {
+          success?: boolean;
+          message?: string;
+        };
+      } catch {
+        data = null;
+      }
+
+      if (!res.ok || !data?.success) {
+        toast.error(data?.message || "No se pudo agregar el programa.", {
+          position: "top-right",
+        });
+        return;
+      }
+
+      setLists((current) =>
+        current.map((entry) => {
+          if (entry.name !== listName) return entry;
+          if (entry.programs.some((program) => String(program.mt) === programId)) {
+            return entry;
+          }
+
+          return {
+            ...entry,
+            total_elements: entry.total_elements + 1,
+            programs: [
+              ...entry.programs,
+              {
+                mt: programId,
+                name: item.title,
+                order: "",
+              },
+            ],
+          };
+        }),
+      );
+
+      toast.success(`"${item.title}" se agregó a ${list.name}.`, {
+        position: "top-right",
+      });
+    } catch {
+      toast.error("No se pudo agregar el programa.", {
+        position: "top-right",
+      });
+    } finally {
+      setAddingListName(null);
+    }
   };
 
   return createPortal(
@@ -285,33 +327,53 @@ const RecommendationAddToListModal = ({
             ) : null}
 
             <ul className="recommendation-add-to-list-modal__lists">
-              {lists.map((list) => (
-                <li key={list.name}>
-                  <button
-                    type="button"
-                    className="recommendation-add-to-list-modal__list-item"
-                    onClick={() => handleAddToList(list.name)}
-                  >
-                    <span className="recommendation-add-to-list-modal__list-copy">
-                      <span className="recommendation-add-to-list-modal__list-name">
-                        {list.name}
+              {lists.map((list) => {
+                const isActive = isProgramInList(list);
+                const isAdding = addingListName === list.name;
+
+                return (
+                  <li key={list.name}>
+                    <button
+                      type="button"
+                      className={`recommendation-add-to-list-modal__list-item${
+                        isActive
+                          ? " recommendation-add-to-list-modal__list-item--active"
+                          : ""
+                      }`}
+                      onClick={() => {
+                        void handleAddToList(list.name);
+                      }}
+                      disabled={isAdding}
+                      aria-pressed={isActive}
+                    >
+                      <span className="recommendation-add-to-list-modal__list-copy">
+                        <span className="recommendation-add-to-list-modal__list-name">
+                          {list.name}
+                        </span>
+                        <span className="recommendation-add-to-list-modal__list-count">
+                          {formatProgramCount(list.total_elements)}
+                        </span>
                       </span>
-                      <span className="recommendation-add-to-list-modal__list-count">
-                        {formatProgramCount(list.total_elements)}
+                      <span
+                        className={`recommendation-add-to-list-modal__list-icon${
+                          isActive
+                            ? " recommendation-add-to-list-modal__list-icon--active"
+                            : ""
+                        }`}
+                      >
+                        <BookmarkIcon />
                       </span>
-                    </span>
-                    <span className="recommendation-add-to-list-modal__list-icon">
-                      <BookmarkIcon />
-                    </span>
-                  </button>
-                </li>
-              ))}
+                    </button>
+                  </li>
+                );
+              })}
             </ul>
 
             <button
               type="button"
               className="recommendation-add-to-list-modal__create"
               onClick={onCreateList}
+              disabled={Boolean(addingListName)}
             >
               <span className="recommendation-add-to-list-modal__create-icon">
                 <CreateListGridIcon />

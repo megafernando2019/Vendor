@@ -3001,6 +3001,15 @@ object-fit: fill;
   color: #6c757d;
 }
 
+.recommendation-add-to-list-modal__list-icon--active {
+  color: #f5c518;
+}
+
+.recommendation-add-to-list-modal__list-icon--active svg {
+  fill: #f5c518;
+  stroke: #f5c518;
+}
+
 .recommendation-add-to-list-modal__create {
   display: flex;
   align-items: flex-start;
